@@ -11,10 +11,12 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class SoundManager {
 
+    public static final float DEFAULT_VOLUME = 1;
+
     // Singleton instance of the Audio class
     private static SoundManager instance = null;
 
-    //Camera object
+    //Camera object for reference
     private static PerspectiveCamera camera = null;
 
     // Static sound objects
@@ -22,6 +24,7 @@ public class SoundManager {
 
     // Dynamic sound objects
     public Sound enemyGrowl;
+
 
     /***
      * Sets the camera for use in positional play.
@@ -82,29 +85,163 @@ public class SoundManager {
     /**
      * Plays Sound, which scales in volume based on distance and plays stereo according to the camera position.
      * @param sound Sound to play.
+     * @param baseVolume Volume of Sound.
      * @param position Position of the Sound. This will be referenced to the camera position.
      * @return ID of the Sound played.
      */
-    private long playSoundAtPosition(Sound sound, Vector3 position){
+    public long playSoundAtPosition(Sound sound, float baseVolume, Vector3 position){
         if(camera == null) return 0;
-        return 0;
+
+        float d = Math.min(camera.viewportHeight, camera.position.dst(position));
+        System.out.println(d);
+
+        if(d == 0) return sound.play(baseVolume);
+
+        float v = baseVolume / d;
+        if(d < 0.01) v = 0;
+
+        return sound.loop(v);
+    }
+
+    public void update(){
+
     }
 
     /**
      * Plays Music, which scales in volume based on distance and plays stereo according to the camera position.
-     * @param sound Music to play.
+     * @param music Music to play.
+     * @param baseVolume Volume of Music.
      * @param position Position of the Music. This will be referenced to the camera position.
      * @return ID of the Music played.
      */
-    private long playMusicAtPosition(Sound sound, Vector3 position){
-        if(camera == null) return 0;
+    public void playMusicAtPosition(Music music, float baseVolume, Vector3 position){
+        if(camera == null) return;
 
-        float boundaryHeight = camera.viewportHeight;
-        float boundaryWidth = camera.viewportHeight;
-        float d = Math.min(boundaryWidth, camera.position.dst(position));
-        float baseVolume - sound.
+        float d = Math.min(camera.viewportHeight, camera.position.dst(position));
+        System.out.println(d);
 
-        return sound.play();
+        if(d == 0) {
+            music.setVolume(baseVolume);
+            music.play();
+            return;
+        }
+
+        float v = baseVolume / d;
+        if(d < 0.01) v = 0;
+
+        music.setVolume(v);
+        music.play();
+        return;
+    }
+
+    class PositionalMusic implements Music{
+
+        private Music music;
+        private Vector3 position;
+        private float volume;
+
+        /**
+         * Contructor
+         * @param music Music object to be played
+         */
+        public PositionalMusic(Music music){
+            this.music = music;
+        }
+
+        /**
+         * Sets the Music position in the world
+         * @param position
+         */
+        public void setPosition(Vector3 position){
+            this.position = position;
+        }
+
+        /**
+         * Updates the position in the world.
+         * @param position
+         */
+        public void update(Vector3 position){
+            this.position = position;
+            float d = Math.min(camera.viewportHeight, camera.position.dst(position));
+            System.out.println(d);
+
+            if(d == 0) {
+                music.setVolume(music.getVolume());
+                music.play();
+                return;
+            }
+
+            float v = volume / d;
+            if(d < 0.01) v = 0;
+
+            music.setVolume(v);
+        }
+
+        @Override
+        public void play() {
+            music.setVolume(volume);
+            music.play();
+        }
+
+        @Override
+        public void pause() {
+            music.pause();
+        }
+
+        @Override
+        public void stop() {
+            music.stop();
+        }
+
+        @Override
+        public boolean isPlaying() {
+            return music.isPlaying();
+        }
+
+        @Override
+        public void setLooping(boolean isLooping) {
+            music.setLooping(isLooping);
+        }
+
+        @Override
+        public boolean isLooping() {
+            return music.isLooping();
+        }
+
+        @Override
+        public void setVolume(float volume) {
+            music.setVolume(volume);
+        }
+
+        @Override
+        public float getVolume() {
+            return music.getVolume();
+        }
+
+        @Override
+        public void setPan(float pan, float volume) {
+            music.setPan(pan, volume);
+        }
+
+        @Override
+        public void setPosition(float position) {
+            music.setPosition(position);
+        }
+
+        @Override
+        public float getPosition() {
+            return music.getPosition();
+        }
+
+        @Override
+        public void dispose() {
+            music.dispose();
+        }
+
+        @Override
+        public void setOnCompletionListener(OnCompletionListener listener) {
+            music.setOnCompletionListener(listener);
+        }
     }
 
 }

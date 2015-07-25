@@ -2,11 +2,16 @@ package com.deeep.spaceglad.chapter.two;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
+import com.deeep.spaceglad.chapter.seven.SoundManager;
 
 /**
  * Created by Elmar on 25-7-2015.
@@ -51,6 +56,9 @@ public class CameraTest extends ApplicationAdapter {
         instance2 = new ModelInstance(model2);
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setInputProcessor(firstPersonCameraController);
+
+        SoundManager.setCamera(cam);
+        SoundManager.getInstance().playMusicAtPosition(SoundManager.getInstance().defaultMusic, SoundManager.DEFAULT_VOLUME, new Vector3(20, 2, 20));
     }
 
     @Override
