@@ -3,8 +3,8 @@ package com.deeep.spaceglad.chapter.seven;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Vector3;
-import javafx.scene.PerspectiveCamera;
 
 /**
  * Created by Andreas on 7/25/2015.
@@ -82,11 +82,10 @@ public class SoundManager {
     /**
      * Plays Sound, which scales in volume based on distance and plays stereo according to the camera position.
      * @param sound Sound to play.
-     * @param baseVolume Volume of Sound.
-     * @param position Position of the camera.
+     * @param position Position of the Sound. This will be referenced to the camera position.
      * @return ID of the Sound played.
      */
-    private int playSoundAtPosition(Sound sound, float baseVolume, Vector3 position){
+    private long playSoundAtPosition(Sound sound, Vector3 position){
         if(camera == null) return 0;
         return 0;
     }
@@ -94,14 +93,18 @@ public class SoundManager {
     /**
      * Plays Music, which scales in volume based on distance and plays stereo according to the camera position.
      * @param sound Music to play.
-     * @param baseVolume Volume of Music.
-     * @param position Position of the camera.
+     * @param position Position of the Music. This will be referenced to the camera position.
      * @return ID of the Music played.
      */
-    private int playMusicAtPosition(Sound sound, float baseVolume, Vector3 position){
+    private long playMusicAtPosition(Sound sound, Vector3 position){
         if(camera == null) return 0;
-        camera.position
-        return 0;
+
+        float boundaryHeight = camera.viewportHeight;
+        float boundaryWidth = camera.viewportHeight;
+        float d = Math.min(boundaryWidth, camera.position.dst(position));
+        float baseVolume - sound.
+
+        return sound.play();
     }
 
 }
