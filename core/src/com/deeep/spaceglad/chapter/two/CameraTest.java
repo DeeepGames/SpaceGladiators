@@ -3,11 +3,9 @@ package com.deeep.spaceglad.chapter.two;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 
 /**
@@ -37,10 +35,11 @@ public class CameraTest extends ApplicationAdapter {
         modelBatch = new ModelBatch();
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(20f, 2f, 20f);
-        cam.lookAt(0,0,0);
+        cam.lookAt(0, 0, 0);
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
+        Gdx.input.setCursorCatched(true);
         ModelBuilder modelBuilder = new ModelBuilder();
         model = modelBuilder.createBox(5f, 5f, 5f,
                 new Material(ColorAttribute.createDiffuse(Color.GREEN)),
