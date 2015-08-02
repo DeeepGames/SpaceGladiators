@@ -1,5 +1,6 @@
 package com.deeep.spaceglad.UI;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -12,8 +13,15 @@ public class HealthWidget extends Actor {
     ProgressBar healthBar;
 
     public HealthWidget() {
-        healthBar = new ProgressBar(0, 100, 20, false, Assets.skin);
-//        healthBar.getStyle().knobBefore = healthBar.getStyle().knob;
+        ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle(
+                Assets.skin.newDrawable("white", Color.RED),
+                Assets.skin.newDrawable("white", Color.GREEN));
+        progressBarStyle.background.setMinHeight(25);
+        progressBarStyle.knob.setMinHeight(25);
+        progressBarStyle.knobBefore = progressBarStyle.knob;
+        healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
+        healthBar.setHeight(150);
+        healthBar.setValue(75);
     }
 
     @Override
