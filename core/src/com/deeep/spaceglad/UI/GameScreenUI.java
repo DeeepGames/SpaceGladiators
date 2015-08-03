@@ -32,6 +32,9 @@ public class GameScreenUI {
     }
 
     public void configureWidgets() {
+        healthWidget.setSize(140, 25);
+        healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth(), 0);
+
         stage.addActor(healthWidget);
 //        stage.addActor(oxigenWidget);
 //        stage.addActor(energyWidget);
