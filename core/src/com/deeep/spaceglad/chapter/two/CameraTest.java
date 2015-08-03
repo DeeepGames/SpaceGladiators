@@ -27,6 +27,7 @@ public class CameraTest extends ApplicationAdapter {
     public ModelBatch modelBatch;
     FirstPersonCameraController firstPersonCameraController;
     public Environment environment;
+
     @Override
     public void create () {
 
