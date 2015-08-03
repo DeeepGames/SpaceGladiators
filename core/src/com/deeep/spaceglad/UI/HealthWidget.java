@@ -11,17 +11,17 @@ import com.deeep.spaceglad.Assets;
  */
 public class HealthWidget extends Actor {
     ProgressBar healthBar;
+    ProgressBar.ProgressBarStyle progressBarStyle;
 
     public HealthWidget() {
-        ProgressBar.ProgressBarStyle progressBarStyle = new ProgressBar.ProgressBarStyle(
+        progressBarStyle = new ProgressBar.ProgressBarStyle(
                 Assets.skin.newDrawable("white", Color.RED),
                 Assets.skin.newDrawable("white", Color.GREEN));
         progressBarStyle.background.setMinHeight(25);
         progressBarStyle.knob.setMinHeight(25);
         progressBarStyle.knobBefore = progressBarStyle.knob;
         healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        healthBar.setHeight(150);
-        healthBar.setValue(75);
+        healthBar.setValue(100);
     }
 
     @Override
@@ -32,5 +32,11 @@ public class HealthWidget extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         healthBar.draw(batch, parentAlpha);
+    }
+
+    @Override
+    public void setPosition(float x, float y) {
+        setPosition(x, y);
+        healthBar.setPosition(x, y);
     }
 }
