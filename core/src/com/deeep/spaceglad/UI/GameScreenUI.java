@@ -40,8 +40,8 @@ public class GameScreenUI {
 //        stage.addActor(gameOverWidget);
     }
 
-    public void update() {
-        stage.act();
+    public void update(float delta) {
+        stage.act(delta);
     }
 
     public void render() {

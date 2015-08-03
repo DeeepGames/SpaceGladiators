@@ -9,15 +9,14 @@ import com.deeep.spaceglad.UI.GameScreenUI;
  * Created by scanevaro on 31/07/2015.
  */
 public class GameScreen implements Screen {
-
-    private Core game;
-    private GameScreenUI gameScreenUI;
-    private GameWorld gameWorld;
+    Core game;
+    GameScreenUI gameScreenUI;
+    GameWorld gameWorld;
 
     public GameScreen(Core game) {
         this.game = game;
         gameScreenUI = new GameScreenUI();
-        gameWorld = new GameWorld();
+//        gameWorld = new GameWorld();
     }
 
     @Override
@@ -27,18 +26,16 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         /** Updates */
-        gameWorld.update(delta);
-        gameScreenUI.update();
+        gameScreenUI.update(delta);
 
         /** Draw */
-        gameWorld.render();
         gameScreenUI.render();
     }
 
     @Override
     public void resize(int width, int height) {
         gameScreenUI.resize(width, height);
-        gameWorld.resize(width, height);
+//        gameWorld.resize(width, height);
     }
 
     @Override
