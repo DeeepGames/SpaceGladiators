@@ -13,8 +13,8 @@ public class GameUI {
     OxigenWidget oxigenWidget;
     EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
-    //    PauseWidget pauseWidget;
-    GameOverWidget gameOverWidget;
+    PauseWidget pauseWidget;
+//    GameOverWidget gameOverWidget;
 
     public GameUI() {
         stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
@@ -27,8 +27,8 @@ public class GameUI {
         oxigenWidget = new OxigenWidget();
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
-//        pauseWidget = new PauseWidget();
-        gameOverWidget = new GameOverWidget();
+        pauseWidget = new PauseWidget();
+//        gameOverWidget = new GameOverWidget();
     }
 
     public void configureWidgets() {
@@ -40,17 +40,17 @@ public class GameUI {
         energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
         scoreWidget.setSize(140, 25);
         scoreWidget.setPosition(0, Core.VIRTUAL_HEIGHT - scoreWidget.getHeight());
-//        pauseWidget.setSize(140, 25);
-//        pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
-        gameOverWidget.setSize(140, 25);
-        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
+        pauseWidget.setSize(64, 64);
+        pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth(), Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
+//        gameOverWidget.setSize(140, 25);
+//        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
 
         stage.addActor(healthWidget);
         stage.addActor(oxigenWidget);
         stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
-//        stage.addActor(pauseWidget);
-        stage.addActor(gameOverWidget);
+        stage.addActor(pauseWidget);
+//        stage.addActor(gameOverWidget);
     }
 
     public void update(float delta) {

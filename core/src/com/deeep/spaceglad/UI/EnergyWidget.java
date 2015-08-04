@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.utils.Align;
 import com.deeep.spaceglad.Assets;
 
 /**
@@ -23,6 +24,7 @@ public class EnergyWidget extends Actor {
         energyBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
         energyBar.setValue(100);
         label = new Label("Energy", Assets.skin);
+        label.setAlignment(Align.center);
     }
 
     @Override
