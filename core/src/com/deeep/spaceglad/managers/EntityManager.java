@@ -9,10 +9,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.deeep.spaceglad.components.ModelComponent;
-import com.deeep.spaceglad.components.PositionComponent;
-import com.deeep.spaceglad.components.RenderableComponent;
-import com.deeep.spaceglad.components.VelocityComponent;
+import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.systems.MovementSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 
@@ -33,11 +30,13 @@ public class EntityManager {
         engine.addSystem(rs);
 
         Entity entity = new Entity();
-        entity
-                .add(new PositionComponent(20, 20))
+
+        entity  .add(new PositionComponent(20, 20))
                 .add(new VelocityComponent(2))
+                .add(new RotationComponent(0,0,0))
                 .add(new ModelComponent(new ModelBuilder().createBox(50f, 1f, 50f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)))
                 .add(new RenderableComponent());
+
         engine.addEntity(entity);
     }
 
