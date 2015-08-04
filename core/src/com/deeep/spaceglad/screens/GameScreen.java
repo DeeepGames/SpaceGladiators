@@ -16,7 +16,7 @@ public class GameScreen implements Screen {
     public GameScreen(Core game) {
         this.game = game;
         gameScreenUI = new GameScreenUI();
-//        gameWorld = new GameWorld();
+        gameWorld = new GameWorld();
     }
 
     @Override
@@ -27,15 +27,17 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         /** Updates */
         gameScreenUI.update(delta);
+        gameWorld.update(delta);
 
         /** Draw */
+        gameWorld.render();
         gameScreenUI.render();
     }
 
     @Override
     public void resize(int width, int height) {
         gameScreenUI.resize(width, height);
-//        gameWorld.resize(width, height);
+        gameWorld.resize(width, height);
     }
 
     @Override
