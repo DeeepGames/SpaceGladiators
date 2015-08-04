@@ -10,7 +10,7 @@ import com.deeep.spaceglad.Core;
 public class GameScreenUI {
     Stage stage;
     HealthWidget healthWidget;
-//    OxigenWidget oxigenWidget;
+    OxigenWidget oxigenWidget;
 //    EnergyWidget energyWidget;
 //    ScoreWidget scoreWidget;
 //    PauseWidget pauseWidget;
@@ -24,7 +24,7 @@ public class GameScreenUI {
 
     public void setWidgets() {
         healthWidget = new HealthWidget();
-//        oxigenWidget = new OxigenWidget();
+        oxigenWidget = new OxigenWidget();
 //        energyWidget = new EnergyWidget();
 //        scoreWidget = new ScoreWidget();
 //        pauseWidget = new PauseWidget();
@@ -32,16 +32,21 @@ public class GameScreenUI {
     }
 
     public void configureWidgets() {
+        healthWidget.setSize(140, 25);
+        healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth() / 2, 0);
+        oxigenWidget.setSize(140, 25);
+        oxigenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxigenWidget.getWidth() / 2, 30);
+
         stage.addActor(healthWidget);
-//        stage.addActor(oxigenWidget);
+        stage.addActor(oxigenWidget);
 //        stage.addActor(energyWidget);
 //        stage.addActor(scoreWidget);
 //        stage.addActor(pauseWidget);
 //        stage.addActor(gameOverWidget);
     }
 
-    public void update() {
-        stage.act();
+    public void update(float delta) {
+        stage.act(delta);
     }
 
     public void render() {

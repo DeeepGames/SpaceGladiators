@@ -7,41 +7,41 @@ import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.deeep.spaceglad.Assets;
 
 /**
- * Created by scanevaro on 01/08/2015.
+ * Created by scanevaro on 04/08/2015.
  */
-public class HealthWidget extends Actor {
-    ProgressBar healthBar;
+public class OxigenWidget extends Actor {
+    ProgressBar oxigenBar;
     ProgressBar.ProgressBarStyle progressBarStyle;
 
-    public HealthWidget() {
+    public OxigenWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(
-                Assets.skin.newDrawable("white", Color.RED),
-                Assets.skin.newDrawable("white", Color.GREEN));
+                Assets.skin.newDrawable("white", Color.BLUE),
+                Assets.skin.newDrawable("white", Color.CYAN));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        healthBar.setValue(100);
+        oxigenBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
+        oxigenBar.setValue(100);
     }
 
     @Override
     public void act(float delta) {
-        healthBar.act(delta);
+        oxigenBar.act(delta);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        healthBar.draw(batch, parentAlpha);
+        oxigenBar.draw(batch, parentAlpha);
     }
 
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        healthBar.setPosition(x, y);
+        oxigenBar.setPosition(x, y);
     }
 
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        healthBar.setSize(width, height);
+        oxigenBar.setSize(width, height);
         progressBarStyle.background.setMinWidth(width);
         progressBarStyle.background.setMinHeight(height);
         progressBarStyle.knob.setMinWidth(width);

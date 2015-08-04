@@ -9,10 +9,9 @@ import com.deeep.spaceglad.UI.GameScreenUI;
  * Created by scanevaro on 31/07/2015.
  */
 public class GameScreen implements Screen {
-
-    private Core game;
-    private GameScreenUI gameScreenUI;
-    private GameWorld gameWorld;
+    Core game;
+    GameScreenUI gameScreenUI;
+    GameWorld gameWorld;
 
     public GameScreen(Core game) {
         this.game = game;
@@ -28,7 +27,7 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         /** Updates */
         gameWorld.update(delta);
-        gameScreenUI.update();
+        gameScreenUI.update(delta);
 
         /** Draw */
         gameWorld.render();
