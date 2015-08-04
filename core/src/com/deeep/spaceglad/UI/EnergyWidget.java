@@ -9,39 +9,39 @@ import com.deeep.spaceglad.Assets;
 /**
  * Created by scanevaro on 04/08/2015.
  */
-public class OxigenWidget extends Actor {
-    ProgressBar oxigenBar;
+public class EnergyWidget extends Actor {
+    ProgressBar energyBar;
     ProgressBar.ProgressBarStyle progressBarStyle;
 
-    public OxigenWidget() {
+    public EnergyWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(
-                Assets.skin.newDrawable("white", Color.BLUE),
-                Assets.skin.newDrawable("white", Color.CYAN));
+                Assets.skin.newDrawable("white", Color.OLIVE),
+                Assets.skin.newDrawable("white", Color.ORANGE));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        oxigenBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        oxigenBar.setValue(75);
+        energyBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
+        energyBar.setValue(75);
     }
 
     @Override
     public void act(float delta) {
-        oxigenBar.act(delta);
+        energyBar.act(delta);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        oxigenBar.draw(batch, parentAlpha);
+        energyBar.draw(batch, parentAlpha);
     }
 
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        oxigenBar.setPosition(x, y);
+        energyBar.setPosition(x, y);
     }
 
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        oxigenBar.setSize(width, height);
+        energyBar.setSize(width, height);
         progressBarStyle.background.setMinWidth(width);
         progressBarStyle.background.setMinHeight(height);
         progressBarStyle.knob.setMinWidth(width);

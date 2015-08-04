@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
@@ -18,39 +19,35 @@ import com.deeep.spaceglad.managers.EntityManager;
  */
 
 public class GameWorld {
-
     private EntityManager entityManager;
     private ModelBatch batch;
     private Environment environment;
     private FirstPersonCameraController firstPersonCameraController;
     private PerspectiveCamera cam;
     private ModelBuilder modelBuilder;
-
     private Model model1;
     private Model model2;
     private ModelInstance instance1;
     private ModelInstance instance2;
 
-    public GameWorld(){
+    public GameWorld() {
         Engine engine = new Engine();
-
         batch = new ModelBatch();
         modelBuilder = new ModelBuilder();
         environment = new Environment();
-
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
         entityManager = new EntityManager(engine, batch);
         cam = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            cam.position.set(20f, 2f, 20f);
-            cam.lookAt(0f, 0f, 0f);
-            cam.near = 1f;
-            cam.far = 300f;
-            cam.update();
+        cam.position.set(20f, 2f, 20f);
+        cam.lookAt(0f, 0f, 0f);
+        cam.near = 1f;
+        cam.far = 300f;
+        cam.update();
         firstPersonCameraController = new FirstPersonCameraController(cam);
-
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
         Gdx.input.setInputProcessor(firstPersonCameraController);
-
         model1 = modelBuilder.createBox(5f, 5f, 5f,
                 new Material(ColorAttribute.createDiffuse(Color.GREEN)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
@@ -61,7 +58,7 @@ public class GameWorld {
         instance2 = new ModelInstance(model2);
     }
 
-    public void render(){
+    public void render() {
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -71,8 +68,8 @@ public class GameWorld {
         batch.end();
     }
 
-    public void update(float delta){
-        firstPersonCameraController.update();
+    public void update(float delta) {
+        firstPersonCameraController.update(delta);
     }
 
     public void resize(int width, int height) {

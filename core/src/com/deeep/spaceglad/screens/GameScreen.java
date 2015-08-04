@@ -3,19 +3,19 @@ package com.deeep.spaceglad.screens;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
-import com.deeep.spaceglad.UI.GameScreenUI;
+import com.deeep.spaceglad.UI.GameUI;
 
 /**
  * Created by scanevaro on 31/07/2015.
  */
 public class GameScreen implements Screen {
     Core game;
-    GameScreenUI gameScreenUI;
+    GameUI gameUI;
     GameWorld gameWorld;
 
     public GameScreen(Core game) {
         this.game = game;
-        gameScreenUI = new GameScreenUI();
+        gameUI = new GameUI();
         gameWorld = new GameWorld();
     }
 
@@ -27,17 +27,17 @@ public class GameScreen implements Screen {
     public void render(float delta) {
         /** Updates */
         gameWorld.update(delta);
-        gameScreenUI.update(delta);
+        gameUI.update(delta);
 
         /** Draw */
         gameWorld.render();
-        gameScreenUI.render();
+        gameUI.render();
     }
 
     @Override
     public void resize(int width, int height) {
-        gameScreenUI.resize(width, height);
-        gameWorld.resize(width, height);
+        gameUI.resize(width, height);
+//        gameWorld.resize(width, height);
     }
 
     @Override

@@ -7,16 +7,16 @@ import com.deeep.spaceglad.Core;
 /**
  * Created by scanevaro on 31/07/2015.
  */
-public class GameScreenUI {
+public class GameUI {
     Stage stage;
     HealthWidget healthWidget;
     OxigenWidget oxigenWidget;
-//    EnergyWidget energyWidget;
+    EnergyWidget energyWidget;
 //    ScoreWidget scoreWidget;
 //    PauseWidget pauseWidget;
 //    GameOverWidget gameOverWidget;
 
-    public GameScreenUI() {
+    public GameUI() {
         stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
         setWidgets();
         configureWidgets();
@@ -25,7 +25,7 @@ public class GameScreenUI {
     public void setWidgets() {
         healthWidget = new HealthWidget();
         oxigenWidget = new OxigenWidget();
-//        energyWidget = new EnergyWidget();
+        energyWidget = new EnergyWidget();
 //        scoreWidget = new ScoreWidget();
 //        pauseWidget = new PauseWidget();
 //        gameOverWidget = new GameOverWidget();
@@ -36,10 +36,12 @@ public class GameScreenUI {
         healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth() / 2, 0);
         oxigenWidget.setSize(140, 25);
         oxigenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxigenWidget.getWidth() / 2, 30);
+        energyWidget.setSize(140, 25);
+        energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
 
         stage.addActor(healthWidget);
         stage.addActor(oxigenWidget);
-//        stage.addActor(energyWidget);
+        stage.addActor(energyWidget);
 //        stage.addActor(scoreWidget);
 //        stage.addActor(pauseWidget);
 //        stage.addActor(gameOverWidget);
