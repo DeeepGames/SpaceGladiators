@@ -19,7 +19,7 @@ public class EnergyWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.ORANGE));
         progressBarStyle.knobBefore = progressBarStyle.knob;
         energyBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        energyBar.setValue(75);
+        energyBar.setValue(100);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class EnergyWidget extends Actor {
         energyBar.setSize(width, height);
         progressBarStyle.background.setMinWidth(width);
         progressBarStyle.background.setMinHeight(height);
-        progressBarStyle.knob.setMinWidth(width);
+        progressBarStyle.knob.setMinWidth(energyBar.getValue());
         progressBarStyle.knob.setMinHeight(height);
     }
 }

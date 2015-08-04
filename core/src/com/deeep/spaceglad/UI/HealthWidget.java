@@ -20,7 +20,7 @@ public class HealthWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.GREEN));
         progressBarStyle.knobBefore = progressBarStyle.knob;
         healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        healthBar.setValue(80);
+        healthBar.setValue(100);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class HealthWidget extends Actor {
     public void setSize(float width, float height) {
         super.setSize(width, height);
         healthBar.setSize(width, height);
-//        progressBarStyle.background.setMinWidth(width);
-//        progressBarStyle.background.setMinHeight(height);
-//        progressBarStyle.knob.setMinWidth(width);
-//        progressBarStyle.knob.setMinHeight(height);
+        progressBarStyle.background.setMinWidth(width);
+        progressBarStyle.background.setMinHeight(height);
+        progressBarStyle.knob.setMinWidth(healthBar.getValue());
+        progressBarStyle.knob.setMinHeight(height);
     }
 }

@@ -19,7 +19,7 @@ public class OxigenWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.CYAN));
         progressBarStyle.knobBefore = progressBarStyle.knob;
         oxigenBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        oxigenBar.setValue(75);
+        oxigenBar.setValue(100);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class OxigenWidget extends Actor {
         oxigenBar.setSize(width, height);
         progressBarStyle.background.setMinWidth(width);
         progressBarStyle.background.setMinHeight(height);
-        progressBarStyle.knob.setMinWidth(width);
+        progressBarStyle.knob.setMinWidth(oxigenBar.getValue());
         progressBarStyle.knob.setMinHeight(height);
     }
 }
