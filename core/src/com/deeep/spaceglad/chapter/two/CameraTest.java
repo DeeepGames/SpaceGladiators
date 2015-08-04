@@ -10,15 +10,13 @@ import com.badlogic.gdx.graphics.g3d.*;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
-import com.deeep.spaceglad.chapter.seven.SoundManager;
 
 /**
  * Created by Elmar on 25-7-2015.
  */
 public class CameraTest extends ApplicationAdapter {
-   /* SpriteBatch batch;
-    Texture img;*/
+    /* SpriteBatch batch;
+     Texture img;*/
     public PerspectiveCamera cam;
     public Model model;
     public Model model2;
@@ -29,7 +27,7 @@ public class CameraTest extends ApplicationAdapter {
     public Environment environment;
 
     @Override
-    public void create () {
+    public void create() {
 
         /*batch = new SpriteBatch();
         img = new Texture("badlogic.jpg");*/
@@ -58,12 +56,12 @@ public class CameraTest extends ApplicationAdapter {
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setInputProcessor(firstPersonCameraController);
 
-        SoundManager.setCamera(cam);
-        SoundManager.getInstance().playMusicAtPosition(SoundManager.getInstance().defaultMusic, SoundManager.DEFAULT_VOLUME, new Vector3(20, 2, 20));
+//        SoundManager.setCamera(cam);
+//        SoundManager.getInstance().playMusicAtPosition(SoundManager.getInstance().defaultMusic, SoundManager.DEFAULT_VOLUME, new Vector3(20, 2, 20));
     }
 
     @Override
-    public void render () {
+    public void render() {
         firstPersonCameraController.update();
         Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
