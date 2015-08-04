@@ -37,7 +37,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         gameUI.resize(width, height);
-//        gameWorld.resize(width, height);
+        gameWorld.resize(width, height);
     }
 
     @Override
