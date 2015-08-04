@@ -29,7 +29,9 @@ public class MovementSystem extends EntitySystem {
             VelocityComponent vel =  e.getComponent(VelocityComponent.class);
             RotationComponent rot =  e.getComponent(RotationComponent.class);
 
-            pos.x += vel.velocity * delta;
+            pos.x += vel.velocityX * delta;
+            pos.y += vel.velocityY * delta;
+            pos.z += vel.velocityZ * delta;
         }
     }
 }
