@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
+import com.badlogic.gdx.utils.Align;
 import com.deeep.spaceglad.Assets;
 
 /**
@@ -23,6 +24,7 @@ public class HealthWidget extends Actor {
         healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
         healthBar.setValue(100);
         label = new Label("Health", Assets.skin);
+        label.setAlignment(Align.center);
     }
 
     @Override
