@@ -14,7 +14,7 @@ public class GameUI {
     EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
     //    PauseWidget pauseWidget;
-    GameOverWidget gameOverWidget;
+//    GameOverWidget gameOverWidget;
 
     public GameUI() {
         stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
@@ -28,7 +28,7 @@ public class GameUI {
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
 //        pauseWidget = new PauseWidget();
-        gameOverWidget = new GameOverWidget();
+//        gameOverWidget = new GameOverWidget();
     }
 
     public void configureWidgets() {
@@ -42,15 +42,15 @@ public class GameUI {
         scoreWidget.setPosition(0, Core.VIRTUAL_HEIGHT - scoreWidget.getHeight());
 //        pauseWidget.setSize(140, 25);
 //        pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
-        gameOverWidget.setSize(140, 25);
-        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
+//        gameOverWidget.setSize(140, 25);
+//        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
 
         stage.addActor(healthWidget);
         stage.addActor(oxigenWidget);
         stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
 //        stage.addActor(pauseWidget);
-        stage.addActor(gameOverWidget);
+//        stage.addActor(gameOverWidget);
     }
 
     public void update(float delta) {
