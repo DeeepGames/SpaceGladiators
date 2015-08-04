@@ -3,7 +3,6 @@ package com.deeep.spaceglad.screens;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
-import com.deeep.spaceglad.Logger;
 import com.deeep.spaceglad.UI.GameScreenUI;
 
 /**
@@ -33,7 +32,6 @@ public class GameScreen implements Screen {
         /** Draw */
         gameWorld.render();
         gameScreenUI.render();
-        Logger.log(Logger.ANDREAS, Logger.INFO, "ayy lmao");
     }
 
     @Override
