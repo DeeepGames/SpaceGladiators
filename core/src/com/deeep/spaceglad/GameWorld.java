@@ -2,11 +2,12 @@ package com.deeep.spaceglad;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.*;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -37,7 +38,7 @@ public class GameWorld {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-        entityManager = new EntityManager(engine, batch);
+        entityManager = new EntityManager(engine, batch, environment);
         cam = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(20f, 2f, 20f);
         cam.lookAt(0f, 0f, 0f);
@@ -48,14 +49,7 @@ public class GameWorld {
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
         Gdx.input.setInputProcessor(firstPersonCameraController);
-        model1 = modelBuilder.createBox(5f, 5f, 5f,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        model2 = modelBuilder.createBox(50f, 1f, 50f,
-                new Material(ColorAttribute.createDiffuse(Color.RED)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        instance1 = new ModelInstance(model1);
-        instance2 = new ModelInstance(model2);
+
     }
 
     public void render() {
@@ -63,8 +57,7 @@ public class GameWorld {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         batch.begin(cam);
-        batch.render(instance1, environment);
-        batch.render(instance2, environment);
+        entityManager.update(delta);
         batch.end();
     }
 
