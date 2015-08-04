@@ -13,7 +13,7 @@ public class GameUI {
     OxigenWidget oxigenWidget;
     EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
-    //    PauseWidget pauseWidget;
+    PauseWidget pauseWidget;
 //    GameOverWidget gameOverWidget;
 
     public GameUI() {
@@ -27,7 +27,7 @@ public class GameUI {
         oxigenWidget = new OxigenWidget();
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
-//        pauseWidget = new PauseWidget();
+        pauseWidget = new PauseWidget();
 //        gameOverWidget = new GameOverWidget();
     }
 
@@ -40,8 +40,8 @@ public class GameUI {
         energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
         scoreWidget.setSize(140, 25);
         scoreWidget.setPosition(0, Core.VIRTUAL_HEIGHT - scoreWidget.getHeight());
-//        pauseWidget.setSize(140, 25);
-//        pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
+        pauseWidget.setSize(64, 64);
+        pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth(), Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
 //        gameOverWidget.setSize(140, 25);
 //        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
 
@@ -49,7 +49,7 @@ public class GameUI {
         stage.addActor(oxigenWidget);
         stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
-//        stage.addActor(pauseWidget);
+        stage.addActor(pauseWidget);
 //        stage.addActor(gameOverWidget);
     }
 

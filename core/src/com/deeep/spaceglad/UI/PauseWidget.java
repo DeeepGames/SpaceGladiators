@@ -1,5 +1,7 @@
 package com.deeep.spaceglad.UI;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -11,7 +13,7 @@ public class PauseWidget extends Actor {
     Image image;
 
     public PauseWidget() {
-//        image = new Image(Assets.pause);
+        image = new Image(new Texture(Gdx.files.internal("data/pauseButton0.png")));
     }
 
     @Override
