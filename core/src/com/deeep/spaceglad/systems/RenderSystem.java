@@ -5,22 +5,27 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.deeep.spaceglad.components.PositionComponent;
-import com.deeep.spaceglad.components.RotationComponent;
-import com.deeep.spaceglad.components.VelocityComponent;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.deeep.spaceglad.components.*;
 
 /**
  * Created by Andreas on 8/4/2015.
  */
-public class MovementSystem extends EntitySystem {
+public class RenderSystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
+    private ModelBatch batch;
+    private Environment environment;
 
-    public MovementSystem() {}
+    public RenderSystem(ModelBatch batch, Environment environment){
+        this.batch = batch;
+        this.environment = environment;
+    }
 
     /// Event called when an entity is added to the engine
     public void addedToEngine(Engine e){
         // Grabs all entities with PositionComponent & VelocityComponent
-        entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class, VelocityComponent.class).get());
+        entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class, RenderableComponent.class, ModelComponent.class).get());
     }
 
     public void update(float delta){
@@ -28,8 +33,10 @@ public class MovementSystem extends EntitySystem {
             PositionComponent pos = e.getComponent(PositionComponent.class);
             VelocityComponent vel =  e.getComponent(VelocityComponent.class);
             RotationComponent rot =  e.getComponent(RotationComponent.class);
+            ModelComponent mod = e.getComponent(ModelComponent.class);
 
-            pos.x += vel.velocity * delta;
+            batch.render(mod.instance, environment);
         }
     }
+
 }
