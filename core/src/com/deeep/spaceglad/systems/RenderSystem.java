@@ -24,7 +24,7 @@ public class RenderSystem extends EntitySystem{
 
     /// Event called when an entity is added to the engine
     public void addedToEngine(Engine e){
-        // Grabs all entities with PositionComponent & VelocityComponent
+        // Grabs all entities with desired components
         entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class, RenderableComponent.class, ModelComponent.class).get());
     }
 
@@ -35,6 +35,7 @@ public class RenderSystem extends EntitySystem{
             RotationComponent rot =  e.getComponent(RotationComponent.class);
             ModelComponent mod = e.getComponent(ModelComponent.class);
 
+            mod.instance.transform.setTranslation(pos.x, pos.y, pos.z);
             batch.render(mod.instance, environment);
         }
     }

@@ -19,7 +19,7 @@ public class MovementSystem extends EntitySystem {
 
     /// Event called when an entity is added to the engine
     public void addedToEngine(Engine e){
-        // Grabs all entities with PositionComponent & VelocityComponent
+        // Grabs all entities with desired components
         entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class, VelocityComponent.class).get());
     }
 

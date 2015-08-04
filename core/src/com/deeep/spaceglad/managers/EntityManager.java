@@ -31,11 +31,11 @@ public class EntityManager {
 
         Entity entity = new Entity();
 
-        entity  .add(new PositionComponent(20, 20))
+        entity  .add(new PositionComponent(20, 20, 20))
                 .add(new VelocityComponent(2))
                 .add(new RotationComponent(0,0,0))
-                .add(new ModelComponent(new ModelBuilder().createBox(50f, 1f, 50f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)))
                 .add(new RenderableComponent());
+        entity.add(new ModelComponent(new ModelBuilder().createBox(20f, 2f, 20f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
 
         engine.addEntity(entity);
     }
