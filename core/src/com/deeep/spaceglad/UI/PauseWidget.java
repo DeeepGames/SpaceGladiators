@@ -93,5 +93,6 @@ public class PauseWidget extends Actor {
             Gdx.input.setCursorCatched(true);
             Core.Pause = false;
         }
+
     }
 }
