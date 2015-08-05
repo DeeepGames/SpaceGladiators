@@ -43,7 +43,7 @@ public class GameWorld {
 
     public void render(float delta) {
         batch.begin(cam);
-        entityManager.update(delta);
+        if (!Core.Pause) entityManager.update(delta);
         batch.end();
     }
 
