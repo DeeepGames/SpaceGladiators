@@ -16,23 +16,23 @@ public class GameOverWidget extends Actor {
 
     @Override
     public void act(float delta) {
-        image.act(delta);
+        //image.act(delta);
     }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        image.draw(batch, parentAlpha);
+//        image.draw(batch, parentAlpha);
     }
 
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
-        image.setPosition(x, y);
+//        image.setPosition(x, y);
     }
 
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        image.setSize(width, height);
+//        image.setSize(width, height);
     }
 }

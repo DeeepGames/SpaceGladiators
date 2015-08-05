@@ -19,7 +19,7 @@ public class GameWorld {
     private EntityManager entityManager;
     private ModelBatch batch;
     private Environment environment;
-    private FirstPersonCameraController firstPersonCameraController;
+    public FirstPersonCameraController firstPersonCameraController;
     private PerspectiveCamera cam;
 
     public GameWorld() {
@@ -39,7 +39,6 @@ public class GameWorld {
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
         Gdx.input.setInputProcessor(firstPersonCameraController);
-
     }
 
     public void render(float delta) {
