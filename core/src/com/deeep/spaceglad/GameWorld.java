@@ -28,13 +28,13 @@ public class GameWorld {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-        entityManager = new EntityManager(engine, batch, environment);
         cam = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.position.set(20f, 2f, 20f);
         cam.lookAt(0f, 0f, 0f);
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
+        entityManager = new EntityManager(engine, batch, environment, cam);
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);

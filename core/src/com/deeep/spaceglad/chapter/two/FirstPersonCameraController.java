@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.IntIntMap;
 
+/// @author Andreas :^)
 
 /** Takes a {@link Camera} instance and controls it via w,a,s,d and mouse panning.
  * @author badlogic */
