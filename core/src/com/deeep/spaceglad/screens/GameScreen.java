@@ -30,8 +30,10 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         /** Updates */
-        gameWorld.update(delta);
-        gameUI.update(delta);
+        if (!Core.Pause) {
+            gameWorld.update(delta);
+            gameUI.update(delta);
+        }
         /** Draw */
         gameWorld.render(delta);
         gameUI.render();

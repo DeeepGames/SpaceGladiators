@@ -9,6 +9,7 @@ import com.deeep.spaceglad.screens.GameScreen;
 public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_WIDTH = 960;
     public static final float VIRTUAL_HEIGHT = 540;
+    public static boolean Pause;
     Screen screen;
 
     @Override

@@ -36,8 +36,7 @@ public class PauseWidget extends Actor {
         super.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
-                if (window.getStage() == null) stage.addActor(window);
-                else window.remove();
+                handleUpdates();
             }
         });
         super.addListener(new InputListener() {
@@ -88,9 +87,11 @@ public class PauseWidget extends Actor {
         if (window.getStage() == null) {
             stage.addActor(window);
             Gdx.input.setCursorCatched(false);
+            Core.Pause = true;
         } else {
             window.remove();
             Gdx.input.setCursorCatched(true);
+            Core.Pause = false;
         }
     }
 }
