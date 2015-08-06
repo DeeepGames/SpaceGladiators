@@ -34,7 +34,7 @@ public class GameWorld {
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
-        entityManager = new EntityManager(engine, batch, environment, cam);
+        entityManager = new EntityManager(engine, batch, environment);
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
@@ -54,6 +54,10 @@ public class GameWorld {
     public void resize(int width, int height) {
         cam.viewportHeight = height;
         cam.viewportWidth = width;
+    }
+
+    public void dispose() {
+        batch.dispose();
     }
 
     private static final float FOV = 67F;

@@ -8,6 +8,7 @@ import com.deeep.spaceglad.Core;
  * Created by scanevaro on 31/07/2015.
  */
 public class GameUI {
+    Core game;
     public Stage stage;
     HealthWidget healthWidget;
     OxigenWidget oxigenWidget;
@@ -16,7 +17,8 @@ public class GameUI {
     PauseWidget pauseWidget;
     GameOverWidget gameOverWidget;
 
-    public GameUI() {
+    public GameUI(Core game) {
+        this.game = game;
         stage = new Stage(new FitViewport(Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT));
         setWidgets();
         configureWidgets();
@@ -27,7 +29,7 @@ public class GameUI {
         oxigenWidget = new OxigenWidget();
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
-        pauseWidget = new PauseWidget(stage);
+        pauseWidget = new PauseWidget(game, stage);
         gameOverWidget = new GameOverWidget();
     }
 
@@ -64,5 +66,9 @@ public class GameUI {
 
     public void resize(int width, int height) {
         stage.getViewport().update(width, height);
+    }
+
+    public void dispose() {
+        stage.dispose();
     }
 }

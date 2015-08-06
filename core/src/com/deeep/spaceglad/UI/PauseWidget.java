@@ -14,22 +14,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.screens.GameScreen;
 
 /**
  * Created by scanevaro on 04/08/2015.
  */
 public class PauseWidget extends Actor {
+    Core game;
     Image image;
     Window window;
-    TextButton textButton;
+    TextButton dialogTitle, restartButton, quitButton;
     Stage stage;
 
-    public PauseWidget(Stage stage) {
+    public PauseWidget(Core game, Stage stage) {
+        this.game = game;
         this.stage = stage;
+        setWidgets();
+        setListeners();
+    }
+
+    private void setWidgets() {
         image = new Image(new Texture(Gdx.files.internal("data/pauseButton0.png")));
         window = new Window("Pause", Assets.skin);
-        window.getTitleTable().add(textButton = new TextButton("X", Assets.skin)).height(window.getPadTop());
-        setListeners();
+        window.getTitleTable().add(dialogTitle = new TextButton("X", Assets.skin)).height(window.getPadTop());
+        restartButton = new TextButton("Restart", Assets.skin);
+        window.add(restartButton);
+        quitButton = new TextButton("Quit", Assets.skin);
+        window.add(quitButton);
     }
 
     private void setListeners() {
@@ -49,10 +60,22 @@ public class PauseWidget extends Actor {
                 return false;
             }
         });
-        textButton.addListener(new ClickListener() {
+        dialogTitle.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
                 handleUpdates();
+            }
+        });
+        restartButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y) {
+                game.setScreen(new GameScreen(game));
+            }
+        });
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent inputEvent, float x, float y) {
+                Gdx.app.exit();
             }
         });
     }
@@ -93,6 +116,5 @@ public class PauseWidget extends Actor {
             Gdx.input.setCursorCatched(true);
             Core.Pause = false;
         }
-
     }
 }

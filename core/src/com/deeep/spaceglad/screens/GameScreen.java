@@ -17,9 +17,9 @@ public class GameScreen implements Screen {
 
     public GameScreen(Core game) {
         this.game = game;
-        gameUI = new GameUI();
+        gameUI = new GameUI(game);
         gameWorld = new GameWorld();
-
+        Core.Pause = false;
         Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, gameWorld.firstPersonCameraController));
     }
 
@@ -46,6 +46,12 @@ public class GameScreen implements Screen {
     }
 
     @Override
+    public void dispose() {
+        gameWorld.dispose();
+        gameUI.dispose();
+    }
+
+    @Override
     public void pause() {
     }
 
@@ -55,9 +61,5 @@ public class GameScreen implements Screen {
 
     @Override
     public void hide() {
-    }
-
-    @Override
-    public void dispose() {
     }
 }
