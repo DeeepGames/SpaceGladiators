@@ -44,7 +44,11 @@ public class AISystem extends EntitySystem{
             mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
 
             if(aic.state != AIComponent.STATE.IDLE){
+                float mX = (float) Math.sin(rot.yaw) * delta * vel.velocity;
+                float mZ = (float) Math.cos(rot.yaw) * delta * vel.velocity;
 
+                pos.x += mX;
+                pos.z += mZ;
             }
 
         }
