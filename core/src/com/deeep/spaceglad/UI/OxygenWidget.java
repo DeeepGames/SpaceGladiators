@@ -11,12 +11,12 @@ import com.deeep.spaceglad.Assets;
 /**
  * Created by scanevaro on 04/08/2015.
  */
-public class OxigenWidget extends Actor {
+public class OxygenWidget extends Actor {
     ProgressBar oxigenBar;
     ProgressBar.ProgressBarStyle progressBarStyle;
     Label label;
 
-    public OxigenWidget() {
+    public OxygenWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(
                 Assets.skin.newDrawable("white", Color.BLUE),
                 Assets.skin.newDrawable("white", Color.CYAN));

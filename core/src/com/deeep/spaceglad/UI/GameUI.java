@@ -11,7 +11,7 @@ public class GameUI {
     Core game;
     public Stage stage;
     HealthWidget healthWidget;
-    OxigenWidget oxigenWidget;
+    OxygenWidget oxigenWidget;
     EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
     PauseWidget pauseWidget;
@@ -26,7 +26,7 @@ public class GameUI {
 
     public void setWidgets() {
         healthWidget = new HealthWidget();
-        oxigenWidget = new OxigenWidget();
+        oxigenWidget = new OxygenWidget();
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
