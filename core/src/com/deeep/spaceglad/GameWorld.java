@@ -34,7 +34,7 @@ public class GameWorld {
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
-        entityManager = new EntityManager(engine, batch, environment);
+        entityManager = new EntityManager(engine, batch, environment, cam);
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
