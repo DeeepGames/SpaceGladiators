@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.systems.AISystem;
@@ -35,17 +36,7 @@ public class EntityManager {
 
         AISystem as = new AISystem(cam);
         engine.addSystem(as);
-
-        Entity entity = new Entity();
-
-        entity.add(new PositionComponent(0, 0, 0))
-                .add(new VelocityComponent(2))
-                .add(new RotationComponent(0, 0, 0))
-                .add(new AIComponent(AIComponent.STATE.IDLE))
-                .add(new RenderableComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createBox(2f, 2f, 2f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-
-        engine.addEntity(entity);
+        engine.addEntity(EntityFactory.createMonster(0, 0, 0));
 
         createLevel();
     }
@@ -60,42 +51,11 @@ public class EntityManager {
                         new ModelBuilder().createBox(50f, 0.5f, 50f,
                                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         engine.addEntity(ground);
-        Entity wall1 = new Entity();
-        wall1.add(new PositionComponent(0, 10f, -25))
-                .add(new VelocityComponent(0))
-                .add(new RotationComponent(0, 0, 0))
-                .add(new RenderableComponent())
-                .add(new ModelComponent(
-                        new ModelBuilder().createBox(50f, 25f, 0.5f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        engine.addEntity(wall1);
-        Entity wall2 = new Entity();
-        wall2.add(new PositionComponent(-25, 10f, 0))
-                .add(new VelocityComponent(0))
-                .add(new RotationComponent(90, 0, 0))
-                .add(new RenderableComponent())
-                .add(new ModelComponent(
-                        new ModelBuilder().createBox(50f, 25f, 0.5f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        engine.addEntity(wall2);
-        Entity wall3 = new Entity();
-        wall3.add(new PositionComponent(0, 10f, 25))
-                .add(new VelocityComponent(0))
-                .add(new RotationComponent(0, 0, 0))
-                .add(new RenderableComponent())
-                .add(new ModelComponent(
-                        new ModelBuilder().createBox(50f, 25f, 0.5f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        engine.addEntity(wall3);
-        Entity wall4 = new Entity();
-        wall4.add(new PositionComponent(25, 10f, 0))
-                .add(new VelocityComponent(0))
-                .add(new RotationComponent(90, 0, 0))
-                .add(new RenderableComponent())
-                .add(new ModelComponent(
-                        new ModelBuilder().createBox(50f, 25f, 0.5f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        engine.addEntity(wall4);
+        engine.addEntity(EntityFactory.createWall(25, 10, 0, new Vector3(90, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(0, 10, 25, new Vector3(0 , 0, 0)));
+        engine.addEntity(EntityFactory.createWall(-25, 10, 0, new Vector3(90, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(0, 10, -25, new Vector3(0 , 0, 0)));
+
     }
 
     public void update(float delta) {

@@ -1,6 +1,7 @@
 package com.deeep.spaceglad.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.Vector3;
 
 /**
  * Created by Andreas on 8/4/2015.
@@ -14,5 +15,10 @@ public class RotationComponent extends Component{
         this.yaw = yaw;
         this.pitch = pitch;
         this.roll = roll;
+    }
+    public RotationComponent(Vector3 rotation){
+        this.yaw = rotation.x;
+        this.pitch = rotation.y;
+        this.roll = rotation.z;
     }
 }
