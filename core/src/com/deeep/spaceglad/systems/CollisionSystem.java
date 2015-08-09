@@ -34,9 +34,11 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
             Entity entity_2 = entities.get(userValue1 - 1);
 
             if(entity_1.getComponent(PlayerComponent.class) != null){
-                vm.get(entity_1).velocity.y = 0;
+                //vm.get(entity_1).velocity.y = 0;
+                pm.get(entity_1).position.y = pm.get(entity_1).prevPosition.y;
             }else if (entity_2.getComponent(PlayerComponent.class) != null){
-                vm.get(entity_2).velocity.y = 0;
+                //vm.get(entity_2).velocity.y = 0;
+
             }
             System.out.println("================================================");
             System.out.println(userValue0 + ", " + partId0 + ", " + index0);

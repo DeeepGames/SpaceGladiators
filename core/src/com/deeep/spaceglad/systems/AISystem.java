@@ -33,8 +33,8 @@ public class AISystem extends EntitySystem{
             AIComponent aic =  e.getComponent(AIComponent.class);
 
 
-            float dX = cam.position.x - pm.get(e).x;
-            float dZ = cam.position.z - pm.get(e).z;
+            float dX = cam.position.x - pm.get(e).position.x;
+            float dZ = cam.position.z - pm.get(e).position.z;
 
             rot.yaw = (float) Math.toDegrees(Math.atan2(dX, dZ));
 
@@ -44,8 +44,8 @@ public class AISystem extends EntitySystem{
                 float mX = (float) Math.sin(rot.yaw) * delta * vel.velocity.x;
                 float mZ = (float) Math.cos(rot.yaw) * delta * vel.velocity.z;
 
-                pm.get(e).x += mX;
-                pm.get(e).z += mZ;
+                pm.get(e).position.x += mX;
+                pm.get(e).position.z += mZ;
             }
 
         }

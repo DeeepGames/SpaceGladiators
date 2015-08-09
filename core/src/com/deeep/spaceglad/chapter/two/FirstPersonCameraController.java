@@ -30,10 +30,10 @@ import com.badlogic.gdx.utils.IntIntMap;
 public class FirstPersonCameraController extends InputAdapter {
     private final Camera camera;
     private final IntIntMap keys = new IntIntMap();
-    private int STRAFE_LEFT = Input.Keys.A;
-    private int STRAFE_RIGHT = Input.Keys.D;
-    private int FORWARD = Input.Keys.W;
-    private int BACKWARD = Input.Keys.S;
+    private int STRAFE_LEFT = Input.Keys.LEFT;
+    private int STRAFE_RIGHT = Input.Keys.RIGHT;
+    private int FORWARD = Input.Keys.UP;
+    private int BACKWARD = Input.Keys.DOWN;
     private int UP = Input.Keys.Q;
     private int DOWN = Input.Keys.E;
     private float velocity = 5;
