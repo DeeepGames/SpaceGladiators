@@ -38,12 +38,11 @@ public class AISystem extends EntitySystem{
 
             rot.yaw = (float) Math.toDegrees(Math.atan2(dX, dZ));
 
-            Logger.log(Logger.ANDREAS, 0, "angle " + rot.yaw);
             mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
 
             if(aic.state != AIComponent.STATE.IDLE){
-                float mX = (float) Math.sin(rot.yaw) * delta * vel.velocity;
-                float mZ = (float) Math.cos(rot.yaw) * delta * vel.velocity;
+                float mX = (float) Math.sin(rot.yaw) * delta * vel.velocity.x;
+                float mZ = (float) Math.cos(rot.yaw) * delta * vel.velocity.z;
 
                 pm.get(e).x += mX;
                 pm.get(e).z += mZ;

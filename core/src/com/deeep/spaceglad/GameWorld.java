@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.managers.EntityManager;
+import com.deeep.spaceglad.systems.CollisionSystem;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -45,6 +46,11 @@ public class GameWorld {
         batch.begin(cam);
         entityManager.update(delta);
         batch.end();
+        if (CollisionSystem.collisionWorld != null) {
+            CollisionSystem.debugDrawer.begin(cam);
+            CollisionSystem.collisionWorld.debugDrawWorld();
+            CollisionSystem.debugDrawer.end();
+        }
     }
 
     public void update(float delta) {
