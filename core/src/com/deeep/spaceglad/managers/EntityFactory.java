@@ -25,8 +25,9 @@ public class EntityFactory {
         entity.add(new ModelComponent(new ModelBuilder().createBox(50f, 25f, 0.5f,
                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(25, 12.5f, 0.25f)));
+        collisionComponent.collisionObject.userData =entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
-
+        collisionComponent.collisionObject.setUserValue(3);
         entity.add(collisionComponent);
         return entity;
     }
@@ -51,6 +52,7 @@ public class EntityFactory {
         entity.add(new ModelComponent(new ModelBuilder().createCapsule(1, 4, 16, new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2));
+        collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
 
         entity.add(collisionComponent);

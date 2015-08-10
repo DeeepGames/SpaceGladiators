@@ -48,7 +48,8 @@ public class EntityManager {
                                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(24.99f, 0.25f, 24.99f)));
         collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
-        collisionComponent.collisionObject.setUserValue(1);
+        collisionComponent.collisionObject.userData = ground;
+        collisionComponent.collisionObject.setUserValue(2);
         ground.add(collisionComponent);
         engine.addEntity(ground);
 

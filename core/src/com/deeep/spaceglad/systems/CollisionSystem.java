@@ -28,20 +28,25 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
 
     class MyContactListener extends ContactListener {
         @Override
-        public boolean onContactAdded(int userValue0, int partId0, int index0, int userValue1, int partId1, int index1) {
-            Entity entity_1 = entities.get(userValue0-1);
-            Entity entity_2 = entities.get(userValue1 - 1);
+        public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
+            Entity entity_1 = (Entity) colObj0.userData;
+            Entity entity_2 = (Entity) colObj1.userData;
 
             if(entity_1.getComponent(PlayerComponent.class) != null){
-                //vm.get(entity_1).velocity.y = 0;
-                pm.get(entity_1).position.y = pm.get(entity_1).prevPosition.y;
+                if(colObj1.getUserValue() == 2){ // ground
+                    pm.get(entity_1).position.y = pm.get(entity_1).prevPosition.y;
+                    vm.get(entity_1).velocity.y = Math.max(vm.get(entity_1).velocity.y,0);
+                } else   if(colObj1.getUserValue() == 3) { // wall
+                    pm.get(entity_1).position.x = pm.get(entity_1).prevPosition.x;
+                    pm.get(entity_1).position.z = pm.get(entity_1).prevPosition.z;
+                }
             }else if (entity_2.getComponent(PlayerComponent.class) != null){
                 //vm.get(entity_2).velocity.y = 0;
 
             }
             System.out.println("================================================");
-            System.out.println(userValue0 + ", " + partId0 + ", " + index0);
-            System.out.println(userValue1 + ", " + partId1 + ", " + index1);
+            System.out.println(entity_1 + ", " + partId0 + ", " + index0);
+            System.out.println(entity_2 + ", " + partId1 + ", " + index1);
             return true;
         }
     }
@@ -84,7 +89,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         btCollisionObject collisionObject = cm.get(entity).collisionObject;
         collisionWorld.addCollisionObject(collisionObject);
         collisionObject.setCollisionFlags(collisionObject.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-        collisionObject.setUserValue(entities.size());
+        //collisionObject.setUserValue(entities.size());
         collisionObject.userData = entity;
     }
 
