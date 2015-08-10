@@ -15,27 +15,28 @@ import com.deeep.spaceglad.components.RotationComponent;
 /**
  * Created by Andreas on 8/4/2015.
  */
-public class RenderSystem extends EntitySystem{
+public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ModelBatch batch;
     private Environment environment;
 
-    public RenderSystem(ModelBatch batch, Environment environment){
+    public RenderSystem(ModelBatch batch, Environment environment) {
         this.batch = batch;
         this.environment = environment;
     }
 
     /// Event called when an entity is added to the engine
-    public void addedToEngine(Engine e){
+    public void addedToEngine(Engine e) {
         // Grabs all entities with desired components
-        entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class, RenderableComponent.class, ModelComponent.class).get());
+        entities = e.getEntitiesFor(Family.all(RotationComponent.class, PositionComponent.class,
+                RenderableComponent.class, ModelComponent.class).get());
     }
 
-    public void update(float delta){
-        for(Entity e: entities){
-            PositionComponent pos = e.getComponent(PositionComponent.class);
-            RotationComponent rot =  e.getComponent(RotationComponent.class);
-            ModelComponent mod = e.getComponent(ModelComponent.class);
+    public void update(float delta) {
+        for (int i = 0; i < entities.size(); i++) {
+            PositionComponent pos = entities.get(i).getComponent(PositionComponent.class);
+            RotationComponent rot = entities.get(i).getComponent(RotationComponent.class);
+            ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
 
             // setFromEulerAngles must be called first, dunno why
             mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
@@ -43,5 +44,4 @@ public class RenderSystem extends EntitySystem{
             batch.render(mod.instance, environment);
         }
     }
-
 }
