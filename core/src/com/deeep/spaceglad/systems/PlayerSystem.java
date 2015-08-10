@@ -3,6 +3,7 @@ package com.deeep.spaceglad.systems;
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.PositionComponent;
 import com.deeep.spaceglad.components.VelocityComponent;
@@ -15,9 +16,15 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private PlayerComponent playerComponent;
     private VelocityComponent playerVelocityComponent;
     private PositionComponent playerPositionComponent;
+    private GameUI gameUI;
 
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
     ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
+
+    public PlayerSystem(GameUI gameUI) {
+        this.gameUI = gameUI;
+        //gameUI.energyWidget.setValue(playerComponent.energy);
+    }
 
     @Override
     public void addedToEngine(Engine engine) {

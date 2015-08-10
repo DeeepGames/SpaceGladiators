@@ -10,9 +10,9 @@ import com.deeep.spaceglad.Core;
 public class GameUI {
     Core game;
     public Stage stage;
-    HealthWidget healthWidget;
-    OxygenWidget oxigenWidget;
-    EnergyWidget energyWidget;
+    public HealthWidget healthWidget;
+    public OxygenWidget oxigenWidget;
+    public EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
     PauseWidget pauseWidget;
     GameOverWidget gameOverWidget;

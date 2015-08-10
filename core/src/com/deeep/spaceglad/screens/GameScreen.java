@@ -18,7 +18,7 @@ public class GameScreen implements Screen {
     public GameScreen(Core game) {
         this.game = game;
         gameUI = new GameUI(game);
-        gameWorld = new GameWorld();
+        gameWorld = new GameWorld(gameUI);
         Core.Pause = false;
         Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, gameWorld.firstPersonCameraController));
     }

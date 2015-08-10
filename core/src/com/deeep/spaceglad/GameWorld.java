@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.managers.EntityManager;
@@ -23,7 +24,7 @@ public class GameWorld {
     public FirstPersonCameraController firstPersonCameraController;
     private PerspectiveCamera cam;
 
-    public GameWorld() {
+    public GameWorld(GameUI gameUI) {
         Engine engine = new Engine();
         batch = new ModelBatch();
         environment = new Environment();
@@ -35,7 +36,7 @@ public class GameWorld {
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
-        entityManager = new EntityManager(engine, batch, environment, cam);
+        entityManager = new EntityManager(engine, batch, environment, gameUI);
         firstPersonCameraController = new FirstPersonCameraController(cam);
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);

@@ -56,4 +56,8 @@ public class HealthWidget extends Actor {
         progressBarStyle.knob.setMinHeight(height);
         label.setSize(width, height);
     }
+
+    public void setValue(float value) {
+        healthBar.setValue(value);
+    }
 }

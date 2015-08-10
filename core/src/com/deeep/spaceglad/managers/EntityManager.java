@@ -3,7 +3,6 @@ package com.deeep.spaceglad.managers;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -13,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.systems.*;
 
@@ -24,13 +24,13 @@ public class EntityManager {
     private Engine engine;
     private MovementSystem ms;
 
-    public EntityManager(Engine engine, ModelBatch batch, Environment environment, PerspectiveCamera cam) {
+    public EntityManager(Engine engine, ModelBatch batch, Environment environment, GameUI gameUI) {
         this.engine = engine;
         engine.addSystem(ms = new MovementSystem());
         engine.addSystem(new RenderSystem(batch, environment));
         engine.addSystem(new AISystem());
         engine.addSystem(new CollisionSystem());
-        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new PlayerSystem(gameUI));
         engine.addEntity(EntityFactory.createMonster(0, 0, 0));
         engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
         createLevel();
@@ -44,7 +44,8 @@ public class EntityManager {
                 .add(new RenderableComponent())
                 .add(new ModelComponent(
                         new ModelBuilder().createBox(50f, 0.5f, 50f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+                                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(24.99f, 0.25f, 24.99f)));
         collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(1);
