@@ -2,8 +2,6 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.deeep.spaceglad.Logger;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -12,17 +10,15 @@ import com.deeep.spaceglad.components.*;
 public class AISystem extends EntitySystem{
     private ImmutableArray<Entity> entities;
 
-    private PerspectiveCamera cam;
-
-    public AISystem(PerspectiveCamera cam) {
-        this.cam = cam;
-    }
+    private Entity player;
 
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
 
     @Override
     public void addedToEngine(Engine e){
         entities = e.getEntitiesFor(Family.all(ModelComponent.class, RotationComponent.class, PositionComponent.class, VelocityComponent.class, AIComponent.class).get());
+        ImmutableArray<Entity> players = e.getEntitiesFor(Family.all(PlayerComponent.class).get());
+        if(players.size() > 0) player = players.first();
     }
 
     public void update(float delta){
@@ -32,9 +28,12 @@ public class AISystem extends EntitySystem{
             ModelComponent mod =  e.getComponent(ModelComponent.class);
             AIComponent aic =  e.getComponent(AIComponent.class);
 
+            if(player == null) return;
+            PositionComponent playerPositionComponent = player.getComponent(PositionComponent.class);
 
-            float dX = cam.position.x - pm.get(e).position.x;
-            float dZ = cam.position.z - pm.get(e).position.z;
+
+            float dX = playerPositionComponent.position.x - pm.get(e).position.x;
+            float dZ = playerPositionComponent.position.z - pm.get(e).position.z;
 
             rot.yaw = (float) Math.toDegrees(Math.atan2(dX, dZ));
 

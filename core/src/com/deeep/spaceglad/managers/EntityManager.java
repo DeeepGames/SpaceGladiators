@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.components.*;
@@ -29,7 +28,7 @@ public class EntityManager {
         this.engine = engine;
         engine.addSystem(ms = new MovementSystem());
         engine.addSystem(new RenderSystem(batch, environment));
-        engine.addSystem(new AISystem(cam));
+        engine.addSystem(new AISystem());
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerSystem());
         engine.addEntity(EntityFactory.createMonster(0, 0, 0));
@@ -42,6 +41,7 @@ public class EntityManager {
         ground.add(new PositionComponent(0, -2.2f, 0))
                 .add(new VelocityComponent())
                 .add(new RotationComponent(0, 0, 0))
+                .add(new AIComponent(AIComponent.STATE.HUNTING))
                 .add(new RenderableComponent())
                 .add(new ModelComponent(
                         new ModelBuilder().createBox(50f, 0.5f, 50f,
