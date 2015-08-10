@@ -7,9 +7,8 @@ import com.deeep.spaceglad.components.*;
 /**
  * Created by Andreas on 8/5/2015.
  */
-public class AISystem extends EntitySystem{
+public class AISystem extends EntitySystem  implements EntityListener{
     private ImmutableArray<Entity> entities;
-
     private Entity player;
 
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
@@ -17,8 +16,7 @@ public class AISystem extends EntitySystem{
     @Override
     public void addedToEngine(Engine e){
         entities = e.getEntitiesFor(Family.all(ModelComponent.class, RotationComponent.class, PositionComponent.class, VelocityComponent.class, AIComponent.class).get());
-        ImmutableArray<Entity> players = e.getEntitiesFor(Family.all(PlayerComponent.class).get());
-        if(players.size() > 0) player = players.first();
+        e.addEntityListener(Family.one(PlayerComponent.class).get(),this);
     }
 
     public void update(float delta){
@@ -35,20 +33,26 @@ public class AISystem extends EntitySystem{
             float dX = playerPositionComponent.position.x - pm.get(e).position.x;
             float dZ = playerPositionComponent.position.z - pm.get(e).position.z;
 
-            rot.yaw = (float) Math.toDegrees(Math.atan2(dX, dZ));
+            rot.yaw = (float) (Math.atan2(dX, dZ));
 
-            mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
+            mod.instance.transform.setFromEulerAngles((float) Math.toDegrees(rot.yaw), rot.pitch, rot.roll);
 
             if(aic.state != AIComponent.STATE.IDLE){
-                float mX = (float) Math.sin(rot.yaw) * delta * vel.velocity.x;
-                float mZ = (float) Math.cos(rot.yaw) * delta * vel.velocity.z;
-
-                pm.get(e).position.x += mX;
-                pm.get(e).position.z += mZ;
+                vel.velocity.x += (float) Math.sin(rot.yaw);
+                vel.velocity.z += (float) Math.cos(rot.yaw);
             }
 
         }
     }
 
 
+    @Override
+    public void entityAdded(Entity entity) {
+        player = entity;
+    }
+
+    @Override
+    public void entityRemoved(Entity entity) {
+
+    }
 }
