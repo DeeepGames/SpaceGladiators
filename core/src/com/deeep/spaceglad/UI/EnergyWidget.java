@@ -21,7 +21,7 @@ public class EnergyWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.OLIVE),
                 Assets.skin.newDrawable("white", Color.ORANGE));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        energyBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
+        energyBar = new ProgressBar(0, 100, 1, false, progressBarStyle);
         energyBar.setValue(100);
         label = new Label("Energy", Assets.skin);
         label.setAlignment(Align.center);

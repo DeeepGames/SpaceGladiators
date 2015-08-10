@@ -23,7 +23,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
     public PlayerSystem(GameUI gameUI) {
         this.gameUI = gameUI;
-        //gameUI.energyWidget.setValue(playerComponent.energy);
     }
 
     @Override
@@ -54,6 +53,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             vm.get(player).velocity.x = 3;
         }
+
+        gameUI.energyWidget.setValue(playerComponent.energy -= deltaTime * 5);
     }
 
     @Override
@@ -61,11 +62,25 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         //this is the player!
         player = entity;
         playerComponent = entity.getComponent(PlayerComponent.class);
+        gameUI.energyWidget.setValue(playerComponent.energy);
+        gameUI.oxigenWidget.setValue(playerComponent.oxygen);
+        gameUI.healthWidget.setValue(playerComponent.health);
         playerVelocityComponent = entity.getComponent(VelocityComponent.class);
     }
 
     @Override
     public void entityRemoved(Entity entity) {
+    }
 
+    public void hit(float damage) {
+        /**
+         * gameUI.healthWidget.setValue(playerComponent.health -= damage);
+         */
+    }
+
+    public void grabEnergy(float energy) {
+        /**
+         * gameUI.energyWidget.setValue(playerComponent.energy += energy);
+         */
     }
 }

@@ -56,4 +56,8 @@ public class OxygenWidget extends Actor {
         progressBarStyle.knob.setMinHeight(height);
         label.setSize(width, height);
     }
+
+    public void setValue(float value) {
+        oxigenBar.setValue(value);
+    }
 }
