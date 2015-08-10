@@ -36,16 +36,16 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         vm.get(player).velocity.z = 0;
         vm.get(player).velocity.x = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            vm.get(player).velocity.z = -1;
+            vm.get(player).velocity.z = -3;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            vm.get(player).velocity.z = 1;
+            vm.get(player).velocity.z = 3;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            vm.get(player).velocity.x = -1;
+            vm.get(player).velocity.x = -3;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            vm.get(player).velocity.x = 1;
+            vm.get(player).velocity.x = 3;
         }
     }
 
