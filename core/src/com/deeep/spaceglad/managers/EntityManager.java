@@ -28,7 +28,7 @@ public class EntityManager {
         this.engine = engine;
         engine.addSystem(ms = new MovementSystem());
         engine.addSystem(new RenderSystem(batch, environment));
-        engine.addSystem(new AISystem(cam));
+        engine.addSystem(new AISystem());
         engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerSystem());
         engine.addEntity(EntityFactory.createMonster(0, 0, 0));
