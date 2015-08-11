@@ -20,7 +20,7 @@ public class GameScreen implements Screen {
         gameUI = new GameUI(game);
         gameWorld = new GameWorld(gameUI);
         Core.Pause = false;
-        Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, gameWorld.firstPersonCameraController));
+        Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage/*, gameWorld.firstPersonCameraController*/));
     }
 
     @Override

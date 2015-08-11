@@ -12,6 +12,7 @@ import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.managers.EntityManager;
 import com.deeep.spaceglad.systems.CollisionSystem;
+import com.deeep.spaceglad.systems.PlayerSystem;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -21,11 +22,12 @@ public class GameWorld {
     private EntityManager entityManager;
     private ModelBatch batch;
     private Environment environment;
-    public FirstPersonCameraController firstPersonCameraController;
+    //public FirstPersonCameraController firstPersonCameraController;
     private PerspectiveCamera cam;
 
     public GameWorld(GameUI gameUI) {
         Engine engine = new Engine();
+
         batch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -36,11 +38,13 @@ public class GameWorld {
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
-        entityManager = new EntityManager(engine, batch, environment, gameUI);
-        firstPersonCameraController = new FirstPersonCameraController(cam);
+        PlayerSystem playerSystem = new PlayerSystem(cam, gameUI);
+        engine.addSystem(playerSystem);
+        entityManager = new EntityManager(engine, batch, environment);
+
         Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
-        Gdx.input.setInputProcessor(firstPersonCameraController);
+        //Gdx.input.setInputProcessor(firstPersonCameraController);
     }
 
     public void render(float delta) {
@@ -55,7 +59,7 @@ public class GameWorld {
     }
 
     public void update(float delta) {
-        firstPersonCameraController.update(delta);
+        //firstPersonCameraController.update(delta);
     }
 
     public void resize(int width, int height) {

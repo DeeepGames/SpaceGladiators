@@ -24,13 +24,12 @@ public class EntityManager {
     private Engine engine;
     private MovementSystem ms;
 
-    public EntityManager(Engine engine, ModelBatch batch, Environment environment, GameUI gameUI) {
+    public EntityManager(Engine engine, ModelBatch batch, Environment environment) {
         this.engine = engine;
         engine.addSystem(ms = new MovementSystem());
         engine.addSystem(new RenderSystem(batch, environment));
         engine.addSystem(new AISystem());
         engine.addSystem(new CollisionSystem());
-        engine.addSystem(new PlayerSystem(gameUI));
         engine.addEntity(EntityFactory.createMonster(0, 0, 0));
         engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
         createLevel();
