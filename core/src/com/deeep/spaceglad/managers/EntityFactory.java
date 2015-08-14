@@ -33,11 +33,12 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createMonster(int x, int y, int z) {
+    public static Entity createEnemy(int x, int y, int z) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
         entity.add(new VelocityComponent());
         entity.add(new RotationComponent(0, 0, 0));
+        entity.add(new StatusComponent());
         entity.add(new AIComponent(AIComponent.STATE.HUNTING));
         entity.add(new RenderableComponent());
         entity.add(new ModelComponent(new ModelBuilder().createBox(2f, 2f, 2f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));

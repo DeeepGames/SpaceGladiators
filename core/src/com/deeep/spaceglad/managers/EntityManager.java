@@ -32,7 +32,7 @@ public class EntityManager {
         engine.addSystem(new RenderSystem(batch, environment));
         engine.addSystem(new AISystem());
         engine.addSystem(new CollisionSystem());
-        engine.addEntity(EntityFactory.createMonster(0, 0, 0));
+        engine.addEntity(EntityFactory.createEnemy(0, 0, 0));
         engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
         createLevel();
     }
