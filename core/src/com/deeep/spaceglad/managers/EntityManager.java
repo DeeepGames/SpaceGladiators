@@ -12,9 +12,11 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.deeep.spaceglad.Core;
-import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
-import com.deeep.spaceglad.systems.*;
+import com.deeep.spaceglad.systems.AISystem;
+import com.deeep.spaceglad.systems.CollisionSystem;
+import com.deeep.spaceglad.systems.MovementSystem;
+import com.deeep.spaceglad.systems.RenderSystem;
 
 /**
  * Created by Andreas on 8/3/2015.
@@ -41,6 +43,7 @@ public class EntityManager {
                 .add(new VelocityComponent())
                 .add(new RotationComponent(0, 0, 0))
                 .add(new RenderableComponent())
+                .add(new StatusComponent())
                 .add(new ModelComponent(
                         new ModelBuilder().createBox(50f, 0.5f, 50f,
                                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),

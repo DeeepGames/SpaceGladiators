@@ -5,30 +5,28 @@ import com.badlogic.ashley.utils.ImmutableArray;
 import com.deeep.spaceglad.components.*;
 
 /**
- * Created by Andreas on 8/5/2015.
+ * Created by Andreas on 8/10/2015.
  */
-public class AISystem extends EntitySystem  implements EntityListener{
+public class GunSystem extends EntitySystem  implements EntityListener {
     private ImmutableArray<Entity> entities;
-    private Entity player;
+    private Entity gun;
 
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
 
     @Override
     public void addedToEngine(Engine e){
-        entities = e.getEntitiesFor(Family.all(ModelComponent.class, RotationComponent.class, PositionComponent.class, VelocityComponent.class, AIComponent.class, StatusComponent.class).get());
-        e.addEntityListener(Family.one(PlayerComponent.class).get(),this);
+        entities = e.getEntitiesFor(Family.all(ModelComponent.class, RotationComponent.class, PositionComponent.class, VelocityComponent.class, AIComponent.class).get());
+        e.addEntityListener(Family.one(GunComponent.class).get(),this);
     }
 
     public void update(float delta){
         for(Entity e: entities){
-            StatusComponent sta =  e.getComponent(StatusComponent.class);
-            //if(!sta.enabled) continue;
             RotationComponent rot =  e.getComponent(RotationComponent.class);
             VelocityComponent vel =  e.getComponent(VelocityComponent.class);
             ModelComponent mod =  e.getComponent(ModelComponent.class);
             AIComponent aic =  e.getComponent(AIComponent.class);
 
-            PositionComponent playerPositionComponent = player.getComponent(PositionComponent.class);
+            PositionComponent playerPositionComponent = gun.getComponent(PositionComponent.class);
 
 
             float dX = playerPositionComponent.position.x - pm.get(e).position.x;
@@ -38,7 +36,7 @@ public class AISystem extends EntitySystem  implements EntityListener{
 
             mod.instance.transform.setFromEulerAngles((float) Math.toDegrees(rot.yaw), rot.pitch, rot.roll);
 
-            if(aic.state != AIComponent.STATE.IDLE && !sta.frozen){
+            if(aic.state != AIComponent.STATE.IDLE){
                 float speedX =vel.velocity.x +  (float) Math.sin(rot.yaw) * 0.5f;
                 speedX = (speedX < -10)? -10 : speedX;
                 speedX = (speedX > 10)? 10 : speedX;
@@ -52,10 +50,9 @@ public class AISystem extends EntitySystem  implements EntityListener{
         }
     }
 
-
     @Override
     public void entityAdded(Entity entity) {
-        player = entity;
+        gun = entity;
     }
 
     @Override

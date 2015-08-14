@@ -48,6 +48,7 @@ public class EntityFactory {
         entity.add(new PositionComponent(x, y, z));
         entity.add(new VelocityComponent());
         entity.add(new RotationComponent(0, 0, 0));
+        entity.add(new StatusComponent());
         entity.add(new RenderableComponent());
         entity.add(new ModelComponent(new ModelBuilder().createCapsule(1, 4, 16, new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());

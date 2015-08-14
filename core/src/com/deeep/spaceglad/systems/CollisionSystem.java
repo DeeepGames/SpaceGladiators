@@ -32,6 +32,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
             Entity entity_1 = (Entity) colObj0.userData;
             Entity entity_2 = (Entity) colObj1.userData;
 
+            boolean e1IsPlayer = false;
             if(entity_1.getComponent(PlayerComponent.class) != null){
                 if(colObj1.getUserValue() == 2){ // ground
                     pm.get(entity_1).position.y = pm.get(entity_1).prevPosition.y;
@@ -50,7 +51,9 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     @Override
     public void addedToEngine(Engine engine) {
         entities = engine.getEntitiesFor(Family.all(PositionComponent.class, CollisionComponent.class, ModelComponent.class).get());
-        engine.addEntityListener(Family.all(CollisionComponent.class).get(), this);
+        long before = System.nanoTime();
+        engine.addEntityListener(Family.one(CollisionComponent.class).get(), this);
+        System.out.println(System.nanoTime() - before);
     }
 
     public CollisionSystem() {
