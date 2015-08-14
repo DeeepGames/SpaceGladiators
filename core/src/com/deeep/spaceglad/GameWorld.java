@@ -21,7 +21,6 @@ public class GameWorld {
     private EntityManager entityManager;
     private ModelBatch batch;
     private Environment environment;
-    //public FirstPersonCameraController firstPersonCameraController;
     private PerspectiveCamera cam;
 
     public GameWorld(GameUI gameUI) {
@@ -51,10 +50,6 @@ public class GameWorld {
             CollisionSystem.collisionWorld.debugDrawWorld();
             CollisionSystem.debugDrawer.end();
         }
-    }
-
-    public void update(float delta) {
-        //firstPersonCameraController.update(delta);
     }
 
     public void resize(int width, int height) {
