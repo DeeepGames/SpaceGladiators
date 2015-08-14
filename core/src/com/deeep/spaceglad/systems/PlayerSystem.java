@@ -38,17 +38,13 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     @Override
     public void update(float deltaTime) {
         if (player == null) return;
-
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
-
         camera.direction.rotate(camera.up, deltaX);
         tempVector.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tempVector, deltaY);
-
         //set velocity
         if (jumping) {
-//            System.out.println("jumping");
             if (jumpPower > 0) {
                 //jumpPower -= deltaTime * 4;
                 //velocityComponentMapper.get(player).velocity.y += deltaTime * 4;
@@ -64,7 +60,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (velocityComponentMapper.get(player).velocity.y > -5) {
             velocityComponentMapper.get(player).velocity.y -= deltaTime * 1;
         }
-
         velocityComponentMapper.get(player).velocity.z = 0;
         velocityComponentMapper.get(player).velocity.x = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -95,12 +90,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
                 }
             }
         }
-//        System.out.println(jumping + " - " + jumpPower + " - " + velocityComponentMapper.get(player).velocity.y);
-
-
         camera.position.set(positionComponentMapper.get(player).position);
         camera.update(true);
-        gameUI.energyWidget.setValue(playerComponent.energy -= deltaTime * 5);
+        gameUI.energyWidget.setValue(0);
+        gameUI.oxygenWidget.setValue(0);
+        gameUI.healthWidget.setValue(0);
     }
 
     @Override

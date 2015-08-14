@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
-import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.managers.EntityManager;
 import com.deeep.spaceglad.systems.CollisionSystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
@@ -33,7 +32,7 @@ public class GameWorld {
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
         environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
         cam = new PerspectiveCamera(FOV, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(20f, 2f, 20f);
+        cam.position.set(20f, 0f, 20f);
         cam.lookAt(0f, 0f, 0f);
         cam.near = 1f;
         cam.far = 300f;
