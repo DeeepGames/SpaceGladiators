@@ -17,7 +17,6 @@ public class Core extends ApplicationAdapter {
     public void create() {
         new Assets();
         Gdx.input.setCatchBackKey(true);
-        Gdx.input.setCursorCatched(true);
 //        dialogs = new Dialogs();
         setScreen(new GameScreen(this));
 //        fpsLogger = new FPSLogger();
