@@ -22,6 +22,7 @@ public class EntityFactory {
         entity.add(new VelocityComponent());
         entity.add(new RotationComponent(orientation));
         entity.add(new RenderableComponent());
+        entity.add(new StatusComponent());
         entity.add(new ModelComponent(new ModelBuilder().createBox(50f, 25f, 0.5f,
                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(25, 12.5f, 0.25f)));

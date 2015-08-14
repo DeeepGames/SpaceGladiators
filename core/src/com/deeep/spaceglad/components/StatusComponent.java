@@ -17,6 +17,8 @@ public class StatusComponent extends Component{
         enabled = true;
         visible = true;
         alive = true;
+        frozen = false;
+        ignited = false;
     }
 
 }
