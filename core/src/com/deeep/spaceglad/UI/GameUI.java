@@ -11,7 +11,7 @@ public class GameUI {
     Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-    public OxygenWidget oxigenWidget;
+    public OxygenWidget oxygenWidget;
     public EnergyWidget energyWidget;
     ScoreWidget scoreWidget;
     PauseWidget pauseWidget;
@@ -26,7 +26,7 @@ public class GameUI {
 
     public void setWidgets() {
         healthWidget = new HealthWidget();
-        oxigenWidget = new OxygenWidget();
+        oxygenWidget = new OxygenWidget();
         energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
@@ -36,8 +36,8 @@ public class GameUI {
     public void configureWidgets() {
         healthWidget.setSize(140, 25);
         healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth() / 2, 0);
-        oxigenWidget.setSize(140, 25);
-        oxigenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxigenWidget.getWidth() / 2, 30);
+        oxygenWidget.setSize(140, 25);
+        oxygenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxygenWidget.getWidth() / 2, 30);
         energyWidget.setSize(140, 25);
         energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
         scoreWidget.setSize(140, 25);
@@ -48,7 +48,7 @@ public class GameUI {
         gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
 
         stage.addActor(healthWidget);
-        stage.addActor(oxigenWidget);
+        stage.addActor(oxygenWidget);
         stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
         stage.addActor(pauseWidget);

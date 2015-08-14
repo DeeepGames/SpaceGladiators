@@ -35,7 +35,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         engine.addEntityListener(Family.all(PlayerComponent.class).get(), this);
     }
 
-
     @Override
     public void update(float deltaTime) {
         if (player == null) return;
@@ -54,8 +53,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
                 //jumpPower -= deltaTime * 4;
                 //vm.get(player).velocity.y += deltaTime * 4;
                 vm.get(player).velocity.y += jumpPower;
-                jumpPower-=jumpPower/4;
-                if(jumpPower<=0.25f){
+                jumpPower -= jumpPower / 4;
+                if (jumpPower <= 0.25f) {
                     jumpPower = 0;
                 }
             } else {
@@ -89,8 +88,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             if (jumpPower > 0) {
                 jumping = true;
-            }else{
-                if(jumping == false){
+            } else {
+                if (jumping == false) {
                     jumpPower = 2.5f;
                     jumping = true;
                 }
@@ -110,7 +109,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         player = entity;
         playerComponent = entity.getComponent(PlayerComponent.class);
         gameUI.energyWidget.setValue(playerComponent.energy);
-        gameUI.oxigenWidget.setValue(playerComponent.oxygen);
+        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
         gameUI.healthWidget.setValue(playerComponent.health);
     }
 

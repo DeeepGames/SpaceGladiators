@@ -15,13 +15,14 @@ public class OxygenWidget extends Actor {
     ProgressBar oxigenBar;
     ProgressBar.ProgressBarStyle progressBarStyle;
     Label label;
+    private float addedValue;
 
     public OxygenWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(
                 Assets.skin.newDrawable("white", Color.BLUE),
                 Assets.skin.newDrawable("white", Color.CYAN));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        oxigenBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
+        oxigenBar = new ProgressBar(0, 100, 1, false, progressBarStyle);
         oxigenBar.setValue(100);
         label = new Label("Oxigen", Assets.skin);
         label.setAlignment(Align.center);
@@ -58,6 +59,10 @@ public class OxygenWidget extends Actor {
     }
 
     public void setValue(float value) {
-        oxigenBar.setValue(value);
+        addedValue += value;
+        if (addedValue > 1) {
+            oxigenBar.setValue(value);
+            addedValue = 0;
+        }
     }
 }
