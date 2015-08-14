@@ -41,7 +41,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                     pm.get(entity_1).position.z = pm.get(entity_1).prevPosition.z;
                 }
             }else if (entity_2.getComponent(PlayerComponent.class) != null){
-                //vm.get(entity_2).velocity.y = 0;
+                //velocityComponentMapper.get(entity_2).velocity.y = 0;
             }
             return true;
         }
