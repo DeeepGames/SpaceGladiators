@@ -8,14 +8,14 @@ import com.deeep.spaceglad.Core;
  * Created by scanevaro on 31/07/2015.
  */
 public class GameUI {
-    Core game;
+    private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
     public OxygenWidget oxygenWidget;
     public EnergyWidget energyWidget;
-    ScoreWidget scoreWidget;
-    PauseWidget pauseWidget;
-    GameOverWidget gameOverWidget;
+    private ScoreWidget scoreWidget;
+    private PauseWidget pauseWidget;
+    private GameOverWidget gameOverWidget;
 
     public GameUI(Core game) {
         this.game = game;

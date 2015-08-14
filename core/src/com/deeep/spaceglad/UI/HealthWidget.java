@@ -12,9 +12,9 @@ import com.deeep.spaceglad.Assets;
  * Created by scanevaro on 01/08/2015.
  */
 public class HealthWidget extends Actor {
-    ProgressBar healthBar;
-    ProgressBar.ProgressBarStyle progressBarStyle;
-    Label label;
+    private ProgressBar healthBar;
+    private ProgressBar.ProgressBarStyle progressBarStyle;
+    private Label label;
 
     public HealthWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(

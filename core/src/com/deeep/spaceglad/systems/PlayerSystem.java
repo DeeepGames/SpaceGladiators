@@ -22,9 +22,9 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private final Vector3 tempVector = new Vector3();
     private float jumpPower = 2f;
     private boolean jumping = false;
-
-    ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
-    ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
+    private ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
+    private ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
+    private float energyConsumed;
 
     public PlayerSystem(Camera camera, GameUI gameUI) {
         this.camera = camera;
@@ -37,9 +37,14 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void update(float delta) {
         if (Core.Pause) return;
         if (player == null) return;
+        updateMovement(delta);
+        updateStatus(delta);
+    }
+
+    private void updateMovement(float delta) {
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
         camera.direction.rotate(camera.up, deltaX);
@@ -60,7 +65,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             }
         }
         if (velocityComponentMapper.get(player).velocity.y > -5) {
-            velocityComponentMapper.get(player).velocity.y -= deltaTime * 1;
+            velocityComponentMapper.get(player).velocity.y -= delta * 1;
         }
         velocityComponentMapper.get(player).velocity.z = 0;
         velocityComponentMapper.get(player).velocity.x = 0;
@@ -94,9 +99,18 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         }
         camera.position.set(positionComponentMapper.get(player).position);
         camera.update(true);
-        gameUI.energyWidget.setValue(0);
-        gameUI.oxygenWidget.setValue(0);
-        gameUI.healthWidget.setValue(0);
+    }
+
+    private void updateStatus(float delta) {
+        energyConsumed += delta;
+        if (energyConsumed >= 1) {
+            playerComponent.energy -= energyConsumed;
+            energyConsumed = 0;
+        }
+
+        gameUI.energyWidget.setValue(playerComponent.energy);
+        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
+        gameUI.healthWidget.setValue(playerComponent.health);
     }
 
     @Override

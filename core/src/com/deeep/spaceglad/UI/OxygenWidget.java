@@ -12,9 +12,9 @@ import com.deeep.spaceglad.Assets;
  * Created by scanevaro on 04/08/2015.
  */
 public class OxygenWidget extends Actor {
-    ProgressBar oxigenBar;
-    ProgressBar.ProgressBarStyle progressBarStyle;
-    Label label;
+    private ProgressBar oxigenBar;
+    private ProgressBar.ProgressBarStyle progressBarStyle;
+    private Label label;
     private float addedValue;
 
     public OxygenWidget() {

@@ -12,9 +12,9 @@ import com.deeep.spaceglad.Assets;
  * Created by scanevaro on 04/08/2015.
  */
 public class EnergyWidget extends Actor {
-    ProgressBar energyBar;
-    ProgressBar.ProgressBarStyle progressBarStyle;
-    Label label;
+    private ProgressBar energyBar;
+    private ProgressBar.ProgressBarStyle progressBarStyle;
+    private Label label;
     private float addedValue;
 
     public EnergyWidget() {
