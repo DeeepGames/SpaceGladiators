@@ -1,7 +1,6 @@
 package com.deeep.spaceglad.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
@@ -20,7 +19,7 @@ public class GameScreen implements Screen {
         gameUI = new GameUI(game);
         gameWorld = new GameWorld(gameUI);
         Core.Pause = false;
-        Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage));
+        Gdx.input.setInputProcessor(gameUI.stage);
     }
 
     @Override

@@ -16,8 +16,8 @@ import com.deeep.spaceglad.systems.PlayerSystem;
 /**
  * Created by scanevaro on 31/07/2015.
  */
-
 public class GameWorld {
+    private static final float FOV = 67F;
     private EntityManager entityManager;
     private ModelBatch batch;
     private Environment environment;
@@ -60,6 +60,4 @@ public class GameWorld {
     public void dispose() {
         batch.dispose();
     }
-
-    private static final float FOV = 67F;
 }
