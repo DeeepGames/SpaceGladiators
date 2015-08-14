@@ -25,8 +25,6 @@ public class GameWorld {
     private PerspectiveCamera cam;
 
     public GameWorld(GameUI gameUI) {
-        Engine engine = new Engine();
-
         batch = new ModelBatch();
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
@@ -38,12 +36,10 @@ public class GameWorld {
         cam.far = 300f;
         cam.update();
         PlayerSystem playerSystem = new PlayerSystem(cam, gameUI);
+        Engine engine = new Engine();
         engine.addSystem(playerSystem);
         entityManager = new EntityManager(engine, batch, environment);
-
-        Gdx.input.setCursorCatched(true);
         SoundManager.setCamera(cam);
-        //Gdx.input.setInputProcessor(firstPersonCameraController);
     }
 
     public void render(float delta) {

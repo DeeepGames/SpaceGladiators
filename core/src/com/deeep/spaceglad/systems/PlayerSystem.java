@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.PositionComponent;
@@ -37,6 +38,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float deltaTime) {
+        if (Core.Pause) return;
         if (player == null) return;
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;

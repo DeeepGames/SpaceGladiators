@@ -3,7 +3,6 @@ package com.deeep.spaceglad;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.deeep.spaceglad.screens.GameScreen;
 
@@ -12,14 +11,16 @@ public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_HEIGHT = 540;
     public static boolean Pause;
     Screen screen;
-    FPSLogger fpsLogger;
+//    FPSLogger fpsLogger;
+
     @Override
     public void create() {
         new Assets();
         Gdx.input.setCatchBackKey(true);
+        Gdx.input.setCursorCatched(true);
 //        dialogs = new Dialogs();
         setScreen(new GameScreen(this));
-        fpsLogger = new FPSLogger();
+//        fpsLogger = new FPSLogger();
     }
 
     @Override
