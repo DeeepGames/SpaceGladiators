@@ -21,8 +21,7 @@ public class HealthWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.RED),
                 Assets.skin.newDrawable("white", Color.GREEN));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        healthBar = new ProgressBar(0, 100, 20, false, progressBarStyle);
-        healthBar.setValue(100);
+        healthBar = new ProgressBar(0, 100, 1, false, progressBarStyle);
         label = new Label("Health", Assets.skin);
         label.setAlignment(Align.center);
     }

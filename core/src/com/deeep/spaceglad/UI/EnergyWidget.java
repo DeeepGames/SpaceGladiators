@@ -15,7 +15,6 @@ public class EnergyWidget extends Actor {
     private ProgressBar energyBar;
     private ProgressBar.ProgressBarStyle progressBarStyle;
     private Label label;
-    private float addedValue;
 
     public EnergyWidget() {
         progressBarStyle = new ProgressBar.ProgressBarStyle(
@@ -59,9 +58,5 @@ public class EnergyWidget extends Actor {
 
     public void setValue(float value) {
         energyBar.setValue(value);
-    }
-
-    public float getValue() {
-        return energyBar.getValue();
     }
 }

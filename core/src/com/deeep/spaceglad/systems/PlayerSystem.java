@@ -102,14 +102,14 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void updateStatus(float delta) {
-        energyConsumed += delta;
-        if (energyConsumed >= 1) {
-            playerComponent.energy -= 1;
-            energyConsumed = 0;
-            gameUI.energyWidget.setValue(playerComponent.energy);
-        }
+//        energyConsumed += delta;
+//        if (energyConsumed >= 1) {
+//            playerComponent.energy -= 1;
+//            energyConsumed = 0;
+//            gameUI.energyWidget.setValue(playerComponent.energy);
+//        }
 //        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
-//        gameUI.healthWidget.setValue(playerComponent.health);
+        gameUI.healthWidget.setValue(playerComponent.health);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         //this is the player!
         player = entity;
         playerComponent = entity.getComponent(PlayerComponent.class);
-        gameUI.energyWidget.setValue(playerComponent.energy);
-        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
+//        gameUI.energyWidget.setValue(playerComponent.energy);
+//        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
         gameUI.healthWidget.setValue(playerComponent.health);
     }
 
@@ -127,9 +127,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     public void hit(float damage) {
-        /**
-         * gameUI.healthWidget.setValue(playerComponent.health -= damage);
-         */
+        gameUI.healthWidget.setValue(playerComponent.health -= damage);
     }
 
     public void grabEnergy(float energy) {
