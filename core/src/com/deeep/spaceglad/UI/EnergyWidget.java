@@ -22,8 +22,7 @@ public class EnergyWidget extends Actor {
                 Assets.skin.newDrawable("white", Color.OLIVE),
                 Assets.skin.newDrawable("white", Color.ORANGE));
         progressBarStyle.knobBefore = progressBarStyle.knob;
-        energyBar = new ProgressBar(0, 100, 2, false, progressBarStyle);
-        energyBar.setValue(100);
+        energyBar = new ProgressBar(0, 100, 1, false, progressBarStyle);
         label = new Label("Energy", Assets.skin);
         label.setAlignment(Align.center);
     }
@@ -59,11 +58,7 @@ public class EnergyWidget extends Actor {
     }
 
     public void setValue(float value) {
-        addedValue -= value;
-        if (addedValue > 1) {
-            energyBar.setValue(value);
-            addedValue = 100;
-        }
+        energyBar.setValue(value);
     }
 
     public float getValue() {

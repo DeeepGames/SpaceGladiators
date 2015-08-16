@@ -104,13 +104,12 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private void updateStatus(float delta) {
         energyConsumed += delta;
         if (energyConsumed >= 1) {
-            playerComponent.energy -= energyConsumed;
+            playerComponent.energy -= 1;
             energyConsumed = 0;
+            gameUI.energyWidget.setValue(playerComponent.energy);
         }
-
-        gameUI.energyWidget.setValue(playerComponent.energy);
-        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
-        gameUI.healthWidget.setValue(playerComponent.health);
+//        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
+//        gameUI.healthWidget.setValue(playerComponent.health);
     }
 
     @Override
