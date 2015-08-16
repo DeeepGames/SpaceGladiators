@@ -3,6 +3,7 @@ package com.deeep.spaceglad.managers;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -12,11 +13,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
-import com.deeep.spaceglad.systems.AISystem;
-import com.deeep.spaceglad.systems.CollisionSystem;
-import com.deeep.spaceglad.systems.MovementSystem;
-import com.deeep.spaceglad.systems.RenderSystem;
+import com.deeep.spaceglad.systems.*;
 
 /**
  * Created by Andreas on 8/3/2015.
@@ -24,20 +23,33 @@ import com.deeep.spaceglad.systems.RenderSystem;
 public class EntityManager {
 
     private Engine engine;
-    private MovementSystem ms;
+    private ModelBatch modelBatch;
+    private PerspectiveCamera perspectiveCamera;
+    private MovementSystem movementSystem;
 
-    public EntityManager(Engine engine, ModelBatch batch, Environment environment) {
-        this.engine = engine;
-        engine.addSystem(ms = new MovementSystem());
-        engine.addSystem(new RenderSystem(batch, environment));
-        engine.addSystem(new AISystem());
-        engine.addSystem(new CollisionSystem());
-        engine.addEntity(EntityFactory.createEnemy(0, 0, 0));
-        engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
+    public EntityManager(PerspectiveCamera perspectiveCamera, Environment environment, GameUI gameUI) {
+        this.perspectiveCamera = perspectiveCamera;
+        engine = new Engine();
+        modelBatch = new ModelBatch();
+        addSystems(gameUI, environment);
+        addEntities();
         createLevel();
     }
 
-    public void createLevel() {
+    private void addSystems(GameUI gameUI, Environment environment) {
+        engine.addSystem(new PlayerSystem(perspectiveCamera, gameUI));
+        engine.addSystem(movementSystem = new MovementSystem());
+        engine.addSystem(new RenderSystem(modelBatch, environment));
+        engine.addSystem(new AISystem());
+        engine.addSystem(new CollisionSystem());
+    }
+
+    private void addEntities() {
+        engine.addEntity(EntityFactory.createEnemy(0, 0, 0));
+        engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
+    }
+
+    private void createLevel() {
         Entity ground = new Entity();
         ground.add(new PositionComponent(0, -2.2f, 0))
                 .add(new VelocityComponent())
@@ -54,7 +66,6 @@ public class EntityManager {
         collisionComponent.collisionObject.setUserValue(2);
         ground.add(collisionComponent);
         engine.addEntity(ground);
-
         engine.addEntity(EntityFactory.createWall(25.25f, 10, 0, new Vector3(90, 0, 0)));
         engine.addEntity(EntityFactory.createWall(0, 10, 25.25f, new Vector3(0, 0, 0)));
         engine.addEntity(EntityFactory.createWall(-25.25f, 10, 0, new Vector3(90, 0, 0)));
@@ -63,8 +74,14 @@ public class EntityManager {
     }
 
     public void update(float delta) {
+        modelBatch.begin(perspectiveCamera);
         engine.update(delta);
-        if (Core.Pause) ms.setProcessing(false);
-        else ms.setProcessing(true);
+        modelBatch.end();
+        if (Core.Pause) movementSystem.setProcessing(false);
+        else movementSystem.setProcessing(true);
+    }
+
+    public void dispose() {
+        modelBatch.dispose();
     }
 }
