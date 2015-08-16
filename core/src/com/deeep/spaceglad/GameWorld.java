@@ -105,6 +105,8 @@ public class GameWorld {
             CollisionSystem.collisionWorld.debugDrawWorld();
             CollisionSystem.debugDrawer.end();
         }
+        if (Core.Pause) movementSystem.setProcessing(false);
+        else movementSystem.setProcessing(true);
     }
 
     public void resize(int width, int height) {
