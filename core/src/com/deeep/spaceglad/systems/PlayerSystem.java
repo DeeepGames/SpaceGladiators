@@ -51,14 +51,12 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void fire() {
-        engine.addEntity(EntityFactory.createBullet(
-                positionComponentMapper.get(player).position.x,
-                positionComponentMapper.get(player).position.y,
-                positionComponentMapper.get(player).position.z,
-                5f,
-                rotationComponentMapper.get(player).yaw,
-                rotationComponentMapper.get(player).pitch,
-                rotationComponentMapper.get(player).roll));
+        engine.addEntity(
+                EntityFactory.createBullet(
+                        positionComponentMapper.get(player).position.cpy(),
+                        camera.direction.cpy().scl(25)
+                )
+        );
     }
 
     private void updateMovement(float delta) {

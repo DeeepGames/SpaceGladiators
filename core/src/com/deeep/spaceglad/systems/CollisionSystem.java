@@ -31,7 +31,6 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         @Override
         public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
             if(colObj0.getUserValue() == 1 || colObj1.getUserValue() == 1){
-                System.out.println("one collide!");
                 //either of both is the player, lets find out which!
                 btCollisionObject player = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
                 btCollisionObject other  = (player == colObj1)? colObj0 : colObj1;
