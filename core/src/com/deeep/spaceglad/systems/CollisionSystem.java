@@ -46,7 +46,19 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                     case 4:
                         break;
                 }
-            }/*
+            }else if(colObj0.getUserValue() == 5 || colObj1.getUserValue() == 5){
+                //either of both is the player, lets find out which!
+                btCollisionObject enemy = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
+                btCollisionObject other  = (enemy == colObj1)? colObj0 : colObj1;
+                System.out.println("collide with: " + other.getUserValue());
+                switch (other.getUserValue()){
+                    case 4:
+                        System.out.println("collide bitch");
+                        break;
+                }
+            }
+
+            /*
             System.out.println(colObj0.getUserValue() + " " + colObj1.getUserValue());
             boolean isPlayer = entity_1.getComponent(PlayerComponent.class) != null || entity_2.getComponent(PlayerComponent.class) != null;
             boolean isBullet = entity_1.getComponent(BulletComponent.class) != null || entity_2.getComponent(BulletComponent.class) != null;
@@ -100,6 +112,9 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     @Override
     public void update(float deltaTime) {
         for(Entity entity : entities){
+            if(entity.getComponent(AIComponent.class) !=null){
+                System.out.println(entity.getComponent(AIComponent.class).state);
+            }
             cm.get(entity).collisionObject.setWorldTransform(mm.get(entity).instance.transform);
         }
         collisionWorld.performDiscreteCollisionDetection();

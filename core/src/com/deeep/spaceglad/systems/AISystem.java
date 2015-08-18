@@ -36,7 +36,7 @@ public class AISystem extends EntitySystem  implements EntityListener{
 
             rot.yaw = (float) (Math.atan2(dX, dZ));
 
-            mod.instance.transform.setFromEulerAngles((float) Math.toDegrees(rot.yaw), rot.pitch, rot.roll);
+            //mod.instance.transform.setFromEulerAngles((float) Math.toDegrees(rot.yaw), rot.pitch, rot.roll);
 
             if(aic.state != AIComponent.STATE.IDLE && !sta.frozen){
                 float speedX =vel.velocity.x +  (float) Math.sin(rot.yaw) * 0.5f;
@@ -48,7 +48,6 @@ public class AISystem extends EntitySystem  implements EntityListener{
                 vel.velocity.x = speedX;
                 vel.velocity.z = speedZ;
             }
-
         }
     }
 
