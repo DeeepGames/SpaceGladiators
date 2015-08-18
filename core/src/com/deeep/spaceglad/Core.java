@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.deeep.spaceglad.screens.MainMenuScreen;
+import com.deeep.spaceglad.screens.GameScreen;
 
 public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_WIDTH = 960;
@@ -18,7 +18,7 @@ public class Core extends ApplicationAdapter {
         new Settings().load();
         Gdx.input.setCatchBackKey(true);
 //        dialogs = new Dialogs();
-        setScreen(new MainMenuScreen(this));
+        setScreen(new GameScreen(this));
 //        fpsLogger = new FPSLogger();
     }
 

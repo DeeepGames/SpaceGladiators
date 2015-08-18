@@ -81,19 +81,19 @@ public class GameWorld {
                 .add(new RenderableComponent())
                 .add(new StatusComponent())
                 .add(new ModelComponent(
-                        new ModelBuilder().createBox(50f, 0.5f, 50f,
+                        new ModelBuilder().createBox(100f, 0.5f, 100f,
                                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
                                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(24.99f, 0.25f, 24.99f)));
+        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(49.99f, 0.25f, 49.99f)));
         collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.userData = ground;
         collisionComponent.collisionObject.setUserValue(2);
         ground.add(collisionComponent);
         engine.addEntity(ground);
-        engine.addEntity(EntityFactory.createWall(25.25f, 10, 0, new Vector3(90, 0, 0)));
-        engine.addEntity(EntityFactory.createWall(0, 10, 25.25f, new Vector3(0, 0, 0)));
-        engine.addEntity(EntityFactory.createWall(-25.25f, 10, 0, new Vector3(90, 0, 0)));
-        engine.addEntity(EntityFactory.createWall(0, 10, -25.25f, new Vector3(0, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(0, 10, 50.50f, 100, 25, 0.5f, new Vector3(0, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(-50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));
+        engine.addEntity(EntityFactory.createWall(0, 10, -50.50f, 100, 25, 0.5f, new Vector3(0, 0, 0)));
     }
 
     public void render(float delta) {
