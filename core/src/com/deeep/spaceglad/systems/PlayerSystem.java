@@ -22,8 +22,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private GameUI gameUI;
     private final Camera camera;
     private final Vector3 tempVector = new Vector3();
-    private float jumpPower = 2f;
-    private boolean jumping = false;
     private Engine engine;
     private ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
@@ -40,13 +38,14 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     public void addedToEngine(Engine engine) {
         engine.addEntityListener(Family.all(PlayerComponent.class).get(), this);
     }
+
     @Override
     public void update(float delta) {
         if (Core.Pause) return;
         if (player == null) return;
         updateMovement(delta);
         updateStatus(delta);
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) fire();
+        if (Gdx.input.justTouched()) fire();
     }
 
     private void fire() {
@@ -66,23 +65,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.direction.rotate(camera.up, deltaX);
         tempVector.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tempVector, deltaY);
-        //set velocity
-        if (jumping) {
-            if (jumpPower > 0) {
-                //jumpPower -= deltaTime * 4;
-                //velocityComponentMapper.get(player).velocity.y += deltaTime * 4;
-                velocityComponentMapper.get(player).velocity.y += jumpPower;
-                jumpPower -= jumpPower / 4;
-                if (jumpPower <= 0.25f) {
-                    jumpPower = 0;
-                }
-            } else {
-                jumping = false;
-            }
-        }
-        if (velocityComponentMapper.get(player).velocity.y > -5) {
+        if (velocityComponentMapper.get(player).velocity.y > -5)
             velocityComponentMapper.get(player).velocity.y -= delta * 1;
-        }
         velocityComponentMapper.get(player).velocity.z = 0;
         velocityComponentMapper.get(player).velocity.x = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -90,9 +74,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            velocityComponentMapper.get(player).velocity.z = 3;
-        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) velocityComponentMapper.get(player).velocity.z = 3;
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             tempVector.set(camera.direction).crs(camera.up).nor().scl(-13);
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
@@ -102,16 +84,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             tempVector.set(camera.direction).crs(camera.up).nor().scl(13);
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (jumpPower > 0) {
-                jumping = true;
-            } else {
-                if (jumping == false) {
-                    jumpPower = 2.5f;
-                    jumping = true;
-                }
-            }
         }
         camera.position.set(positionComponentMapper.get(player).position);
         camera.update(true);
