@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
+import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
 
 /**
@@ -18,7 +19,7 @@ public class GameScreen implements Screen {
         this.game = game;
         gameUI = new GameUI(game);
         gameWorld = new GameWorld(gameUI);
-        Core.Pause = false;
+        Settings.Pause = false;
         Gdx.input.setInputProcessor(gameUI.stage);
         Gdx.input.setCursorCatched(true);
     }
@@ -30,7 +31,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         /** Updates */
-        if (!Core.Pause) gameUI.update(delta);
+        if (!Settings.Pause) gameUI.update(delta);
         /** Draw */
         gameWorld.render(delta);
         gameUI.render();

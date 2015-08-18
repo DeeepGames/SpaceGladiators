@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
-import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.PositionComponent;
@@ -22,6 +22,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private GameUI gameUI;
     private final Camera camera;
     private final Vector3 tempVector = new Vector3();
+    //    private float jumpPower = 2f;
+//    private boolean jumping = false;
     private Engine engine;
     private ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
@@ -41,7 +43,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float delta) {
-        if (Core.Pause) return;
+        if (Settings.Pause) return;
         if (player == null) return;
         updateMovement(delta);
         updateStatus(delta);
@@ -65,6 +67,20 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.direction.rotate(camera.up, deltaX);
         tempVector.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tempVector, deltaY);
+//        //set velocity
+//        if (jumping) {
+//            if (jumpPower > 0) {
+//                //jumpPower -= deltaTime * 4;
+//                //velocityComponentMapper.get(player).velocity.y += deltaTime * 4;
+//                velocityComponentMapper.get(player).velocity.y += jumpPower;
+//                jumpPower -= jumpPower / 4;
+//                if (jumpPower <= 0.25f) {
+//                    jumpPower = 0;
+//                }
+//            } else {
+//                jumping = false;
+//            }
+//        }
         if (velocityComponentMapper.get(player).velocity.y > -5)
             velocityComponentMapper.get(player).velocity.y -= delta * 1;
         velocityComponentMapper.get(player).velocity.z = 0;
@@ -85,6 +101,16 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
         }
+//        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+//            if (jumpPower > 0) {
+//                jumping = true;
+//            } else {
+//                if (jumping == false) {
+//                    jumpPower = 2.5f;
+//                    jumping = true;
+//                }
+//            }
+//        }
         camera.position.set(positionComponentMapper.get(player).position);
         camera.update(true);
     }

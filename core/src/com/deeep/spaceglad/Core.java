@@ -4,21 +4,21 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.deeep.spaceglad.screens.GameScreen;
+import com.deeep.spaceglad.screens.MainMenuScreen;
 
 public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_WIDTH = 960;
     public static final float VIRTUAL_HEIGHT = 540;
-    public static boolean Pause;
     Screen screen;
 //    FPSLogger fpsLogger;
 
     @Override
     public void create() {
         new Assets();
+        new Settings().load();
         Gdx.input.setCatchBackKey(true);
 //        dialogs = new Dialogs();
-        setScreen(new GameScreen(this));
+        setScreen(new MainMenuScreen(this));
 //        fpsLogger = new FPSLogger();
     }
 
@@ -45,5 +45,10 @@ public class Core extends ApplicationAdapter {
             this.screen.show();
             this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         }
+    }
+
+    @Override
+    public void dispose() {
+        Settings.save();
     }
 }

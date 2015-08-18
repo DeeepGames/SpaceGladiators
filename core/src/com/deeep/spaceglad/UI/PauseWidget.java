@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.screens.GameScreen;
 
 /**
@@ -110,11 +111,11 @@ public class PauseWidget extends Actor {
         if (window.getStage() == null) {
             stage.addActor(window);
             Gdx.input.setCursorCatched(false);
-            Core.Pause = true;
+            Settings.Pause = true;
         } else {
             window.remove();
             Gdx.input.setCursorCatched(true);
-            Core.Pause = false;
+            Settings.Pause = false;
         }
     }
 }

@@ -61,11 +61,11 @@ public class GameWorld {
 
     private void addSystems(GameUI gameUI) {
         engine = new Engine();
+        engine.addSystem(new CollisionSystem());
         engine.addSystem(new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(movementSystem = new MovementSystem());
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(new AISystem());
-        engine.addSystem(new CollisionSystem());
     }
 
     private void addEntities() {
@@ -105,7 +105,7 @@ public class GameWorld {
             CollisionSystem.collisionWorld.debugDrawWorld();
             CollisionSystem.debugDrawer.end();
         }
-        if (Core.Pause) movementSystem.setProcessing(false);
+        if (Settings.Pause) movementSystem.setProcessing(false);
         else movementSystem.setProcessing(true);
     }
 
