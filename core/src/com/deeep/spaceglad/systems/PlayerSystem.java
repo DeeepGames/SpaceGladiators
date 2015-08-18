@@ -9,7 +9,9 @@ import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.PositionComponent;
+import com.deeep.spaceglad.components.RotationComponent;
 import com.deeep.spaceglad.components.VelocityComponent;
+import com.deeep.spaceglad.managers.EntityFactory;
 
 /**
  * Created by Elmar on 8-8-2015.
@@ -22,20 +24,22 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private final Vector3 tempVector = new Vector3();
     private float jumpPower = 2f;
     private boolean jumping = false;
+    private Engine engine;
     private ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
     private ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
+    private ComponentMapper<RotationComponent> rotationComponentMapper = ComponentMapper.getFor(RotationComponent.class);
     private float energyConsumed;
 
-    public PlayerSystem(Camera camera, GameUI gameUI) {
+    public PlayerSystem(Camera camera, GameUI gameUI, Engine engine) {
         this.camera = camera;
         this.gameUI = gameUI;
+        this.engine = engine;
     }
 
     @Override
     public void addedToEngine(Engine engine) {
         engine.addEntityListener(Family.all(PlayerComponent.class).get(), this);
     }
-
     @Override
     public void update(float delta) {
         if (Core.Pause) return;
@@ -46,7 +50,14 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void fire() {
-
+        engine.addEntity(EntityFactory.createBullet(
+                positionComponentMapper.get(player).position.x,
+                positionComponentMapper.get(player).position.y,
+                positionComponentMapper.get(player).position.z,
+                5f,
+                rotationComponentMapper.get(player).yaw,
+                rotationComponentMapper.get(player).pitch,
+                rotationComponentMapper.get(player).roll));
     }
 
     private void updateMovement(float delta) {

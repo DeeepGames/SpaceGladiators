@@ -50,15 +50,15 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createBullet(float x, float y, float z) {
+    public static Entity createBullet(float x, float y, float z, float velocity, float yaw, float pitch, float roll) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
         entity.add(new VelocityComponent());
-        entity.add(new RotationComponent(0, 0, 0));
+        entity.add(new RotationComponent(yaw, pitch, roll));
         entity.add(new StatusComponent());
         entity.add(new RenderableComponent());
         entity.add(new BulletComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createBox(0.5f, 0.5f, 0.5f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        entity.add(new ModelComponent(new ModelBuilder().createBox(0.05f, 0.05f, 0.05f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
 
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.5f, 0.5f));
         collisionComponent.collisionObject.userData = entity;

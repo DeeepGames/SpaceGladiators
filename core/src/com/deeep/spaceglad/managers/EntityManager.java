@@ -37,7 +37,7 @@ public class EntityManager {
     }
 
     private void addSystems(GameUI gameUI, Environment environment) {
-        engine.addSystem(new PlayerSystem(perspectiveCamera, gameUI));
+        engine.addSystem(new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(movementSystem = new MovementSystem());
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(new AISystem());
