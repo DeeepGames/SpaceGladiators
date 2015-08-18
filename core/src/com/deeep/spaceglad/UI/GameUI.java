@@ -1,7 +1,10 @@
 package com.deeep.spaceglad.UI;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 
 /**
@@ -11,11 +14,12 @@ public class GameUI {
     private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-//    public OxygenWidget oxygenWidget;
+    //    public OxygenWidget oxygenWidget;
 //    public EnergyWidget energyWidget;
     private ScoreWidget scoreWidget;
     private PauseWidget pauseWidget;
     private GameOverWidget gameOverWidget;
+    private Label fpsLabel;
 
     public GameUI(Core game) {
         this.game = game;
@@ -31,6 +35,7 @@ public class GameUI {
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
         gameOverWidget = new GameOverWidget();
+        fpsLabel = new Label("", Assets.skin);
     }
 
     public void configureWidgets() {
@@ -46,6 +51,7 @@ public class GameUI {
         pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth(), Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
         gameOverWidget.setSize(140, 25);
         gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
+        fpsLabel.setPosition(0, 10);
 
         stage.addActor(healthWidget);
 //        stage.addActor(oxygenWidget);
@@ -54,6 +60,7 @@ public class GameUI {
         stage.addActor(pauseWidget);
         stage.setKeyboardFocus(pauseWidget);
         stage.addActor(gameOverWidget);
+        stage.addActor(fpsLabel);
     }
 
     public void update(float delta) {
@@ -61,6 +68,7 @@ public class GameUI {
     }
 
     public void render() {
+        fpsLabel.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         stage.draw();
     }
 

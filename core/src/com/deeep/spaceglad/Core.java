@@ -16,7 +16,6 @@ public class Core extends ApplicationAdapter {
         new Assets();
         new Settings().load();
         Gdx.input.setCatchBackKey(true);
-//        dialogs = new Dialogs();
         setScreen(new GameScreen(this));
     }
 
@@ -25,7 +24,6 @@ public class Core extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         screen.render(Gdx.graphics.getDeltaTime());
-        System.out.println(Gdx.graphics.getFramesPerSecond());
     }
 
     @Override
