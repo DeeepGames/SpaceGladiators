@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.deeep.spaceglad.Logger;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -32,18 +33,23 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
             Entity entity_1 = (Entity) colObj0.userData;
             Entity entity_2 = (Entity) colObj1.userData;
 
-            boolean e1IsPlayer = false;
-            if(entity_1.getComponent(PlayerComponent.class) != null){
-                if(colObj1.getUserValue() == 2){ // ground
-                    pm.get(entity_1).position.y = pm.get(entity_1).prevPosition.y;
-                    vm.get(entity_1).velocity.y = Math.max(vm.get(entity_1).velocity.y,0);
-                } else   if(colObj1.getUserValue() == 3) { // wall
-                    pm.get(entity_1).position.x = pm.get(entity_1).prevPosition.x;
-                    pm.get(entity_1).position.z = pm.get(entity_1).prevPosition.z;
-                }
-            }else if (entity_2.getComponent(PlayerComponent.class) != null){
-                //velocityComponentMapper.get(entity_2).velocity.y = 0;
+            boolean isPlayer = entity_1.getComponent(PlayerComponent.class) != null || entity_2.getComponent(PlayerComponent.class) != null;
+            boolean isBullet = entity_1.getComponent(BulletComponent.class) != null || entity_2.getComponent(BulletComponent.class) != null;
+            boolean isEnemy = entity_1.getComponent(AIComponent.class) != null || entity_2.getComponent(AIComponent.class) != null;
+            if(isPlayer && isEnemy){
+                //TODO Add player damage and enemy knockback here
+                //Logger.log(2, 0, "User was struck!");
             }
+            if(isEnemy && isBullet){
+                float damage = 0;
+                //TODO Elmar can probably optimize this with his smart brain
+                if(entity_1.getComponent(BulletComponent.class) != null)
+                    damage = entity_1.getComponent(BulletComponent.class).damage;
+                else
+                    damage = entity_2.getComponent(BulletComponent.class).damage;
+                Logger.log(2, 0, "Enemy was struck for " + damage);
+            }
+
             return true;
         }
     }
@@ -53,7 +59,8 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         entities = engine.getEntitiesFor(Family.all(PositionComponent.class, CollisionComponent.class, ModelComponent.class).get());
         long before = System.nanoTime();
         engine.addEntityListener(Family.one(CollisionComponent.class).get(), this);
-        System.out.println(System.nanoTime() - before);
+        // Please use the Logger class instead EleGiggle
+        //System.out.println(System.nanoTime() - before);
     }
 
     public CollisionSystem() {

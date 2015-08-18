@@ -1,11 +1,11 @@
 package com.deeep.spaceglad.components;
 
-import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.ashley.core.Component;
 
 /**
  * Created by Andreas on 8/12/2015.
  */
-public class BulletComponent extends Bullet{
+public class BulletComponent extends Component{
     public boolean isFriendly;
     public float damage;
 

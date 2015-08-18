@@ -33,15 +33,5 @@ public class BulletSystem extends EntitySystem {
     }
 
     public void update(float delta){
-        for(Entity e: entities){
-            StatusComponent sta =  e.getComponent(StatusComponent.class);
-            if(!sta.enabled | sta.frozen) continue;
-            PositionComponent pos = e.getComponent(PositionComponent.class);
-            VelocityComponent vel =  e.getComponent(VelocityComponent.class);
-            RotationComponent rot =  e.getComponent(RotationComponent.class);
-
-
-
-        }
     }
 }

@@ -14,6 +14,7 @@ public class PositionComponent extends Component{
         this.position = new Vector3(x,y,z);
         this.prevPosition = new Vector3(x,y,z);
     }
+
     public PositionComponent(Vector3 position){
         this.position = position;
         this.prevPosition = new Vector3(position);

@@ -42,6 +42,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (player == null) return;
         updateMovement(delta);
         updateStatus(delta);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) fire();
+    }
+
+    private void fire() {
+
     }
 
     private void updateMovement(float delta) {
