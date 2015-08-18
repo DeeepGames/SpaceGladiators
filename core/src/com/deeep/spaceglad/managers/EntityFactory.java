@@ -60,7 +60,7 @@ public class EntityFactory {
         entity.add(new BulletComponent());
         entity.add(new ModelComponent(new ModelBuilder().createBox(0.05f, 0.05f, 0.05f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
 
-        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.5f, 0.5f));
+        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.05f, 0.05f));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         entity.add(collisionComponent);
