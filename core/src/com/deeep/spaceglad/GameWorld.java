@@ -1,21 +1,14 @@
 package com.deeep.spaceglad;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
-import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.*;
 
@@ -76,22 +69,7 @@ public class GameWorld {
     }
 
     private void createLevel() {
-        Entity ground = new Entity();
-        ground.add(new PositionComponent(0, -2.2f, 0))
-                .add(new VelocityComponent())
-                .add(new RotationComponent(0, 0, 0))
-                .add(new RenderableComponent())
-                .add(new StatusComponent())
-                .add(new ModelComponent(
-                        new ModelBuilder().createBox(100f, 0.5f, 100f,
-                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
-                                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(49.99f, 0.25f, 49.99f)));
-        collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
-        collisionComponent.collisionObject.userData = ground;
-        collisionComponent.collisionObject.setUserValue(2);
-        ground.add(collisionComponent);
-        engine.addEntity(ground);
+        engine.addEntity(EntityFactory.createGround());
         engine.addEntity(EntityFactory.createWall(50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));
         engine.addEntity(EntityFactory.createWall(0, 10, 50.50f, 100, 25, 0.5f, new Vector3(0, 0, 0)));
         engine.addEntity(EntityFactory.createWall(-50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));

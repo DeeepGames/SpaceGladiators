@@ -22,8 +22,10 @@ public class EntityFactory {
         entity.add(new RotationComponent(orientation));
         entity.add(new RenderableComponent());
         entity.add(new StatusComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createBox(sizeX, sizeY, sizeZ,
-                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        entity.add(new ModelComponent(
+                new ModelBuilder().createBox(sizeX, sizeY, sizeZ,
+                        new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(sizeX / 2, sizeY / 2, sizeZ / 2)));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
@@ -40,7 +42,10 @@ public class EntityFactory {
         entity.add(new StatusComponent());
         entity.add(new AIComponent(AIComponent.STATE.HUNTING));
         entity.add(new RenderableComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createBox(4f, 4f, 4f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        entity.add(new ModelComponent(
+                new ModelBuilder().createBox(4f, 4f, 4f,
+                        new Material(ColorAttribute.createDiffuse(Color.RED)),
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(2f, 2f, 2f)));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
@@ -49,7 +54,7 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createBullet(Vector3 position, Vector3 velocity){
+    public static Entity createBullet(Vector3 position, Vector3 velocity) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(position));
         entity.add(new VelocityComponent(velocity));
@@ -57,7 +62,10 @@ public class EntityFactory {
         entity.add(new StatusComponent());
         entity.add(new RenderableComponent());
         entity.add(new BulletComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createBox(0.5f, 0.5f, 0.5f, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        entity.add(new ModelComponent(
+                new ModelBuilder().createBox(0.5f, 0.5f, 0.5f,
+                        new Material(ColorAttribute.createDiffuse(Color.BLUE)),
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.05f, 0.05f));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
@@ -73,14 +81,35 @@ public class EntityFactory {
         entity.add(new RotationComponent(0, 0, 0));
         entity.add(new StatusComponent());
         entity.add(new RenderableComponent());
-        entity.add(new ModelComponent(new ModelBuilder().createCapsule(1, 4, 16, new Material(ColorAttribute.createDiffuse(Color.GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        entity.add(new ModelComponent(
+                new ModelBuilder().createCapsule(1, 4, 16,
+                        new Material(ColorAttribute.createDiffuse(Color.GRAY)),
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setUserValue(1);
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
-
         entity.add(collisionComponent);
         return entity;
+    }
+
+    public static Entity createGround() {
+        Entity ground = new Entity();
+        ground.add(new PositionComponent(0, -2.2f, 0))
+                .add(new VelocityComponent())
+                .add(new RotationComponent(0, 0, 0))
+                .add(new RenderableComponent())
+                .add(new StatusComponent())
+                .add(new ModelComponent(
+                        new ModelBuilder().createBox(100f, 0.5f, 100f,
+                                new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+                                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(49.99f, 0.25f, 49.99f)));
+        collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
+        collisionComponent.collisionObject.userData = ground;
+        collisionComponent.collisionObject.setUserValue(2);
+        ground.add(collisionComponent);
+        return ground;
     }
 }
