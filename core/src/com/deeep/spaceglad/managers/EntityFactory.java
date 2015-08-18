@@ -44,7 +44,7 @@ public class EntityFactory {
         CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(2f, 2f, 2f)));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
-        collisionComponent.collisionObject.setUserValue(3);
+        collisionComponent.collisionObject.setUserValue(4);
         entity.add(collisionComponent);
         return entity;
     }
@@ -61,6 +61,7 @@ public class EntityFactory {
 
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.05f, 0.05f));
         collisionComponent.collisionObject.userData = entity;
+        collisionComponent.collisionObject.setUserValue(5);
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         entity.add(collisionComponent);
 
@@ -78,6 +79,7 @@ public class EntityFactory {
         entity.add(new PlayerComponent());
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2));
         collisionComponent.collisionObject.userData = entity;
+        collisionComponent.collisionObject.setUserValue(1);
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
 
         entity.add(collisionComponent);

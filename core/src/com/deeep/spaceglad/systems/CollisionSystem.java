@@ -30,9 +30,25 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     class MyContactListener extends ContactListener {
         @Override
         public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
-            Entity entity_1 = (Entity) colObj0.userData;
-            Entity entity_2 = (Entity) colObj1.userData;
-
+            if(colObj0.getUserValue() == 1 || colObj1.getUserValue() == 1){
+                System.out.println("one collide!");
+                //either of both is the player, lets find out which!
+                btCollisionObject player = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
+                btCollisionObject other  = (player == colObj1)? colObj0 : colObj1;
+                switch (other.getUserValue()){
+                    case 2:
+                        pm.get((Entity)player.userData).position.y = pm.get((Entity)player.userData).prevPosition.y;
+                        vm.get((Entity)player.userData).velocity.y = Math.max(vm.get((Entity)player.userData).velocity.y,0);
+                        break;
+                    case 3:
+                        pm.get((Entity)player.userData).position.x = pm.get((Entity)player.userData).prevPosition.x;
+                        pm.get((Entity)player.userData).position.z = pm.get((Entity)player.userData).prevPosition.z;
+                        break;
+                    case 4:
+                        break;
+                }
+            }/*
+            System.out.println(colObj0.getUserValue() + " " + colObj1.getUserValue());
             boolean isPlayer = entity_1.getComponent(PlayerComponent.class) != null || entity_2.getComponent(PlayerComponent.class) != null;
             boolean isBullet = entity_1.getComponent(BulletComponent.class) != null || entity_2.getComponent(BulletComponent.class) != null;
             boolean isEnemy = entity_1.getComponent(AIComponent.class) != null || entity_2.getComponent(AIComponent.class) != null;
@@ -48,7 +64,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                 else
                     damage = entity_2.getComponent(BulletComponent.class).damage;
                 Logger.log(2, 0, "Enemy was struck for " + damage);
-            }
+            }*/
 
             return true;
         }
