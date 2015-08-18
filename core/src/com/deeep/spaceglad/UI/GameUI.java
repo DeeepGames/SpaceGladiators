@@ -11,8 +11,8 @@ public class GameUI {
     private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-    public OxygenWidget oxygenWidget;
-    public EnergyWidget energyWidget;
+//    public OxygenWidget oxygenWidget;
+//    public EnergyWidget energyWidget;
     private ScoreWidget scoreWidget;
     private PauseWidget pauseWidget;
     private GameOverWidget gameOverWidget;
@@ -26,8 +26,8 @@ public class GameUI {
 
     public void setWidgets() {
         healthWidget = new HealthWidget();
-        oxygenWidget = new OxygenWidget();
-        energyWidget = new EnergyWidget();
+//        oxygenWidget = new OxygenWidget();
+//        energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
         gameOverWidget = new GameOverWidget();
@@ -36,10 +36,10 @@ public class GameUI {
     public void configureWidgets() {
         healthWidget.setSize(140, 25);
         healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth() / 2, 0);
-        oxygenWidget.setSize(140, 25);
-        oxygenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxygenWidget.getWidth() / 2, 30);
-        energyWidget.setSize(140, 25);
-        energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
+//        oxygenWidget.setSize(140, 25);
+//        oxygenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxygenWidget.getWidth() / 2, 30);
+//        energyWidget.setSize(140, 25);
+//        energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
         scoreWidget.setSize(140, 25);
         scoreWidget.setPosition(0, Core.VIRTUAL_HEIGHT - scoreWidget.getHeight());
         pauseWidget.setSize(64, 64);
@@ -48,8 +48,8 @@ public class GameUI {
         gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
 
         stage.addActor(healthWidget);
-        stage.addActor(oxygenWidget);
-        stage.addActor(energyWidget);
+//        stage.addActor(oxygenWidget);
+//        stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
         stage.addActor(pauseWidget);
         stage.setKeyboardFocus(pauseWidget);
