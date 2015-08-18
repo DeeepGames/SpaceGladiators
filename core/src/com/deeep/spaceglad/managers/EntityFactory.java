@@ -53,7 +53,7 @@ public class EntityFactory {
     public static Entity createBullet(float x, float y, float z, float velocity, float yaw, float pitch, float roll) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
-        entity.add(new VelocityComponent());
+        entity.add(new VelocityComponent(new Vector3(velocity * yaw, velocity * pitch, velocity * roll)));
         entity.add(new RotationComponent(yaw, pitch, roll));
         entity.add(new StatusComponent());
         entity.add(new RenderableComponent());
