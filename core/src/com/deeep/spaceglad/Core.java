@@ -10,7 +10,6 @@ public class Core extends ApplicationAdapter {
     public static final float VIRTUAL_WIDTH = 960;
     public static final float VIRTUAL_HEIGHT = 540;
     Screen screen;
-//    FPSLogger fpsLogger;
 
     @Override
     public void create() {
@@ -19,7 +18,6 @@ public class Core extends ApplicationAdapter {
         Gdx.input.setCatchBackKey(true);
 //        dialogs = new Dialogs();
         setScreen(new GameScreen(this));
-//        fpsLogger = new FPSLogger();
     }
 
     @Override
@@ -27,7 +25,7 @@ public class Core extends ApplicationAdapter {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         screen.render(Gdx.graphics.getDeltaTime());
-//        fpsLogger.log();
+        System.out.println(Gdx.graphics.getFramesPerSecond());
     }
 
     @Override
