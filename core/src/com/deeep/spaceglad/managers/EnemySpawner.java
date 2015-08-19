@@ -11,7 +11,7 @@ import java.util.Random;
  */
 public class EnemySpawner {
 
-    private static float spawnTimer = 2F;
+    private static float spawnTimer = 1F;
 
     private float timer = 0F;
     private Engine engine;
@@ -32,8 +32,8 @@ public class EnemySpawner {
 
         if(timer >= spawnTimer){
             timer = 0;
-            float x = random.nextInt(40) - 20;
-            float z = random.nextInt(40) - 20;
+            float x = random.nextInt(80) - 40;
+            float z = random.nextInt(80) - 40;
             float y = 0;
             Logger.log(2, 0, "Enemy added at (" + x + ", " + y + ", " + z + ")");
             addEnemy(x, y, z);
