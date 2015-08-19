@@ -141,14 +141,4 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     @Override
     public void entityRemoved(Entity entity) {
     }
-
-    public void hit(float damage) {
-        gameUI.healthWidget.setValue(playerComponent.health -= damage);
-    }
-
-    public void grabEnergy(float energy) {
-        /**
-         * gameUI.energyWidget.setValue(playerComponent.energy += energy);
-         */
-    }
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
-import com.deeep.spaceglad.Logger;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -31,29 +30,29 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     class MyContactListener extends ContactListener {
         @Override
         public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
-            if(colObj0.getUserValue() == 1 || colObj1.getUserValue() == 1){
+            if (colObj0.getUserValue() == 1 || colObj1.getUserValue() == 1) {
                 //either of both is the player, lets find out which!
-                btCollisionObject player = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
-                btCollisionObject other  = (player == colObj1)? colObj0 : colObj1;
-                switch (other.getUserValue()){
+                btCollisionObject player = (colObj0.getUserValue() == 1) ? colObj0 : colObj1;
+                btCollisionObject other = (player == colObj1) ? colObj0 : colObj1;
+                switch (other.getUserValue()) {
                     case 2:
-                        pm.get((Entity)player.userData).position.y = pm.get((Entity)player.userData).prevPosition.y;
-                        vm.get((Entity)player.userData).velocity.y = Math.max(vm.get((Entity)player.userData).velocity.y,0);
+                        pm.get((Entity) player.userData).position.y = pm.get((Entity) player.userData).prevPosition.y;
+                        vm.get((Entity) player.userData).velocity.y = Math.max(vm.get((Entity) player.userData).velocity.y, 0);
                         break;
                     case 3:
-                        pm.get((Entity)player.userData).position.x = pm.get((Entity)player.userData).prevPosition.x;
-                        pm.get((Entity)player.userData).position.z = pm.get((Entity)player.userData).prevPosition.z;
+                        pm.get((Entity) player.userData).position.x = pm.get((Entity) player.userData).prevPosition.x;
+                        pm.get((Entity) player.userData).position.z = pm.get((Entity) player.userData).prevPosition.z;
                         break;
                     case 4:
-
+                        ((Entity) player.userData).getComponent(PlayerComponent.class).hit();
                         break;
                 }
-            }else if(colObj0.getUserValue() == 5 || colObj1.getUserValue() == 5){
+            } else if (colObj0.getUserValue() == 5 || colObj1.getUserValue() == 5) {
                 //either of both is the player, lets find out which!
-                btCollisionObject bullet = (colObj0.getUserValue() == 5)? colObj0 : colObj1;
-                btCollisionObject other  = (bullet == colObj1)? colObj0 : colObj1;
+                btCollisionObject bullet = (colObj0.getUserValue() == 5) ? colObj0 : colObj1;
+                btCollisionObject other = (bullet == colObj1) ? colObj0 : colObj1;
                 collisionWorld.removeCollisionObject(bullet);
-                switch (other.getUserValue()){
+                switch (other.getUserValue()) {
                     case 4:
                         collisionWorld.removeCollisionObject(other);
                         engine.removeEntity((Entity) other.userData);
@@ -93,8 +92,8 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float deltaTime) {
-        for(Entity entity : entities){
-            cm.get(entity).collisionObject.setWorldTransform(mm.get(entity).instance.transform);
+        for (int i = 0; i < entities.size(); i++) {
+            cm.get(entities.get(i)).collisionObject.setWorldTransform(mm.get(entities.get(i)).instance.transform);
         }
         collisionWorld.performDiscreteCollisionDetection();
     }

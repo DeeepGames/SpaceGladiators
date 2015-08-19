@@ -62,9 +62,9 @@ public class GameWorld {
     }
 
     private void addEntities() {
-        engine.addEntity(EntityFactory.createEnemy(2, 0, 0));
-        engine.addEntity(EntityFactory.createEnemy(4, 0, 0));
-        engine.addEntity(EntityFactory.createEnemy(-2, 0, 0));
+        engine.addEntity(EntityFactory.createEnemy(12, 0, 10));
+        engine.addEntity(EntityFactory.createEnemy(14, 0, 10));
+        engine.addEntity(EntityFactory.createEnemy(-12, 0, 10));
         engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
     }
 
