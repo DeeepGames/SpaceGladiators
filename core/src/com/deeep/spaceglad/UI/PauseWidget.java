@@ -23,7 +23,7 @@ public class PauseWidget extends Actor {
     private Core game;
     private Image image;
     private Window window;
-    private TextButton dialogTitle, restartButton, quitButton;
+    private TextButton closeDialog, restartButton, quitButton;
     private Stage stage;
 
     public PauseWidget(Core game, Stage stage) {
@@ -37,15 +37,15 @@ public class PauseWidget extends Actor {
     private void setWidgets() {
         image = new Image(new Texture(Gdx.files.internal("data/pauseButton0.png")));
         window = new Window("Pause", Assets.skin);
+        closeDialog = new TextButton("X", Assets.skin);
+        restartButton = new TextButton("Restart", Assets.skin);
+        quitButton = new TextButton("Quit", Assets.skin);
     }
 
     private void configureWidgets() {
         stage.addActor(image);
-        dialogTitle = new TextButton("X", Assets.skin);
-        window.getTitleTable().add(dialogTitle).height(window.getPadTop());
-        restartButton = new TextButton("Restart", Assets.skin);
+        window.getTitleTable().add(closeDialog).height(window.getPadTop());
         window.add(restartButton);
-        quitButton = new TextButton("Quit", Assets.skin);
         window.add(quitButton);
     }
 
@@ -66,7 +66,7 @@ public class PauseWidget extends Actor {
                 return false;
             }
         });
-        dialogTitle.addListener(new ClickListener() {
+        closeDialog.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent inputEvent, float x, float y) {
                 handleUpdates();
@@ -86,6 +86,18 @@ public class PauseWidget extends Actor {
         });
     }
 
+    private void handleUpdates() {
+        if (window.getStage() == null) {
+            stage.addActor(window);
+            Gdx.input.setCursorCatched(false);
+            Settings.Pause = true;
+        } else {
+            window.remove();
+            Gdx.input.setCursorCatched(true);
+            Settings.Pause = false;
+        }
+    }
+
     @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
@@ -98,17 +110,5 @@ public class PauseWidget extends Actor {
         super.setSize(width, height);
         image.setSize(width, height);
         window.setSize(width * 2, height * 2);
-    }
-
-    private void handleUpdates() {
-        if (window.getStage() == null) {
-            stage.addActor(window);
-            Gdx.input.setCursorCatched(false);
-            Settings.Pause = true;
-        } else {
-            window.remove();
-            Gdx.input.setCursorCatched(true);
-            Settings.Pause = false;
-        }
     }
 }
