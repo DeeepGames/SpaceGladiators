@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.utils.Align;
 import com.deeep.spaceglad.Assets;
+import com.deeep.spaceglad.Settings;
 
 /**
  * Created by scanevaro on 04/08/2015.
@@ -28,6 +29,7 @@ public class EnergyWidget extends Actor {
 
     @Override
     public void act(float delta) {
+        if (Settings.Pause) return;
         energyBar.act(delta);
         label.act(delta);
     }

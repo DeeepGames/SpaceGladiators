@@ -43,20 +43,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float delta) {
-        if (Settings.Pause) return;
         if (player == null) return;
         updateMovement(delta);
         updateStatus(delta);
         if (Gdx.input.isTouched()) fire();
-    }
-
-    private void fire() {
-        engine.addEntity(
-                EntityFactory.createBullet(
-                        positionComponentMapper.get(player).position.cpy(),
-                        camera.direction.cpy().scl(25)
-                )
-        );
+        checkGameOver();
     }
 
     private void updateMovement(float delta) {
@@ -88,7 +79,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)){
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             tempVector.set(camera.direction).nor().scl(-13);
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
@@ -126,6 +117,23 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 //        }
 //        gameUI.oxygenWidget.setValue(playerComponent.oxygen);
         gameUI.healthWidget.setValue(playerComponent.health);
+    }
+
+
+    private void fire() {
+        engine.addEntity(
+                EntityFactory.createBullet(
+                        positionComponentMapper.get(player).position.cpy(),
+                        camera.direction.cpy().scl(25)
+                )
+        );
+    }
+
+    private void checkGameOver() {
+        if (playerComponent.health <= 0 && !Settings.Pause) {
+            Settings.Pause = true;
+            gameUI.gameOverWidget.gameOver();
+        }
     }
 
     @Override

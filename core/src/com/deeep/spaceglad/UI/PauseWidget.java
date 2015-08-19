@@ -3,7 +3,6 @@ package com.deeep.spaceglad.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -21,23 +20,29 @@ import com.deeep.spaceglad.screens.GameScreen;
  * Created by scanevaro on 04/08/2015.
  */
 public class PauseWidget extends Actor {
-    Core game;
-    Image image;
-    Window window;
-    TextButton dialogTitle, restartButton, quitButton;
-    Stage stage;
+    private Core game;
+    private Image image;
+    private Window window;
+    private TextButton dialogTitle, restartButton, quitButton;
+    private Stage stage;
 
     public PauseWidget(Core game, Stage stage) {
         this.game = game;
         this.stage = stage;
         setWidgets();
+        configureWidgets();
         setListeners();
     }
 
     private void setWidgets() {
         image = new Image(new Texture(Gdx.files.internal("data/pauseButton0.png")));
         window = new Window("Pause", Assets.skin);
-        window.getTitleTable().add(dialogTitle = new TextButton("X", Assets.skin)).height(window.getPadTop());
+    }
+
+    private void configureWidgets() {
+        stage.addActor(image);
+        dialogTitle = new TextButton("X", Assets.skin);
+        window.getTitleTable().add(dialogTitle).height(window.getPadTop());
         restartButton = new TextButton("Restart", Assets.skin);
         window.add(restartButton);
         quitButton = new TextButton("Quit", Assets.skin);
@@ -82,18 +87,6 @@ public class PauseWidget extends Actor {
     }
 
     @Override
-    public void act(float delta) {
-        image.act(delta);
-        window.act(delta);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        image.draw(batch, parentAlpha);
-        if (window.getStage() != null) window.draw(batch, parentAlpha);
-    }
-
-    @Override
     public void setPosition(float x, float y) {
         super.setPosition(x, y);
         image.setPosition(x, y);
@@ -107,7 +100,7 @@ public class PauseWidget extends Actor {
         window.setSize(width * 2, height * 2);
     }
 
-    public void handleUpdates() {
+    private void handleUpdates() {
         if (window.getStage() == null) {
             stage.addActor(window);
             Gdx.input.setCursorCatched(false);

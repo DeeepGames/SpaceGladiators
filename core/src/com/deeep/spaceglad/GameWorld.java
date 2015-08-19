@@ -22,6 +22,8 @@ public class GameWorld {
     private Engine engine;
     private ModelBatch modelBatch;
     private MovementSystem movementSystem;
+    private PlayerSystem playerSystem;
+    private CollisionSystem collisionSystem;
 
     public GameWorld(GameUI gameUI) {
         initPersCamera();
@@ -54,8 +56,8 @@ public class GameWorld {
 
     private void addSystems(GameUI gameUI) {
         engine = new Engine();
-        engine.addSystem(new CollisionSystem());
-        engine.addSystem(new PlayerSystem(perspectiveCamera, gameUI, engine));
+        engine.addSystem(collisionSystem = new CollisionSystem());
+        engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(movementSystem = new MovementSystem());
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(new AISystem());
@@ -85,8 +87,19 @@ public class GameWorld {
             CollisionSystem.collisionWorld.debugDrawWorld();
             CollisionSystem.debugDrawer.end();*/
         }
-        if (Settings.Pause) movementSystem.setProcessing(false);
-        else movementSystem.setProcessing(true);
+        checkPause();
+    }
+
+    private void checkPause() {
+        if (Settings.Pause) {
+            movementSystem.setProcessing(false);
+            playerSystem.setProcessing(false);
+            collisionSystem.setProcessing(false);
+        } else {
+            movementSystem.setProcessing(true);
+            playerSystem.setProcessing(true);
+            collisionSystem.setProcessing(true);
+        }
     }
 
     public void resize(int width, int height) {

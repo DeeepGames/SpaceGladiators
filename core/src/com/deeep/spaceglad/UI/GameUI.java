@@ -14,11 +14,11 @@ public class GameUI {
     private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-    //    public OxygenWidget oxygenWidget;
-//    public EnergyWidget energyWidget;
+    //  public OxygenWidget oxygenWidget;
+//  public EnergyWidget energyWidget;
     private ScoreWidget scoreWidget;
     private PauseWidget pauseWidget;
-    private GameOverWidget gameOverWidget;
+    public GameOverWidget gameOverWidget;
     private Label fpsLabel;
 
     public GameUI(Core game) {
@@ -30,45 +30,43 @@ public class GameUI {
 
     public void setWidgets() {
         healthWidget = new HealthWidget();
-//        oxygenWidget = new OxygenWidget();
-//        energyWidget = new EnergyWidget();
+//      oxygenWidget = new OxygenWidget();
+//      energyWidget = new EnergyWidget();
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
-        gameOverWidget = new GameOverWidget();
+        gameOverWidget = new GameOverWidget(game, stage);
         fpsLabel = new Label("", Assets.skin);
     }
 
     public void configureWidgets() {
         healthWidget.setSize(140, 25);
         healthWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - healthWidget.getWidth() / 2, 0);
-//        oxygenWidget.setSize(140, 25);
-//        oxygenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxygenWidget.getWidth() / 2, 30);
-//        energyWidget.setSize(140, 25);
-//        energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
+//      oxygenWidget.setSize(140, 25);
+//      oxygenWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - oxygenWidget.getWidth() / 2, 30);
+//      energyWidget.setSize(140, 25);
+//      energyWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - energyWidget.getWidth() / 2, 60);
         scoreWidget.setSize(140, 25);
         scoreWidget.setPosition(0, Core.VIRTUAL_HEIGHT - scoreWidget.getHeight());
         pauseWidget.setSize(64, 64);
         pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth(), Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
-        gameOverWidget.setSize(140, 25);
-        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - gameOverWidget.getWidth() / 2, Core.VIRTUAL_HEIGHT / 2 - gameOverWidget.getHeight() / 2);
+        gameOverWidget.setSize(280, 100);
+        gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - 280 / 2, Core.VIRTUAL_HEIGHT / 2);
         fpsLabel.setPosition(0, 10);
 
         stage.addActor(healthWidget);
-//        stage.addActor(oxygenWidget);
-//        stage.addActor(energyWidget);
+//      stage.addActor(oxygenWidget);
+//      stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
-        stage.addActor(pauseWidget);
         stage.setKeyboardFocus(pauseWidget);
-        stage.addActor(gameOverWidget);
         stage.addActor(fpsLabel);
     }
 
     public void update(float delta) {
+        fpsLabel.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         stage.act(delta);
     }
 
     public void render() {
-        fpsLabel.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
         stage.draw();
     }
 
