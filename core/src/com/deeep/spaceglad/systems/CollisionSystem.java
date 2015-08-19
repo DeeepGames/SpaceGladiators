@@ -57,6 +57,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                         collisionWorld.removeCollisionObject(other);
                         engine.removeEntity((Entity) other.userData);
                         engine.removeEntity((Entity) bullet.userData);
+                        PlayerComponent.score += 100;
                         break;
                 }
             }
@@ -109,6 +110,5 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
-
     }
 }

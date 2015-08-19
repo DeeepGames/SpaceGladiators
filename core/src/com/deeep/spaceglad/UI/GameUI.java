@@ -62,7 +62,7 @@ public class GameUI {
     }
 
     public void update(float delta) {
-        fpsLabel.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+        fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
         stage.act(delta);
     }
 

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.deeep.spaceglad.Assets;
+import com.deeep.spaceglad.components.PlayerComponent;
 
 /**
  * Created by scanevaro on 04/08/2015.
@@ -12,12 +13,13 @@ public class ScoreWidget extends Actor {
     Label label;
 
     public ScoreWidget() {
-        label = new Label("Score : 0", Assets.skin);
+        label = new Label("", Assets.skin);
     }
 
     @Override
     public void act(float delta) {
         label.act(delta);
+        label.setText("Score : " + PlayerComponent.score);
     }
 
     @Override
