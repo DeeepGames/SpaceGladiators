@@ -35,7 +35,7 @@ public class EntityFactory {
         return entity;
     }
 
-    public static Entity createEnemy(int x, int y, int z) {
+    public static Entity createEnemy(float x, float y, float z) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
         entity.add(new VelocityComponent());

@@ -30,7 +30,6 @@ public class AISystem extends EntitySystem  implements EntityListener{
 
             PositionComponent playerPositionComponent = player.getComponent(PositionComponent.class);
 
-
             float dX = playerPositionComponent.position.x - pm.get(e).position.x;
             float dZ = playerPositionComponent.position.z - pm.get(e).position.z;
 

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
+import com.deeep.spaceglad.managers.EnemySpawner;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.*;
 
@@ -24,6 +25,7 @@ public class GameWorld {
     private MovementSystem movementSystem;
     private PlayerSystem playerSystem;
     private CollisionSystem collisionSystem;
+    private EnemySpawner enemySpawner;
 
     public GameWorld(GameUI gameUI) {
         initPersCamera();
@@ -33,6 +35,7 @@ public class GameWorld {
         addEntities();
         createLevel();
         SoundManager.setCamera(perspectiveCamera);
+        enemySpawner = new EnemySpawner(engine);
     }
 
     private void initPersCamera() {
@@ -79,6 +82,7 @@ public class GameWorld {
     }
 
     public void render(float delta) {
+        enemySpawner.update(delta);
         modelBatch.begin(perspectiveCamera);
         engine.update(delta);
         modelBatch.end();
