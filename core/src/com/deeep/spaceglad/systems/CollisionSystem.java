@@ -45,42 +45,22 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                         pm.get((Entity)player.userData).position.z = pm.get((Entity)player.userData).prevPosition.z;
                         break;
                     case 4:
+
                         break;
                 }
             }else if(colObj0.getUserValue() == 5 || colObj1.getUserValue() == 5){
                 //either of both is the player, lets find out which!
-                btCollisionObject enemy = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
-                btCollisionObject other  = (enemy == colObj1)? colObj0 : colObj1;
-                System.out.println("collide with: " + other.getUserValue());;
+                btCollisionObject bullet = (colObj0.getUserValue() == 5)? colObj0 : colObj1;
+                btCollisionObject other  = (bullet == colObj1)? colObj0 : colObj1;
+                collisionWorld.removeCollisionObject(bullet);
                 switch (other.getUserValue()){
                     case 4:
-                        collisionWorld.removeCollisionObject(colObj0);
-                        collisionWorld.removeCollisionObject(colObj1);
+                        collisionWorld.removeCollisionObject(other);
                         engine.removeEntity((Entity) other.userData);
-                        engine.removeEntity((Entity) enemy.userData);
+                        engine.removeEntity((Entity) bullet.userData);
                         break;
                 }
             }
-
-            /*
-            System.out.println(colObj0.getUserValue() + " " + colObj1.getUserValue());
-            boolean isPlayer = entity_1.getComponent(PlayerComponent.class) != null || entity_2.getComponent(PlayerComponent.class) != null;
-            boolean isBullet = entity_1.getComponent(BulletComponent.class) != null || entity_2.getComponent(BulletComponent.class) != null;
-            boolean isEnemy = entity_1.getComponent(AIComponent.class) != null || entity_2.getComponent(AIComponent.class) != null;
-            if(isPlayer && isEnemy){
-                //TODO Add player damage and enemy knockback here
-                //Logger.log(2, 0, "User was struck!");
-            }
-            if(isEnemy && isBullet){
-                float damage = 0;
-                //TODO Elmar can probably optimize this with his smart brain
-                if(entity_1.getComponent(BulletComponent.class) != null)
-                    damage = entity_1.getComponent(BulletComponent.class).damage;
-                else
-                    damage = entity_2.getComponent(BulletComponent.class).damage;
-                Logger.log(2, 0, "Enemy was struck for " + damage);
-            }*/
-
             return true;
         }
     }

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -66,7 +67,7 @@ public class EntityFactory {
                 new ModelBuilder().createSphere(0.5f, 0.5f, 0.5f, 20, 20,
                         new Material(ColorAttribute.createDiffuse(Color.BLUE)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(0.05f, 0.05f));
+        CollisionComponent collisionComponent = new CollisionComponent(new btSphereShape(0.25f));
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(5);

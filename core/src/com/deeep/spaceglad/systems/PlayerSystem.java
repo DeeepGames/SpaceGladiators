@@ -47,7 +47,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (player == null) return;
         updateMovement(delta);
         updateStatus(delta);
-        if (Gdx.input.justTouched()) fire();
+        if (Gdx.input.isTouched()) fire();
     }
 
     private void fire() {
