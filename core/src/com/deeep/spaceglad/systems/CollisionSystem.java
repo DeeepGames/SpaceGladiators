@@ -13,6 +13,7 @@ import com.deeep.spaceglad.components.*;
  * Created by Elmar on 8-8-2015.
  */
 public class CollisionSystem extends EntitySystem implements EntityListener {
+    private Engine engine;
     public static DebugDrawer debugDrawer;
     private ImmutableArray<Entity> entities;
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
@@ -50,10 +51,13 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                 //either of both is the player, lets find out which!
                 btCollisionObject enemy = (colObj0.getUserValue() == 1)? colObj0 : colObj1;
                 btCollisionObject other  = (enemy == colObj1)? colObj0 : colObj1;
-                System.out.println("collide with: " + other.getUserValue());
+                System.out.println("collide with: " + other.getUserValue());;
                 switch (other.getUserValue()){
                     case 4:
-                        System.out.println("collide bitch");
+                        collisionWorld.removeCollisionObject(colObj0);
+                        collisionWorld.removeCollisionObject(colObj1);
+                        engine.removeEntity((Entity) other.userData);
+                        engine.removeEntity((Entity) enemy.userData);
                         break;
                 }
             }
@@ -84,10 +88,8 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     @Override
     public void addedToEngine(Engine engine) {
         entities = engine.getEntitiesFor(Family.all(PositionComponent.class, CollisionComponent.class, ModelComponent.class).get());
-        long before = System.nanoTime();
         engine.addEntityListener(Family.one(CollisionComponent.class).get(), this);
-        // Please use the Logger class instead EleGiggle
-        //System.out.println(System.nanoTime() - before);
+        this.engine = engine;
     }
 
     public CollisionSystem() {
@@ -112,9 +114,6 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     @Override
     public void update(float deltaTime) {
         for(Entity entity : entities){
-            if(entity.getComponent(AIComponent.class) !=null){
-                System.out.println(entity.getComponent(AIComponent.class).state);
-            }
             cm.get(entity).collisionObject.setWorldTransform(mm.get(entity).instance.transform);
         }
         collisionWorld.performDiscreteCollisionDetection();

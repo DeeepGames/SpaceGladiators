@@ -40,6 +40,7 @@ public class RenderSystem extends EntitySystem {
             ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
 
             // setFromEulerAngles must be called first, dunno why
+            //mod.instance.transform.translate(pos.position).setFromEulerAngles(rot.yaw,rot.pitch,rot.roll);
             mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
             mod.instance.transform.setTranslation(pos.position.x, pos.position.y, pos.position.z);
             batch.render(mod.instance, environment);
