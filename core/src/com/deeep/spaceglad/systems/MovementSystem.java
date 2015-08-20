@@ -16,8 +16,6 @@ import com.deeep.spaceglad.components.VelocityComponent;
 public class MovementSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
 
-    public MovementSystem() {super(10);}
-
     /// Event called when an entity is added to the engine
     public void addedToEngine(Engine e){
         // Grabs all entities with desired components
@@ -30,7 +28,6 @@ public class MovementSystem extends EntitySystem {
             //if(!sta.enabled | sta.frozen) continue;
             PositionComponent pos = e.getComponent(PositionComponent.class);
             VelocityComponent vel =  e.getComponent(VelocityComponent.class);
-            RotationComponent rot =  e.getComponent(RotationComponent.class);
             pos.prevPosition.x = pos.position.x;
             pos.prevPosition.y = pos.position.y;
             pos.prevPosition.z = pos.position.z;

@@ -30,17 +30,15 @@ public class RenderSystem extends EntitySystem {
     }
 
     public void update(float delta) {
-        for (int i = 0; i < entities.size(); i++) {
-            StatusComponent sta = entities.get(i).getComponent(StatusComponent.class);
+        for (Entity e: entities) {
+            StatusComponent sta = e.getComponent(StatusComponent.class);
             //if(!sta.enabled || !sta.visible)
             //    continue;
             //}
-            PositionComponent pos = entities.get(i).getComponent(PositionComponent.class);
-            RotationComponent rot = entities.get(i).getComponent(RotationComponent.class);
-            ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
+            PositionComponent pos = e.getComponent(PositionComponent.class);
+            RotationComponent rot = e.getComponent(RotationComponent.class);
+            ModelComponent mod = e.getComponent(ModelComponent.class);
 
-            // setFromEulerAngles must be called first, dunno why
-            //mod.instance.transform.translate(pos.position).setFromEulerAngles(rot.yaw,rot.pitch,rot.roll);
             mod.instance.transform.setFromEulerAngles(rot.yaw, rot.pitch, rot.roll);
             mod.instance.transform.setTranslation(pos.position.x, pos.position.y, pos.position.z);
             batch.render(mod.instance, environment);
