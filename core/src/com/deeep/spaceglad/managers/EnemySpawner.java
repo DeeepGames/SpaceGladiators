@@ -2,7 +2,7 @@ package com.deeep.spaceglad.managers;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.deeep.spaceglad.Logger;
+import com.deeep.spaceglad.Settings;
 
 import java.util.Random;
 
@@ -29,13 +29,13 @@ public class EnemySpawner {
 
     public void update(float delta) {
         timer += delta;
+        if(timer > 0xffffffff) timer = spawnTimer;
 
-        if(timer >= spawnTimer){
+        if(timer >= spawnTimer && !Settings.Paused){
             timer = 0;
             float x = random.nextInt(80) - 40;
             float z = random.nextInt(80) - 40;
             float y = 0;
-            Logger.log(2, 0, "Enemy added at (" + x + ", " + y + ", " + z + ")");
             addEnemy(x, y, z);
         }
     }

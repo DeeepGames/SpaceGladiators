@@ -7,7 +7,7 @@ import com.badlogic.gdx.files.FileHandle;
  * Created by scanevaro on 18/08/2015.
  */
 public class Settings {
-    public static boolean Pause;
+    public static boolean Paused;
     public static boolean soundEnabled = true;
     public static int[] highscores = new int[]{1000, 800, 500, 300, 100};
     public final static String file = ".spaceglad";
