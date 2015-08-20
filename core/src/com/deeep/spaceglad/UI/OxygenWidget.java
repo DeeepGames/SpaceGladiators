@@ -25,7 +25,7 @@ public class OxygenWidget extends Actor {
         progressBarStyle.knobBefore = progressBarStyle.knob;
         oxigenBar = new ProgressBar(0, 100, 1, false, progressBarStyle);
         oxigenBar.setValue(100);
-        label = new Label("Oxigen", Assets.skin);
+        label = new Label("Oxygen", Assets.skin);
         label.setAlignment(Align.center);
     }
 
