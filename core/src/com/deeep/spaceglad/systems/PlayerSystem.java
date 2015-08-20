@@ -130,8 +130,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void checkGameOver() {
-        if (playerComponent.health <= 0 && !Settings.Pause) {
-            Settings.Pause = true;
+        if (playerComponent.health <= 0 && !Settings.Paused) {
+            Settings.Paused = true;
             gameUI.gameOverWidget.gameOver();
         }
     }

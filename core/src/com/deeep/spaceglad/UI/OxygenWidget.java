@@ -31,7 +31,7 @@ public class OxygenWidget extends Actor {
 
     @Override
     public void act(float delta) {
-        if (Settings.Pause) return;
+        if (Settings.Paused) return;
         oxigenBar.act(delta);
         label.act(delta);
     }

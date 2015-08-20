@@ -95,7 +95,7 @@ public class GameWorld {
     }
 
     private void checkPause() {
-        if (Settings.Pause) {
+        if (Settings.Paused) {
             movementSystem.setProcessing(false);
             playerSystem.setProcessing(false);
             collisionSystem.setProcessing(false);

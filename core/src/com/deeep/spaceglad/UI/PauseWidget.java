@@ -90,11 +90,11 @@ public class PauseWidget extends Actor {
         if (window.getStage() == null) {
             stage.addActor(window);
             Gdx.input.setCursorCatched(false);
-            Settings.Pause = true;
+            Settings.Paused = true;
         } else {
             window.remove();
             Gdx.input.setCursorCatched(true);
-            Settings.Pause = false;
+            Settings.Paused = false;
         }
     }
 

@@ -29,7 +29,7 @@ public class HealthWidget extends Actor {
 
     @Override
     public void act(float delta) {
-        if (Settings.Pause) return;
+        if (Settings.Paused) return;
         healthBar.act(delta);
         label.act(delta);
     }
