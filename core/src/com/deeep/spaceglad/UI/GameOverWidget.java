@@ -70,7 +70,7 @@ public class GameOverWidget extends Actor {
         retryB.setPosition(x - 45, y - 96);
         leaderB.setPosition(x + retryB.getWidth() - 25, y - 96);
         quitB.setPosition(x + retryB.getWidth() + leaderB.getWidth(), y - 96);
-        highScore.setPosition(x, y - 128);
+        highScore.setPosition(x + 30, y - 20);
     }
 
     @Override
