@@ -29,7 +29,6 @@ public class EnemySpawner {
 
     public void update(float delta) {
         timer += delta;
-        if(timer > 0xffffffff) timer = spawnTimer;
 
         if(timer >= spawnTimer && !Settings.Paused){
             timer = 0;
