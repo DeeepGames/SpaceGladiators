@@ -40,8 +40,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     public void update(float delta) {
         if (player == null) return;
         updateMovement(delta);
-        updateStatus();
         if (Gdx.input.isTouched()) fire();
+        updateStatus();
         checkGameOver();
     }
 

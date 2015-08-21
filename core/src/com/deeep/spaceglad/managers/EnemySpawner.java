@@ -10,27 +10,24 @@ import java.util.Random;
  * Created by Andreas on 8/19/2015.
  */
 public class EnemySpawner {
-
     private static float spawnTimer = 1F;
-
     private float timer = 0F;
     private Engine engine;
     private Random random;
 
-    public EnemySpawner(Engine engine){
+    public EnemySpawner(Engine engine) {
         this.engine = engine;
         random = new Random();
     }
 
-    public void addEnemy(float x, float y, float z){
+    public void addEnemy(float x, float y, float z) {
         Entity entity = EntityFactory.createEnemy(x, y, z);
         engine.addEntity(entity);
     }
 
     public void update(float delta) {
         timer += delta;
-
-        if(timer >= spawnTimer && !Settings.Paused){
+        if (timer >= spawnTimer && !Settings.Paused) {
             timer = 0;
             float x = random.nextInt(80) - 40;
             float z = random.nextInt(80) - 40;
@@ -38,5 +35,4 @@ public class EnemySpawner {
             addEnemy(x, y, z);
         }
     }
-
 }
