@@ -69,6 +69,7 @@ public class EntityFactory {
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(5);
+        collisionComponent.rigidBody.setCollisionFlags(collisionComponent.rigidBody.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_NO_CONTACT_RESPONSE);
         entity.add(collisionComponent);
         return entity;
     }

@@ -25,6 +25,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     ComponentMapper<CollisionComponent> cm = ComponentMapper.getFor(CollisionComponent.class);
     ComponentMapper<ModelComponent> mm = ComponentMapper.getFor(ModelComponent.class);
     ComponentMapper<VelocityComponent> vm = ComponentMapper.getFor(VelocityComponent.class);
+    btSequentialImpulseConstraintSolver solver;
 
     btCollisionConfiguration collisionConfig;
     btDispatcher dispatcher;
@@ -86,7 +87,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();
-        btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
+        solver = new btSequentialImpulseConstraintSolver();
         collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
         collisionWorld.setGravity(new Vector3(0, 0, -10));
         myContactListener = new MyContactListener();
@@ -99,12 +100,13 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     public void removedFromEngine(Engine engine) {
         dispatcher.dispose();
         collisionConfig.dispose();
+        solver.dispose();
     }
 
     @Override
     public void update(float deltaTime) {
         for (int i = 0; i < entities.size(); i++) {
-            cm.get(entities.get(i)).collisionObject.setWorldTransform(mm.get(entities.get(i)).instance.transform);
+            cm.get(entities.get(i)).rigidBody.setWorldTransform(mm.get(entities.get(i)).instance.transform);
         }
         collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
         //collisionWorld.performDiscreteCollisionDetection();
@@ -114,9 +116,9 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     public void entityAdded(Entity entity) {
         btCollisionObject collisionObject = cm.get(entity).collisionObject;
         collisionWorld.addRigidBody(cm.get(entity).rigidBody);
-        collisionObject.setCollisionFlags(collisionObject.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+        cm.get(entity).rigidBody.setCollisionFlags(cm.get(entity).rigidBody.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
         //collisionObject.setUserValue(entities.size());
-        collisionObject.userData = entity;
+        cm.get(entity).rigidBody.userData = entity;
     }
 
     @Override

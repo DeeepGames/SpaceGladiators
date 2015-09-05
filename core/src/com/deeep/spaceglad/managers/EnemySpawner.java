@@ -18,6 +18,7 @@ public class EnemySpawner {
     public EnemySpawner(Engine engine) {
         this.engine = engine;
         random = new Random();
+        //spawn();
     }
 
     public void addEnemy(float x, float y, float z) {
@@ -29,10 +30,14 @@ public class EnemySpawner {
         timer += delta;
         if (timer >= spawnTimer && !Settings.Paused) {
             timer = 0;
-            float x = random.nextInt(80) - 40;
-            float z = random.nextInt(80) - 40;
-            float y = 0;
-            addEnemy(x, y, z);
+            //spawn();
         }
+    }
+
+    private void spawn(){
+        float x = random.nextInt(80) - 40;
+        float z = random.nextInt(80) - 40;
+        float y = 0;
+        addEnemy(x, y, z);
     }
 }
