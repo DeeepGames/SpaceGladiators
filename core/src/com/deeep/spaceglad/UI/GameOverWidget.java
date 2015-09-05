@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.deeep.spaceglad.Assets;
@@ -24,7 +23,6 @@ public class GameOverWidget extends Actor {
     private Stage stage;
     private Image image;
     private TextButton retryB, leaderB, quitB;
-    private Label highScore;
 
     public GameOverWidget(Core game, Stage stage) {
         this.game = game;
@@ -38,8 +36,6 @@ public class GameOverWidget extends Actor {
         retryB = new TextButton("Retry", Assets.skin);
         leaderB = new TextButton("Leaderboards", Assets.skin);
         quitB = new TextButton("Quit", Assets.skin);
-        highScore = new Label("New Highscore!", Assets.skin);
-        highScore.setFontScale(2);
     }
 
     private void setListeners() {
@@ -70,7 +66,6 @@ public class GameOverWidget extends Actor {
         retryB.setPosition(x - 45, y - 96);
         leaderB.setPosition(x + retryB.getWidth() - 25, y - 96);
         quitB.setPosition(x + retryB.getWidth() + leaderB.getWidth(), y - 96);
-        highScore.setPosition(x + 30, y - 20);
     }
 
     @Override
@@ -89,6 +84,6 @@ public class GameOverWidget extends Actor {
         stage.addActor(quitB);
         stage.unfocus(stage.getKeyboardFocus());
         Gdx.input.setCursorCatched(false);
-        if (Settings.addScore(PlayerComponent.score)) stage.addActor(highScore);
+        Settings.addScore(PlayerComponent.score);
     }
 }
