@@ -40,7 +40,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     public void update(float delta) {
         if (player == null) return;
         updateMovement(delta);
-        if (Gdx.input.isTouched()) fire();
+        if (Gdx.input.justTouched()) fire();
         updateStatus();
         checkGameOver();
     }
@@ -51,8 +51,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.direction.rotate(camera.up, deltaX);
         tempVector.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tempVector, deltaY);
-        if (velocityComponentMapper.get(player).velocity.y > -5)
-            velocityComponentMapper.get(player).velocity.y -= delta * 1;
         velocityComponentMapper.get(player).velocity.z = 0;
         velocityComponentMapper.get(player).velocity.x = 0;
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -88,7 +86,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         engine.addEntity(
                 EntityFactory.createBullet(
                         positionComponentMapper.get(player).position.cpy(),
-                        camera.direction.cpy().scl(25)
+                        camera.direction.cpy().scl(150)
                 )
         );
     }

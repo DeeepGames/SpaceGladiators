@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
+import com.badlogic.gdx.physics.bullet.collision.*;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -27,7 +25,7 @@ public class EntityFactory {
                 new ModelBuilder().createBox(sizeX, sizeY, sizeZ,
                         new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(sizeX / 2, sizeY / 2, sizeZ / 2)));
+        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(sizeX / 2, sizeY / 2, sizeZ / 2)),0);
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(3);
@@ -47,7 +45,7 @@ public class EntityFactory {
                 new ModelBuilder().createBox(4f, 4f, 4f,
                         new Material(ColorAttribute.createDiffuse(Color.RED)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(2f, 2f, 2f)));
+        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(2f, 2f, 2f)),1);
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(4);
@@ -67,7 +65,7 @@ public class EntityFactory {
                 new ModelBuilder().createSphere(0.5f, 0.5f, 0.5f, 20, 20,
                         new Material(ColorAttribute.createDiffuse(Color.BLUE)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btSphereShape(0.25f));
+        CollisionComponent collisionComponent = new CollisionComponent(new btSphereShape(0.25f),1);
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.setUserValue(5);
@@ -87,7 +85,7 @@ public class EntityFactory {
                         new Material(ColorAttribute.createDiffuse(Color.GRAY)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());
-        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2));
+        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2),1);
         collisionComponent.collisionObject.userData = entity;
         collisionComponent.collisionObject.setUserValue(1);
         collisionComponent.collisionObject.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
@@ -106,10 +104,17 @@ public class EntityFactory {
                         new ModelBuilder().createBox(100f, 0.5f, 100f,
                                 new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
                                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
-        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(49.99f, 0.25f, 49.99f)));
+        CollisionComponent collisionComponent = new CollisionComponent(new btBoxShape(new Vector3(49.99f, 0.25f, 49.99f)),0 );
         collisionComponent.collisionObject.setWorldTransform(ground.getComponent(ModelComponent.class).instance.transform);
         collisionComponent.collisionObject.userData = ground;
         collisionComponent.collisionObject.setUserValue(2);
+        collisionComponent.collisionObject.setCollisionFlags(collisionComponent.collisionObject.getCollisionFlags()
+                | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
+        //dynamicsWorld.addRigidBody(object.body);
+        collisionComponent.collisionObject.setContactCallbackFlag(3);
+        collisionComponent.collisionObject.setContactCallbackFilter(0);
+        collisionComponent.collisionObject.setActivationState(Collision.DISABLE_DEACTIVATION);
+
         ground.add(collisionComponent);
         return ground;
     }

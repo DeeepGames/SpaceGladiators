@@ -86,10 +86,10 @@ public class GameWorld {
         modelBatch.begin(perspectiveCamera);
         engine.update(delta);
         modelBatch.end();
-        if (CollisionSystem.collisionWorld != null) {/*
+        if (CollisionSystem.collisionWorld != null) {
             CollisionSystem.debugDrawer.begin(perspectiveCamera);
             CollisionSystem.collisionWorld.debugDrawWorld();
-            CollisionSystem.debugDrawer.end();*/
+            CollisionSystem.debugDrawer.end();
         }
         checkPause();
     }

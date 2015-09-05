@@ -2,9 +2,14 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
+import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.deeep.spaceglad.components.*;
 
@@ -24,10 +29,10 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
     btCollisionConfiguration collisionConfig;
     btDispatcher dispatcher;
     btBroadphaseInterface broadphase;
-    public static btCollisionWorld collisionWorld;
-
+    public static btDiscreteDynamicsWorld collisionWorld;
     MyContactListener myContactListener;
-
+    public int maxSubSteps = 5;
+    public float fixedTimeStep = 1f / 60f;
     class MyContactListener extends ContactListener {
         @Override
         public boolean onContactAdded(btCollisionObject colObj0, int partId0, int index0, btCollisionObject colObj1, int partId1, int index1) {
@@ -81,9 +86,13 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         collisionConfig = new btDefaultCollisionConfiguration();
         dispatcher = new btCollisionDispatcher(collisionConfig);
         broadphase = new btDbvtBroadphase();
-        collisionWorld = new btCollisionWorld(dispatcher, broadphase, collisionConfig);
+        btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
+        collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
+        collisionWorld.setGravity(new Vector3(0, 0, -10));
         myContactListener = new MyContactListener();
+
         collisionWorld.setDebugDrawer(debugDrawer);
+        myContactListener.enable();
     }
 
     @Override
@@ -97,13 +106,14 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         for (int i = 0; i < entities.size(); i++) {
             cm.get(entities.get(i)).collisionObject.setWorldTransform(mm.get(entities.get(i)).instance.transform);
         }
-        collisionWorld.performDiscreteCollisionDetection();
+        collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
+        //collisionWorld.performDiscreteCollisionDetection();
     }
 
     @Override
     public void entityAdded(Entity entity) {
         btCollisionObject collisionObject = cm.get(entity).collisionObject;
-        collisionWorld.addCollisionObject(collisionObject);
+        collisionWorld.addRigidBody(cm.get(entity).rigidBody);
         collisionObject.setCollisionFlags(collisionObject.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
         //collisionObject.setUserValue(entities.size());
         collisionObject.userData = entity;
