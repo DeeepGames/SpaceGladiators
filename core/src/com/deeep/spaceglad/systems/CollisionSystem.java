@@ -91,7 +91,6 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
         collisionWorld.setGravity(new Vector3(0, 0, -10));
         myContactListener = new MyContactListener();
-
         collisionWorld.setDebugDrawer(debugDrawer);
         myContactListener.enable();
     }
@@ -114,7 +113,6 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityAdded(Entity entity) {
-        btCollisionObject collisionObject = cm.get(entity).collisionObject;
         collisionWorld.addRigidBody(cm.get(entity).rigidBody);
         cm.get(entity).rigidBody.setCollisionFlags(cm.get(entity).rigidBody.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
         //collisionObject.setUserValue(entities.size());
