@@ -86,7 +86,7 @@ public class EntityFactory {
                         new Material(ColorAttribute.createDiffuse(Color.GRAY)),
                         VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());
-        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2),1);
+        CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2),1, true);
         collisionComponent.rigidBody.userData = entity;
         collisionComponent.rigidBody.setUserValue(1);
         collisionComponent.rigidBody.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);

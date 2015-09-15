@@ -41,7 +41,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                 //either of both is the player, lets find out which!
                 btCollisionObject player = (colObj0.getUserValue() == 1) ? colObj0 : colObj1;
                 btCollisionObject other = (player == colObj1) ? colObj0 : colObj1;
-                switch (other.getUserValue()) {
+                switch (other.getUserValue()) {/*
                     case 2:
                         pm.get((Entity) player.userData).position.y = pm.get((Entity) player.userData).prevPosition.y;
                         vm.get((Entity) player.userData).velocity.y = Math.max(vm.get((Entity) player.userData).velocity.y, 0);
@@ -49,7 +49,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
                     case 3:
                         pm.get((Entity) player.userData).position.x = pm.get((Entity) player.userData).prevPosition.x;
                         pm.get((Entity) player.userData).position.z = pm.get((Entity) player.userData).prevPosition.z;
-                        break;
+                        break;*/
                     case 4:
                         ((Entity) player.userData).getComponent(PlayerComponent.class).hit();
                         break;
@@ -89,7 +89,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         broadphase = new btDbvtBroadphase();
         solver = new btSequentialImpulseConstraintSolver();
         collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfig);
-        collisionWorld.setGravity(new Vector3(0, 0, -10));
+        collisionWorld.setGravity(new Vector3(0, -10, 0));
         myContactListener = new MyContactListener();
         collisionWorld.setDebugDrawer(debugDrawer);
         myContactListener.enable();
@@ -108,7 +108,6 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
             cm.get(entities.get(i)).rigidBody.setWorldTransform(mm.get(entities.get(i)).instance.transform);
         }
         collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
-        //collisionWorld.performDiscreteCollisionDetection();
     }
 
     @Override

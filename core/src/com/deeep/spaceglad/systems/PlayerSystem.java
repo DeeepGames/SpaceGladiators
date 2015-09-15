@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
+import com.deeep.spaceglad.components.CollisionComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
 import com.deeep.spaceglad.components.PositionComponent;
 import com.deeep.spaceglad.components.VelocityComponent;
@@ -18,6 +19,7 @@ import com.deeep.spaceglad.managers.EntityFactory;
 public class PlayerSystem extends EntitySystem implements EntityListener {
     private Entity player;
     private PlayerComponent playerComponent;
+    private CollisionComponent collisionComponent;
     private GameUI gameUI;
     private final Camera camera;
     private final Vector3 tempVector = new Vector3();
@@ -73,6 +75,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             velocityComponentMapper.get(player).velocity.x = tempVector.x;
             velocityComponentMapper.get(player).velocity.z = tempVector.z;
         }
+
         camera.position.set(positionComponentMapper.get(player).position);
         camera.update(true);
     }

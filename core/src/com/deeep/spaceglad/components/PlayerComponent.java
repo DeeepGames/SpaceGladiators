@@ -10,10 +10,6 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
  * Created by Elmar on 8-8-2015.
  */
 public class PlayerComponent extends Component {
-    btGhostPairCallback ghostPairCallback;
-    btPairCachingGhostObject ghostObject;
-    btConvexShape ghostShape;
-    btKinematicCharacterController characterController;
 
     public float energy;
     public float oxygen;

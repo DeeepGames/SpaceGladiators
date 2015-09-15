@@ -24,16 +24,16 @@ public class MovementSystem extends EntitySystem {
 
     public void update(float delta){
         for(Entity e: entities){
-            StatusComponent sta =  e.getComponent(StatusComponent.class);
-            //if(!sta.enabled | sta.frozen) continue;
-            PositionComponent pos = e.getComponent(PositionComponent.class);
-            VelocityComponent vel =  e.getComponent(VelocityComponent.class);
-            pos.prevPosition.x = pos.position.x;
-            pos.prevPosition.y = pos.position.y;
-            pos.prevPosition.z = pos.position.z;
-            pos.position.x += vel.velocity.x * delta;
-            pos.position.y += vel.velocity.y * delta;
-            pos.position.z += vel.velocity.z * delta;
+            //StatusComponent sta =  e.getComponent(StatusComponent.class);
+            ////if(!sta.enabled | sta.frozen) continue;
+            //PositionComponent pos = e.getComponent(PositionComponent.class);
+            //VelocityComponent vel =  e.getComponent(VelocityComponent.class);
+            //pos.prevPosition.x = pos.position.x;
+            //pos.prevPosition.y = pos.position.y;
+            //pos.prevPosition.z = pos.position.z;
+            //pos.position.x += vel.velocity.x * delta;
+            //pos.position.y += vel.velocity.y * delta;
+            //pos.position.z += vel.velocity.z * delta;
         }
     }
 }

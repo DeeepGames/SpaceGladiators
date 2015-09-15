@@ -13,7 +13,6 @@ public class ModelComponent extends Component{
     public Model model;
     public ModelInstance instance;
     public BoundingBox boundingBox;
-    public btPairCachingGhostObject btPairCachingGhostObject;
 
     public ModelComponent(Model model){
         this.model = model;
