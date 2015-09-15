@@ -1,6 +1,7 @@
 package com.deeep.spaceglad.components;
 
 import com.badlogic.ashley.core.Component;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
@@ -13,9 +14,9 @@ public class CollisionComponent extends Component {
     public btConvexInternalShape collisionShape;
     public btRigidBody rigidBody;
     public boolean character = false;
-
+    public Matrix4 characterTransform = new Matrix4(    );
     public btKinematicCharacterController characterController;
-    private btPairCachingGhostObject pair;
+    public btPairCachingGhostObject pair;
 
     public CollisionComponent(btConvexInternalShape btCollisionShape) {
         this.collisionShape = btCollisionShape;
@@ -37,6 +38,7 @@ public class CollisionComponent extends Component {
         this.rigidBody = new btRigidBody(mass, null, collisionShape, temp);
         // Create the physics representation of the character
         pair = new btPairCachingGhostObject();
+        pair.setWorldTransform(characterTransform);
         pair.setCollisionShape(btCollisionShape);
         pair.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
         characterController = new btKinematicCharacterController(pair, btCollisionShape, .35f);

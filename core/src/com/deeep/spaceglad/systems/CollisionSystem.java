@@ -116,6 +116,12 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
         cm.get(entity).rigidBody.setCollisionFlags(cm.get(entity).rigidBody.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
         //collisionObject.setUserValue(entities.size());
         cm.get(entity).rigidBody.userData = entity;
+        if(cm.get(entity).character){
+            collisionWorld.addCollisionObject(cm.get(entity).pair,
+                    (short)btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
+                    (short)(btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
+            ((btDiscreteDynamicsWorld)(collisionWorld)).addAction(cm.get(entity).characterController);
+        }
     }
 
     @Override
