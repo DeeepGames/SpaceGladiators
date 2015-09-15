@@ -120,7 +120,7 @@ public class CollisionSystem extends EntitySystem implements EntityListener {
             collisionWorld.addCollisionObject(cm.get(entity).pair,
                     (short)btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                     (short)(btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
-            ((btDiscreteDynamicsWorld)(collisionWorld)).addAction(cm.get(entity).characterController);
+            ((collisionWorld)).addAction(cm.get(entity).characterController);
         }
     }
 

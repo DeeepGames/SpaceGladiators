@@ -80,16 +80,16 @@ public class EntityFactory {
         entity.add(new VelocityComponent());
         entity.add(new RotationComponent(0, 0, 0));
         entity.add(new StatusComponent());
-        entity.add(new RenderableComponent());
+        entity.add(new RenderableComponent());/*
         entity.add(new ModelComponent(
                 new ModelBuilder().createCapsule(1, 4, 16,
                         new Material(ColorAttribute.createDiffuse(Color.GRAY)),
-                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));*/
         entity.add(new PlayerComponent());
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2),1, true);
         collisionComponent.rigidBody.userData = entity;
         collisionComponent.rigidBody.setUserValue(1);
-        collisionComponent.rigidBody.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
+//        collisionComponent.rigidBody.setWorldTransform(entity.getComponent(ModelComponent.class).instance.transform);
         entity.add(collisionComponent);
         return entity;
     }
