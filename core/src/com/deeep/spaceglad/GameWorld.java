@@ -81,7 +81,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         /**create()*/
         initEnvironment();
         initModelBatch();
-        world = createWorld();
+        initWorld();
         initPersCamera();
 
         /** Create some simple models */
@@ -152,18 +152,6 @@ public class GameWorld implements GestureDetector.GestureListener {
         }
     }
 
-    public BulletWorld createWorld() {
-        /** We create the world using an axis sweep broadphase for this test */
-        btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        btAxisSweep3 sweep = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
-        btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
-        btDiscreteDynamicsWorld collisionWorld = new btDiscreteDynamicsWorld(dispatcher, sweep, solver, collisionConfiguration);
-        ghostPairCallback = new btGhostPairCallback();
-        sweep.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
-        return new BulletWorld(collisionConfiguration, dispatcher, sweep, solver, collisionWorld);
-    }
-
     private void initPersCamera() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
 //        perspectiveCamera.position.set(20f, 0f, 20f);
@@ -191,6 +179,17 @@ public class GameWorld implements GestureDetector.GestureListener {
         shadowBatch = new ModelBatch(new DepthShaderProvider());
     }
 
+    private void initWorld() {
+        /** We create the world using an axis sweep broadphase for this test */
+        btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
+        btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
+        btAxisSweep3 sweep = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
+        btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
+        btDiscreteDynamicsWorld collisionWorld = new btDiscreteDynamicsWorld(dispatcher, sweep, solver, collisionConfiguration);
+        ghostPairCallback = new btGhostPairCallback();
+        sweep.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
+        world = new BulletWorld(collisionConfiguration, dispatcher, sweep, solver, collisionWorld);
+    }
 //    private void addSystems(GameUI gameUI) {
 //        engine = new Engine();
 //        engine.addSystem(collisionSystem = new CollisionSystem());
