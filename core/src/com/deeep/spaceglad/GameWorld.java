@@ -18,6 +18,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
@@ -67,6 +68,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     Vector3 characterDirection = new Vector3();
     Vector3 walkDirection = new Vector3();
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
+    private Model boxModel;
 
     public GameWorld(GameUI gameUI) {
 //        addSystems(gameUI);
@@ -158,7 +160,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private BulletEntity addBox(float x, float y, float z) {
-        final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
+        boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
 
@@ -317,7 +319,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public boolean tap(float x, float y, int count, int button) {
-        shoot(x, y);
+        shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
         return true;
     }
 
@@ -356,19 +358,14 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public BulletEntity shoot(final float x, final float y, final float impulse) {
-        return shoot("box", x, y, impulse);
-    }
-
-    public BulletEntity shoot(final String what, final float x, final float y, final float impulse) {
-        // Shoot a box
-        /*
+        /** Shoot a box */
         Ray ray = perspectiveCamera.getPickRay(x, y);
-        BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
+        BulletEntity entity = new BulletConstructor(boxModel, 1f).construct(ray.origin.x, ray.origin.y, ray.origin.z);
+        world.add(entity);
         entity.setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
                 1f);
-        ((btRigidBody) entity.body).applyCentralImpulse(ray.direction.scl(impulse));*/
-        //return entity;
-        return null;
+        ((btRigidBody) entity.body).applyCentralImpulse(ray.direction.scl(impulse));
+        return entity;
     }
 
     private void checkPause() {
