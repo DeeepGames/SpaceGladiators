@@ -1,5 +1,7 @@
 package com.deeep.spaceglad;
 
+import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
@@ -20,6 +22,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
@@ -32,6 +35,10 @@ import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
+import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
+import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.systems.RenderSystem;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -40,19 +47,19 @@ public class GameWorld implements GestureDetector.GestureListener {
     private static final float FOV = 67F;
     private PerspectiveCamera perspectiveCamera;
     private Environment environment;
-    //    private Engine engine;
+    private Engine engine;
     private ModelBatch modelBatch;
     //    private MovementSystem movementSystem;
 //    private PlayerSystem playerSystem;
 //    private CollisionSystem collisionSystem;
     //    private EnemySpawner enemySpawner;
-    private final static String customDesktopLib = null;
     public DirectionalShadowLight light;
     public ModelBatch shadowBatch;
     public BulletWorld world;
     public ModelBuilder modelBuilder = new ModelBuilder();
     public Array<Disposable> disposables = new Array<Disposable>();
     BulletEntity ground;
+    BulletEntity wall;
     BulletEntity character;
     Matrix4 characterTransform;
     btPairCachingGhostObject ghostObject;
@@ -68,10 +75,13 @@ public class GameWorld implements GestureDetector.GestureListener {
     Vector3 characterDirection = new Vector3();
     Vector3 walkDirection = new Vector3();
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
+    public static DebugDrawer debugDrawer;
     private Model boxModel;
 
+    FirstPersonCameraController firstPersonCameraController;
+
     public GameWorld(GameUI gameUI) {
-//        addSystems(gameUI);
+
 //        addEntities();
 //        createLevel();
 //        enemySpawner = new EnemySpawner(engine);
@@ -80,6 +90,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         initModelBatch();
         initWorld();
         initPersCamera();
+        addSystems(gameUI);
         addEntities();
         SoundManager.setCamera(perspectiveCamera);
     }
@@ -108,6 +119,8 @@ public class GameWorld implements GestureDetector.GestureListener {
 //        perspectiveCamera.near = 1f;
 //        perspectiveCamera.far = 300f;
         perspectiveCamera.update();
+        firstPersonCameraController = new FirstPersonCameraController(perspectiveCamera);
+        Gdx.input.setInputProcessor(firstPersonCameraController);
     }
 
     private void initModelBatch() {
@@ -125,6 +138,10 @@ public class GameWorld implements GestureDetector.GestureListener {
         ghostPairCallback = new btGhostPairCallback();
         sweep.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
         world = new BulletWorld(collisionConfiguration, dispatcher, sweep, solver, collisionWorld);
+        //TODO remove this
+        debugDrawer = new DebugDrawer();
+        debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+        world.collisionWorld.setDebugDrawer(debugDrawer);
     }
 
     private void addEntities() {
@@ -163,22 +180,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
-
-        /** Add the constructors */
-        float mass = 0.1f;
-        final BoundingBox boundingBox = new BoundingBox();
-        boxModel.calculateBoundingBox(boundingBox);
-        Vector3 tmpV = new Vector3();
-        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
-
-        Vector3 localInertia;
-        col.calculateLocalInertia(mass, tmpV);
-        localInertia = tmpV;
-
-        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
-        BulletEntity box = new BulletEntity(boxModel, bodyInfo, x, y, z);
-
+        BulletEntity box = EntityFactory.createDynamic(boxModel,0.05f, x, y, z);
         world.add(box);
         return box;
     }
@@ -190,57 +192,61 @@ public class GameWorld implements GestureDetector.GestureListener {
         final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
         final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
         disposables.add(capsule);
-        character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
+        character = EntityFactory.createDynamic(capsule,-1,5,3,5);
+        //character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
         world.add(character);
     }
 
     private void createGround() {
+
+        final Model wallModel = modelBuilder.createRect(
+                0f, -10f, -20f,
+                0f, 10f, -20f,
+                0f, 10f,  20f,
+                0f, -10f,  20f,
+                0, 1, 0,
+                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        disposables.add(wallModel);
+        wall = EntityFactory.createStatic(wallModel,-20,10,0);
+        wall.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
+        world.add(wall);
+/*
+        final Model wallModel = modelBuilder.createRect(
+                0f, -10f, -20f,
+                0f, 10f, -20f,
+                0f, 10f,  20f,
+                0f, -10f,  20f,
+                0, 1, 0,
+                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        Entity entity = EntityFactory.createStaticEntity(wallModel,-20,10,0);
+        entity.getComponent(ModelComponent.class).color.set(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
+        engine.addEntity(entity);*/
         final Model groundModel = modelBuilder.createRect(
-                20f,
-                0f,
-                -20f,
-                -20f,
-                0f,
-                -20f,
-                -20f,
-                0f,
-                20f,
-                20f,
-                0f,
-                20f,
-                0,
-                1,
-                0,
+                20f, 0f, -20f,
+                -20f, 0f, -20f,
+                -20f, 0f, 20f,
+                20f, 0f, 20f,
+                0, 1, 0,
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(groundModel);
-
-        float mass = 0f;
-        final BoundingBox boundingBox = new BoundingBox();
-        groundModel.calculateBoundingBox(boundingBox);
-        Vector3 tmpV = new Vector3();
-        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
-
-        Vector3  localInertia = Vector3.Zero;
-        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
-        BulletEntity ground = new BulletEntity(groundModel, bodyInfo, 0, 0, 0);
-
-        //world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); /** mass = 0: static body */
-        //ground = world.add("ground", 0f, 0f, 0f);
+        ground = EntityFactory.createStatic(groundModel,0,0,0);
         ground.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
         world.add(ground);
 
+
     }
 
-//    private void addSystems(GameUI gameUI) {
-//        engine = new Engine();
+    private void addSystems(GameUI gameUI) {
+        engine = new Engine();
 //        engine.addSystem(collisionSystem = new CollisionSystem());
 //        engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
 //        engine.addSystem(movementSystem = new MovementSystem());
-//        engine.addSystem(new RenderSystem(modelBatch, environment));
+        engine.addSystem(new RenderSystem(modelBatch, environment));
 //        engine.addSystem(new AISystem());
-//    }
+    }
 
 //    private void addEntities() {
 //        engine.addEntity(EntityFactory.createEnemy(12, 0, 10));
@@ -260,7 +266,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     public void render(float delta) {
 //        enemySpawner.update(delta);
 //        modelBatch.begin(perspectiveCamera);
-//        engine.update(delta);
+
 //        modelBatch.end();
 //        if (CollisionSystem.collisionWorld != null) {
 //            CollisionSystem.debugDrawer.begin(perspectiveCamera);
@@ -268,11 +274,12 @@ public class GameWorld implements GestureDetector.GestureListener {
 //            CollisionSystem.debugDrawer.end();
 //        }
 //        checkPause();
-        perspectiveCamera.update();
+        //perspectiveCamera.update();
         renderWorld();
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         if (debugMode != btIDebugDraw.DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+
     }
 
     protected void renderWorld() {
@@ -283,6 +290,10 @@ public class GameWorld implements GestureDetector.GestureListener {
         light.end();
         modelBatch.begin(perspectiveCamera);
         world.render(modelBatch, environment);
+        debugDrawer.begin(perspectiveCamera);
+        engine.update(Gdx.graphics.getDeltaTime());
+        world.collisionWorld.debugDrawWorld();
+        debugDrawer.end();
         modelBatch.end();
     }
 
@@ -304,6 +315,19 @@ public class GameWorld implements GestureDetector.GestureListener {
             walkDirection.add(characterDirection);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
             walkDirection.add(-characterDirection.x, -characterDirection.y, -characterDirection.z);
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            firstPersonCameraController.forward();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            firstPersonCameraController.backward();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            firstPersonCameraController.left();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            firstPersonCameraController.right();
+        }
+
         walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         /** And update the character controller */
         characterController.setWalkDirection(walkDirection);

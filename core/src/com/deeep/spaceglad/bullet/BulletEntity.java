@@ -19,7 +19,7 @@ public class BulletEntity implements Disposable {
     public ModelInstance modelInstance;
     private Color color = new Color(1f, 1f, 1f, 1f);
     private final static Matrix4 tmpM = new Matrix4();
-    public BulletEntity.MotionState motionState;
+    public MotionState motionState;
     public btCollisionObject body;
 
     public Color getColor() {
@@ -77,28 +77,5 @@ public class BulletEntity implements Disposable {
         body = null;
     }
 
-    static class MotionState extends btMotionState {
-        private final Matrix4 transform;
 
-        public MotionState(final Matrix4 transform) {
-            this.transform = transform;
-        }
-
-        /**
-         * For dynamic and static bodies this method is called by bullet once to get the initial state of the body. For kinematic
-         * bodies this method is called on every update, unless the body is deactivated.
-         */
-        @Override
-        public void getWorldTransform(final Matrix4 worldTrans) {
-            worldTrans.set(transform);
-        }
-
-        /**
-         * For dynamic bodies this method is called by bullet every update to inform about the new position and rotation.
-         */
-        @Override
-        public void setWorldTransform(final Matrix4 worldTrans) {
-            transform.set(worldTrans);
-        }
-    }
 }

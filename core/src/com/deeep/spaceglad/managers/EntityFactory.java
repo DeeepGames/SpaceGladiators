@@ -4,10 +4,17 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.deeep.spaceglad.bullet.BulletEntity;
+import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.*;
 
 /**
@@ -116,5 +123,68 @@ public class EntityFactory {
 
         ground.add(collisionComponent);
         return ground;
+    }
+
+    public static Entity createStaticEntity(Model model,float x, float y, float z){
+
+        final BoundingBox boundingBox = new BoundingBox();
+        model.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, col, Vector3.Zero);
+
+        Entity entity = new Entity();
+
+        ModelComponent modelComponent = new ModelComponent(model);
+        modelComponent.transform = new Matrix4().setToTranslation(x,y,z);
+        modelComponent.instance = new ModelInstance(model,modelComponent.transform.cpy());
+        entity.add(modelComponent);
+
+        BulletComponent bulletComponent = new BulletComponent();
+        bulletComponent.body = new btRigidBody(bodyInfo);
+        bulletComponent.body.userData = entity;
+        bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
+        ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
+
+        return entity;
+    }
+
+    public static BulletEntity createStatic(Model model,float x, float y, float z){
+
+        final BoundingBox boundingBox = new BoundingBox();
+        model.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, col, Vector3.Zero);
+
+        Entity entity = new Entity();
+
+        ModelComponent modelComponent = new ModelComponent(model);
+        modelComponent.transform = new Matrix4().setToTranslation(x,y,z);
+        modelComponent.instance = new ModelInstance(model,modelComponent.transform.cpy());
+        entity.add(modelComponent);
+
+        BulletComponent bulletComponent = new BulletComponent();
+        bulletComponent.body = new btRigidBody(bodyInfo);
+        bulletComponent.body.userData = entity;
+        bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
+        ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
+
+        return new BulletEntity(model, bodyInfo, x, y, z);
+    }
+
+    public static BulletEntity createDynamic(Model model, float mass, float x, float y, float z){
+        final BoundingBox boundingBox = new BoundingBox();
+        model.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+
+        Vector3 localInertia;
+        col.calculateLocalInertia(mass, tmpV);
+        localInertia = tmpV;
+
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
+        return new BulletEntity(model, bodyInfo, x, y, z);
     }
 }

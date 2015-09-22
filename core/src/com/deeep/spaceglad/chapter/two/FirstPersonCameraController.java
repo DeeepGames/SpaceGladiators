@@ -120,4 +120,32 @@ public class FirstPersonCameraController extends InputAdapter {
         }
         camera.update(true);
     }
+
+    public void forward(){
+        tmp.set(camera.direction).nor().scl(1 * velocity);
+        camera.position.add(tmp);
+        camera.update(true);
+    }
+
+    public void backward(){
+        tmp.set(camera.direction).nor().scl(-1 * velocity);
+        camera.position.add(tmp);
+        camera.update(true);
+    }
+
+    public void left(){
+        tmp.set(camera.direction).crs(camera.up).nor().scl(-1 * velocity);
+        camera.position.add(tmp);
+        camera.update(true);
+    }
+
+    public void right(){
+        tmp.set(camera.direction).crs(camera.up).nor().scl(1 * velocity);
+        camera.position.add(tmp);
+        camera.update(true);
+    }
+
+    public Camera getCam() {
+        return camera;
+    }
 }
