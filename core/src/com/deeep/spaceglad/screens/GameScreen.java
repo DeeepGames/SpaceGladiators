@@ -1,7 +1,9 @@
 package com.deeep.spaceglad.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.input.GestureDetector;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
 import com.deeep.spaceglad.Settings;
@@ -20,7 +22,7 @@ public class GameScreen implements Screen {
         gameUI = new GameUI(game);
         gameWorld = new GameWorld(gameUI);
         Settings.Paused = false;
-        Gdx.input.setInputProcessor(gameUI.stage);
+        Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, new GestureDetector(gameWorld)));
         Gdx.input.setCursorCatched(true);
     }
 
