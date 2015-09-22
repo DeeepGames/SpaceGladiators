@@ -18,6 +18,9 @@ public class BulletEntity implements Disposable {
     public Matrix4 transform;
     public ModelInstance modelInstance;
     private Color color = new Color(1f, 1f, 1f, 1f);
+    private final static Matrix4 tmpM = new Matrix4();
+    public BulletEntity.MotionState motionState;
+    public btCollisionObject body;
 
     public Color getColor() {
         return color;
@@ -36,9 +39,6 @@ public class BulletEntity implements Disposable {
             }
         }
     }
-    private final static Matrix4 tmpM = new Matrix4();
-    public BulletEntity.MotionState motionState;
-    public btCollisionObject body;
 
     public BulletEntity(final Model model, final btRigidBody.btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
         this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), x, y, z);

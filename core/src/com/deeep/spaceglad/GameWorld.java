@@ -17,7 +17,7 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
@@ -28,7 +28,6 @@ import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
-import com.deeep.spaceglad.bullet.BulletConstructor;
 import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
@@ -164,7 +163,20 @@ public class GameWorld implements GestureDetector.GestureListener {
         disposables.add(boxModel);
 
         /** Add the constructors */
-        BulletEntity box = new BulletConstructor(boxModel, 1f).construct(x, y, z);
+        float mass = 0.1f;
+        final BoundingBox boundingBox = new BoundingBox();
+        boxModel.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+
+        Vector3 localInertia;
+        col.calculateLocalInertia(mass, tmpV);
+        localInertia = tmpV;
+
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
+        BulletEntity box = new BulletEntity(boxModel, bodyInfo, x, y, z);
+
         world.add(box);
         return box;
     }
@@ -200,11 +212,23 @@ public class GameWorld implements GestureDetector.GestureListener {
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(groundModel);
+
+        float mass = 0f;
+        final BoundingBox boundingBox = new BoundingBox();
+        groundModel.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+
+        Vector3  localInertia = Vector3.Zero;
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
+        BulletEntity ground = new BulletEntity(groundModel, bodyInfo, 0, 0, 0);
+
         //world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); /** mass = 0: static body */
         //ground = world.add("ground", 0f, 0f, 0f);
-        ground = new BulletConstructor(groundModel, 0).construct(0, 0, 0);
-        world.add(ground);
         ground.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
+        world.add(ground);
+
     }
 
 //    private void addSystems(GameUI gameUI) {
