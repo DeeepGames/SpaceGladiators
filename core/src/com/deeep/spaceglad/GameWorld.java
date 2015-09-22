@@ -69,22 +69,46 @@ public class GameWorld implements GestureDetector.GestureListener {
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
 
     public GameWorld(GameUI gameUI) {
-//        initPersCamera();
-//        initEnvironment();
-//        initModelBatch();
 //        addSystems(gameUI);
 //        addEntities();
 //        createLevel();
 //        SoundManager.setCamera(perspectiveCamera);
 //        enemySpawner = new EnemySpawner(engine);
-        Bullet.init();
-        /**create()*/
+        initBullet();
         initEnvironment();
         initModelBatch();
         initWorld();
         initPersCamera();
+        addEntities();
+    }
 
-        /** Create some simple models */
+    private void initBullet() {
+        Bullet.init();
+    }
+
+    private void initEnvironment() {
+//        environment = new Environment();
+//        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
+//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
+        environment = new Environment();
+        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
+        light = new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f);
+        light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
+        environment.add(light);
+        environment.shadowMap = light;
+    }
+
+    private void initPersCamera() {
+        perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
+//        perspectiveCamera.position.set(20f, 0f, 20f);
+        perspectiveCamera.position.set(10f, 10f, 10f);
+        perspectiveCamera.lookAt(0f, 0f, 0f);
+//        perspectiveCamera.near = 1f;
+//        perspectiveCamera.far = 300f;
+        perspectiveCamera.update();
+    }
+
+    private void addEntities() {
         final Model groundModel = modelBuilder.createRect(
                 20f,
                 0f,
@@ -150,28 +174,6 @@ public class GameWorld implements GestureDetector.GestureListener {
                 }
             }
         }
-    }
-
-    private void initPersCamera() {
-        perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
-//        perspectiveCamera.position.set(20f, 0f, 20f);
-        perspectiveCamera.position.set(10f, 10f, 10f);
-        perspectiveCamera.lookAt(0f, 0f, 0f);
-//        perspectiveCamera.near = 1f;
-//        perspectiveCamera.far = 300f;
-        perspectiveCamera.update();
-    }
-
-    private void initEnvironment() {
-//        environment = new Environment();
-//        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-        environment = new Environment();
-        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
-        light = new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f);
-        light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
-        environment.add(light);
-        environment.shadowMap = light;
     }
 
     private void initModelBatch() {
