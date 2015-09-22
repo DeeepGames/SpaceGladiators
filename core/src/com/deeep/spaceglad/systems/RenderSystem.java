@@ -22,16 +22,15 @@ public class RenderSystem extends EntitySystem {
         this.environment = environment;
     }
 
-    /// Event called when an entity is added to the engine
+    // Event called when an entity is added to the engine
     public void addedToEngine(Engine e) {
         // Grabs all entities with desired components
         entities = e.getEntitiesFor(Family.all(ModelComponent.class).get());
     }
 
     public void update(float delta) {
-        for (Entity e: entities) {
-
-            ModelComponent mod = e.getComponent(ModelComponent.class);
+        for (int i = 0; i < entities.size(); i++) {
+            ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
             batch.render(mod.instance, environment);
         }
     }
