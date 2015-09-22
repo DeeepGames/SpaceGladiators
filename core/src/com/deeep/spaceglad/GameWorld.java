@@ -319,7 +319,8 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public boolean tap(float x, float y, int count, int button) {
-        shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
+        //shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
+        shoot(x, y);
         return true;
     }
 
@@ -360,7 +361,20 @@ public class GameWorld implements GestureDetector.GestureListener {
     public BulletEntity shoot(final float x, final float y, final float impulse) {
         /** Shoot a box */
         Ray ray = perspectiveCamera.getPickRay(x, y);
-        BulletEntity entity = new BulletConstructor(boxModel, 1f).construct(ray.origin.x, ray.origin.y, ray.origin.z);
+        float mass = 1f;
+        final BoundingBox boundingBox = new BoundingBox();
+        boxModel.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+
+        Vector3 localInertia;
+        col.calculateLocalInertia(mass, tmpV);
+        localInertia = tmpV;
+
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
+        BulletEntity entity = new BulletEntity(boxModel, bodyInfo, ray.origin.x, ray.origin.y, ray.origin.z);
+
         world.add(entity);
         entity.setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
                 1f);
