@@ -128,23 +128,10 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void addEntities() {
         createGround();
-        final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
-                ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        disposables.add(boxModel);
 
-        /** Add the constructors */
-        world.addConstructor("box", new BulletConstructor(boxModel, 1f)); /** mass = 1kg: dynamic body */
-        world.addConstructor("staticbox", new BulletConstructor(boxModel, 0f)); /** mass = 0: static body */
         /***/
         /** Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually) */
-        final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-        disposables.add(texture);
-        final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
-        final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
-        final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
-        disposables.add(capsule);
-        world.addConstructor("capsule", new BulletConstructor(capsule, null));
-        character = world.add("capsule", 5f, 3f, 5f);
+        addCapsule();
         characterTransform = character.transform; /** Set by reference */
 
         /** Create the physics representation of the character */
@@ -165,11 +152,32 @@ public class GameWorld implements GestureDetector.GestureListener {
         for (int x = 0; x < BOXCOUNT_X; x++) {
             for (int y = 0; y < BOXCOUNT_Y; y++) {
                 for (int z = 0; z < BOXCOUNT_Z; z++) {
-                    world.add("box", BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z)
-                            .setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f);
+                    addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f);
                 }
             }
         }
+    }
+
+    private BulletEntity addBox(float x, float y, float z) {
+        final Model boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
+                ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        disposables.add(boxModel);
+
+        /** Add the constructors */
+        BulletEntity box = new BulletConstructor(boxModel, 1f).construct(x, y, z);
+        world.add(box);
+        return box;
+    }
+
+    private void addCapsule() {
+        final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+        disposables.add(texture);
+        final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
+        final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
+        final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
+        disposables.add(capsule);
+        character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
+        world.add(character);
     }
 
     private void createGround() {
@@ -192,8 +200,10 @@ public class GameWorld implements GestureDetector.GestureListener {
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(groundModel);
-        world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); /** mass = 0: static body */
-        ground = world.add("ground", 0f, 0f, 0f);
+        //world.addConstructor("ground", new BulletConstructor(groundModel, 0f)); /** mass = 0: static body */
+        //ground = world.add("ground", 0f, 0f, 0f);
+        ground = new BulletConstructor(groundModel, 0).construct(0, 0, 0);
+        world.add(ground);
         ground.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
     }
 
@@ -327,12 +337,14 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     public BulletEntity shoot(final String what, final float x, final float y, final float impulse) {
         // Shoot a box
+        /*
         Ray ray = perspectiveCamera.getPickRay(x, y);
         BulletEntity entity = world.add(what, ray.origin.x, ray.origin.y, ray.origin.z);
         entity.setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
                 1f);
-        ((btRigidBody) entity.body).applyCentralImpulse(ray.direction.scl(impulse));
-        return entity;
+        ((btRigidBody) entity.body).applyCentralImpulse(ray.direction.scl(impulse));*/
+        //return entity;
+        return null;
     }
 
     private void checkPause() {

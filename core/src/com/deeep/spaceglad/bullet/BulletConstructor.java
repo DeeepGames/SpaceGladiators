@@ -8,15 +8,16 @@ import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by scanevaro on 22/09/2015.
  */
-public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
+public class BulletConstructor implements Disposable {
+    public Model model = null;
     public btRigidBody.btRigidBodyConstructionInfo bodyInfo = null;
     public btCollisionShape shape = null;
     private final static Vector3 tmpV = new Vector3();
-
     /** Specify null for the shape to use only the renderable part of this entity and not the physics part. */
     public BulletConstructor (final Model model, final float mass, final btCollisionShape shape) {
         create(model, mass, shape);
@@ -83,7 +84,6 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
         shape = null;
     }
 
-    @Override
     public BulletEntity construct (float x, float y, float z) {
         if (bodyInfo == null && shape != null) {
             btCollisionObject obj = new btCollisionObject();
@@ -92,14 +92,4 @@ public class BulletConstructor extends BaseWorld.Constructor<BulletEntity> {
         } else
             return new BulletEntity(model, bodyInfo, x, y, z);
     }
-
-    @Override
-    public BulletEntity construct (final Matrix4 transform) {
-        if (bodyInfo == null && shape != null) {
-            btCollisionObject obj = new btCollisionObject();
-            obj.setCollisionShape(shape);
-            return new BulletEntity(model, obj, transform);
-        } else
-            return new BulletEntity(model, bodyInfo, transform);
     }
-}

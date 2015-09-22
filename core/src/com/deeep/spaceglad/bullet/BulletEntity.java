@@ -1,26 +1,47 @@
 package com.deeep.spaceglad.bullet;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
+import com.badlogic.gdx.utils.Disposable;
 
 /**
  * Created by scanevaro on 22/09/2015.
  */
-public class BulletEntity extends BaseEntity {
+public class BulletEntity implements Disposable {
+    public Matrix4 transform;
+    public ModelInstance modelInstance;
+    private Color color = new Color(1f, 1f, 1f, 1f);
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        setColor(color.r, color.g, color.b, color.a);
+    }
+
+    public void setColor(float r, float g, float b, float a) {
+        color.set(r, g, b, a);
+        if (modelInstance != null) {
+            for (Material m : modelInstance.materials) {
+                ColorAttribute ca = (ColorAttribute) m.get(ColorAttribute.Diffuse);
+                if (ca != null) ca.color.set(r, g, b, a);
+            }
+        }
+    }
     private final static Matrix4 tmpM = new Matrix4();
     public BulletEntity.MotionState motionState;
     public btCollisionObject body;
 
     public BulletEntity(final Model model, final btRigidBody.btRigidBodyConstructionInfo bodyInfo, final float x, final float y, final float z) {
         this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), x, y, z);
-    }
-
-    public BulletEntity(final Model model, final btRigidBody.btRigidBodyConstructionInfo bodyInfo, final Matrix4 transform) {
-        this(model, bodyInfo == null ? null : new btRigidBody(bodyInfo), transform);
     }
 
     public BulletEntity(final Model model, final btCollisionObject body, final float x, final float y, final float z) {

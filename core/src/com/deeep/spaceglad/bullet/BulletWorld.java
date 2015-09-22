@@ -8,14 +8,15 @@ import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.badlogic.gdx.utils.Array;
 
 /**
  * Created by scanevaro on 22/09/2015.
  */
-public class BulletWorld extends BaseWorld<BulletEntity> {
+public class BulletWorld {
     public DebugDrawer debugDrawer = null;
     public boolean renderMeshes = true;
-
+    protected final Array<BulletEntity> entities = new Array<BulletEntity>();
     public final btCollisionConfiguration collisionConfiguration;
     public final btCollisionDispatcher dispatcher;
     public final btBroadphaseInterface broadphase;
@@ -56,9 +57,10 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
         this(new Vector3(0, -10, 0));
     }
 
-    @Override
+
+
     public void add(final BulletEntity entity) {
-        super.add(entity);
+        entities.add(entity);
         if (entity.body != null) {
             if (entity.body instanceof btRigidBody)
                 ((btDiscreteDynamicsWorld) collisionWorld).addRigidBody((btRigidBody) entity.body);
@@ -69,15 +71,23 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
         }
     }
 
-    @Override
     public void update() {
         if (collisionWorld instanceof btDynamicsWorld)
             ((btDynamicsWorld) collisionWorld).stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps, fixedTimeStep);
     }
 
-    @Override
+    public void render (final ModelBatch batch, final Environment lights) {
+        for (final BulletEntity e : entities) {
+            batch.render(e.modelInstance, lights);
+        }
+    }
+
     public void render(ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
-        if (renderMeshes) super.render(batch, lights, entities);
+        if (renderMeshes) {
+            for (final BulletEntity e : entities) {
+                batch.render(e.modelInstance, lights);
+            }
+        }
         if (debugDrawer != null && debugDrawer.getDebugMode() > 0) {
             batch.flush();
             debugDrawer.begin(batch.getCamera());
@@ -86,7 +96,6 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
         }
     }
 
-    @Override
     public void dispose() {
         for (int i = 0; i < entities.size; i++) {
             btCollisionObject body = entities.get(i).body;
@@ -98,7 +107,13 @@ public class BulletWorld extends BaseWorld<BulletEntity> {
             }
         }
 
-        super.dispose();
+        for (int i = 0; i < entities.size; i++)
+            entities.get(i).dispose();
+        entities.clear();
+
+
+
+        //models.clear();
 
         collisionWorld.dispose();
         if (solver != null) solver.dispose();
