@@ -98,7 +98,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         // And update the character controller
         playerCollision.characterController.setWalkDirection(walkDirection);
-        // Now we can update the world as normally
+        // Now we can update the bulletWorld as normally
         // And fetch the new transformation of the character (this will make the model be rendered correctly)
         playerCollision.pair.getWorldTransform(playerCollision.characterTransform);
         camera.update(true);

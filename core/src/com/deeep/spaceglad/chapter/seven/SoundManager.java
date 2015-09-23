@@ -149,7 +149,7 @@ public class SoundManager {
         }
 
         /**
-         * Sets the Music position in the world
+         * Sets the Music position in the bulletWorld
          * @param position
          */
         public void setPosition(Vector3 position){
@@ -157,7 +157,7 @@ public class SoundManager {
         }
 
         /**
-         * Updates the position in the world.
+         * Updates the position in the bulletWorld.
          * @param position
          */
         public void update(Vector3 position){

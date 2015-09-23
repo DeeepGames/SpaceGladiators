@@ -23,7 +23,7 @@ public class GameScreen implements Screen {
         gameWorld = new GameWorld(gameUI);
         Settings.Paused = false;
         Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, new GestureDetector(gameWorld)));
-        //Gdx.input.setCursorCatched(true);
+        Gdx.input.setCursorCatched(true);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         /** Updates */
-        gameWorld.update();
+        gameWorld.update(delta);
         gameUI.update(delta);
         /** Draw */
         gameWorld.render(delta);
