@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
         gameWorld.update(delta);
         gameUI.update(delta);
         /** Draw */
-        gameWorld.render();
+        gameWorld.render(delta);
         gameUI.render();
     }
 

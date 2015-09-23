@@ -187,7 +187,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         engine.addSystem(new RenderSystem(modelBatch, environment));
     }
 
-    public void render() {
+    public void render(float delta) {
         light.begin(Vector3.Zero, perspectiveCamera.direction);
         shadowBatch.begin(light.getCamera());
         bulletWorld.render(shadowBatch, null);
@@ -195,7 +195,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         light.end();
         modelBatch.begin(perspectiveCamera);
         bulletWorld.render(modelBatch, environment);
-        engine.update(Gdx.graphics.getDeltaTime());
+        engine.update(delta);
         bulletWorld.collisionWorld.debugDrawWorld();
         modelBatch.end();
     }
