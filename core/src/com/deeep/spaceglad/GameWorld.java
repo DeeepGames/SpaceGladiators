@@ -1,7 +1,6 @@
 package com.deeep.spaceglad;
 
 import com.badlogic.ashley.core.Engine;
-import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
@@ -36,7 +35,6 @@ import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
-import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.RenderSystem;
 
@@ -180,7 +178,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
-        BulletEntity box = EntityFactory.createDynamic(boxModel,0.05f, x, y, z);
+        BulletEntity box = EntityFactory.createDynamic(boxModel, 0.05f, x, y, z);
         world.add(box);
         return box;
     }
@@ -192,7 +190,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
         final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
         disposables.add(capsule);
-        character = EntityFactory.createDynamic(capsule,-1,5,3,5);
+        character = EntityFactory.createDynamic(capsule, -1, 5, 3, 5);
         //character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
         world.add(character);
     }
@@ -202,13 +200,13 @@ public class GameWorld implements GestureDetector.GestureListener {
         final Model wallModel = modelBuilder.createRect(
                 0f, -10f, -20f,
                 0f, 10f, -20f,
-                0f, 10f,  20f,
-                0f, -10f,  20f,
+                0f, 10f, 20f,
+                0f, -10f, 20f,
                 0, 1, 0,
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(wallModel);
-        wall = EntityFactory.createStatic(wallModel,-20,10,0);
+        wall = EntityFactory.createStatic(wallModel, -20, 10, 0);
         wall.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
         world.add(wall);
 /*
@@ -232,7 +230,7 @@ public class GameWorld implements GestureDetector.GestureListener {
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(groundModel);
-        ground = EntityFactory.createStatic(groundModel,0,0,0);
+        ground = EntityFactory.createStatic(groundModel, 0, 0, 0);
         ground.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
         world.add(ground);
 
@@ -342,9 +340,9 @@ public class GameWorld implements GestureDetector.GestureListener {
         return false;
     }
 
+    @Override
     public boolean tap(float x, float y, int count, int button) {
-        //shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
-        shoot(x, y);
+        shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
         return true;
     }
 
