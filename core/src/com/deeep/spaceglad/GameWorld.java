@@ -196,7 +196,6 @@ public class GameWorld implements GestureDetector.GestureListener {
         modelBatch.begin(perspectiveCamera);
         bulletWorld.render(modelBatch, environment);
         engine.update(delta);
-        bulletWorld.collisionWorld.debugDrawWorld();
         modelBatch.end();
     }
 
