@@ -59,14 +59,14 @@ public class GameWorld implements GestureDetector.GestureListener {
     public BulletWorld world;
     public ModelBuilder modelBuilder = new ModelBuilder();
     public Array<Disposable> disposables = new Array<Disposable>();
-    BulletEntity ground;
-    BulletEntity wall;
+    Entity ground;
+    Entity wall;
     BulletEntity character;
     Matrix4 characterTransform;
     btPairCachingGhostObject ghostObject;
     btConvexShape ghostShape;
     btKinematicCharacterController characterController;
-    btGhostPairCallback ghostPairCallback;
+
     final int BOXCOUNT_X = 5;
     final int BOXCOUNT_Y = 5;
     final int BOXCOUNT_Z = 1;
@@ -131,14 +131,8 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void initWorld() {
         /** We create the world using an axis sweep broadphase for this test */
-        btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
-        btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        btAxisSweep3 sweep = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
-        btSequentialImpulseConstraintSolver solver = new btSequentialImpulseConstraintSolver();
-        btDiscreteDynamicsWorld collisionWorld = new btDiscreteDynamicsWorld(dispatcher, sweep, solver, collisionConfiguration);
-        ghostPairCallback = new btGhostPairCallback();
-        sweep.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
-        world = new BulletWorld(collisionConfiguration, dispatcher, sweep, solver, collisionWorld);
+
+        world = new BulletWorld();
         //TODO remove this
         debugDrawer = new DebugDrawer();
         debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
@@ -171,18 +165,20 @@ public class GameWorld implements GestureDetector.GestureListener {
         for (int x = 0; x < BOXCOUNT_X; x++) {
             for (int y = 0; y < BOXCOUNT_Y; y++) {
                 for (int z = 0; z < BOXCOUNT_Z; z++) {
-                    addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f);
+                    //addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f);
+                    addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f));
                 }
             }
         }
     }
 
-    private BulletEntity addBox(float x, float y, float z) {
+    private Entity addBox(float x, float y, float z) {
         boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
-        BulletEntity box = EntityFactory.createDynamic(boxModel,0.05f, x, y, z);
-        world.add(box);
+        Entity box = EntityFactory.createDynamicEntity(boxModel, 0.05f, x, y, z);
+        world.add(box.getComponent(BulletComponent.class));
+        engine.addEntity(box);
         return box;
     }
 
@@ -193,7 +189,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
         final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
         disposables.add(capsule);
-        character = EntityFactory.createDynamic(capsule,-1,5,3,5);
+        character = EntityFactory.createDynamic(capsule, -1, 5, 3, 5);
         //character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
         world.add(character);
     }
@@ -202,15 +198,16 @@ public class GameWorld implements GestureDetector.GestureListener {
         final Model wallModel = modelBuilder.createRect(
                 0f, -10f, -20f,
                 0f, 10f, -20f,
-                0f, 10f,  20f,
-                0f, -10f,  20f,
+                0f, 10f, 20f,
+                0f, -10f, 20f,
                 0, 1, 0,
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        Entity entity = EntityFactory.createStaticEntity(wallModel,-20,10,0);
-        entity.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
-        engine.addEntity(entity);
-        world.add(entity.getComponent(BulletComponent.class));
+        wall = EntityFactory.createStaticEntity(wallModel, -20, 10, 0);
+        wall.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
+        engine.addEntity(wall);
+        world.add(wall.getComponent(BulletComponent.class));
+
         final Model groundModel = modelBuilder.createRect(
                 20f, 0f, -20f,
                 -20f, 0f, -20f,
@@ -220,9 +217,10 @@ public class GameWorld implements GestureDetector.GestureListener {
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(groundModel);
-        ground = EntityFactory.createStatic(groundModel,0,0,0);
-        ground.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
-        world.add(ground);
+        ground = EntityFactory.createStaticEntity(groundModel, 0, 0, 0);
+        ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
+        engine.addEntity(ground);
+        world.add(ground.getComponent(BulletComponent.class));
 
 
     }
@@ -366,32 +364,21 @@ public class GameWorld implements GestureDetector.GestureListener {
         return false;
     }
 
-    public BulletEntity shoot(final float x, final float y) {
-        return shoot(x,y, 30f);
+    public Entity shoot(final float x, final float y) {
+        return shoot(x, y, 30f);
     }
 
-    public BulletEntity shoot(final float x, final float y, final float impulse) {
+    public Entity shoot(final float x, final float y, final float impulse) {
         /** Shoot a box */
         Ray ray = perspectiveCamera.getPickRay(x, y);
         float mass = 1f;
-        final BoundingBox boundingBox = new BoundingBox();
-        boxModel.calculateBoundingBox(boundingBox);
-        Vector3 tmpV = new Vector3();
-        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
-
-        Vector3 localInertia;
-        col.calculateLocalInertia(mass, tmpV);
-        localInertia = tmpV;
-
-        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
-        BulletEntity entity = new BulletEntity(boxModel, bodyInfo, ray.origin.x, ray.origin.y, ray.origin.z);
-
-        world.add(entity);
-        entity.setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
-                1f);
-        ((btRigidBody) entity.body).applyCentralImpulse(ray.direction.scl(impulse));
-        return entity;
+        Entity bullet = EntityFactory.createDynamicEntity(boxModel, mass, ray.origin.x, ray.origin.y, ray.origin.z);
+        world.add(bullet.getComponent(BulletComponent.class));
+        bullet.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
+                1f));
+        ((btRigidBody) bullet.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(impulse));
+        engine.addEntity(bullet);
+        return bullet;
     }
 
     private void checkPause() {
@@ -433,7 +420,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         characterController.dispose();
         ghostObject.dispose();
         ghostShape.dispose();
-        ghostPairCallback.dispose();
+        //ghostPairCallback.dispose();
         ground = null;
     }
 }

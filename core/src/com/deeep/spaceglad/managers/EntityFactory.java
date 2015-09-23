@@ -157,6 +157,21 @@ public class EntityFactory {
         Vector3 tmpV = new Vector3();
         btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
         btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, col, Vector3.Zero);
+        return new BulletEntity(model, bodyInfo, x, y, z);
+    }
+
+    public static Entity createDynamicEntity(Model model, float mass, float x, float y, float z){
+        final BoundingBox boundingBox = new BoundingBox();
+        model.calculateBoundingBox(boundingBox);
+        Vector3 tmpV = new Vector3();
+        btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
+
+        Vector3 localInertia;
+        col.calculateLocalInertia(mass, tmpV);
+        localInertia = tmpV;
+
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
 
         Entity entity = new Entity();
 
@@ -171,7 +186,9 @@ public class EntityFactory {
         bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
         ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
 
-        return new BulletEntity(model, bodyInfo, x, y, z);
+        entity.add(bulletComponent);
+
+        return entity;
     }
 
     public static BulletEntity createDynamic(Model model, float mass, float x, float y, float z){

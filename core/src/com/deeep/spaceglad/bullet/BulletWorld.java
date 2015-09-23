@@ -24,38 +24,22 @@ public class BulletWorld {
     public final btConstraintSolver solver;
     public final btCollisionWorld collisionWorld;
     public final Vector3 gravity;
-
+    public btGhostPairCallback ghostPairCallback;
     public int maxSubSteps = 5;
     public float fixedTimeStep = 1f / 60f;
 
-    public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-                       final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world, final Vector3 gravity) {
-        this.collisionConfiguration = collisionConfiguration;
-        this.dispatcher = dispatcher;
-        this.broadphase = broadphase;
-        this.solver = solver;
-        this.collisionWorld = world;
-        if (world instanceof btDynamicsWorld) ((btDynamicsWorld) this.collisionWorld).setGravity(gravity);
-        this.gravity = gravity;
-    }
-
-    public BulletWorld(final btCollisionConfiguration collisionConfiguration, final btCollisionDispatcher dispatcher,
-                       final btBroadphaseInterface broadphase, final btConstraintSolver solver, final btCollisionWorld world) {
-        this(collisionConfiguration, dispatcher, broadphase, solver, world, new Vector3(0, -10, 0));
-    }
-
-    public BulletWorld(final Vector3 gravity) {
-        collisionConfiguration = new btDefaultCollisionConfiguration();
-        dispatcher = new btCollisionDispatcher(collisionConfiguration);
-        broadphase = new btDbvtBroadphase();
-        solver = new btSequentialImpulseConstraintSolver();
-        collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-        ((btDynamicsWorld) collisionWorld).setGravity(gravity);
-        this.gravity = gravity;
-    }
 
     public BulletWorld() {
-        this(new Vector3(0, -10, 0));
+        this.collisionConfiguration = new btDefaultCollisionConfiguration();
+        dispatcher = new btCollisionDispatcher(this.collisionConfiguration);
+        this.broadphase = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
+        solver = new btSequentialImpulseConstraintSolver();
+        collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, this.collisionConfiguration);
+        ghostPairCallback = new btGhostPairCallback();
+        broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);;
+        this.gravity = new Vector3(0, -10, 0);
+        ((btDynamicsWorld) this.collisionWorld).setGravity(gravity);
+
     }
 
 
