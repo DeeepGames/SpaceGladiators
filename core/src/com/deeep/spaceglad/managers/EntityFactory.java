@@ -145,6 +145,7 @@ public class EntityFactory {
         bulletComponent.body.userData = entity;
         bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
         ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
+        entity.add(bulletComponent);
 
         return entity;
     }

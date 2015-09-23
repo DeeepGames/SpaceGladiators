@@ -36,6 +36,7 @@ import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
+import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.RenderSystem;
@@ -198,20 +199,6 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void createGround() {
-
-        final Model wallModel = modelBuilder.createRect(
-                0f, -10f, -20f,
-                0f, 10f, -20f,
-                0f, 10f,  20f,
-                0f, -10f,  20f,
-                0, 1, 0,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        disposables.add(wallModel);
-        wall = EntityFactory.createStatic(wallModel,-20,10,0);
-        wall.setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
-        world.add(wall);
-/*
         final Model wallModel = modelBuilder.createRect(
                 0f, -10f, -20f,
                 0f, 10f, -20f,
@@ -221,8 +208,9 @@ public class GameWorld implements GestureDetector.GestureListener {
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         Entity entity = EntityFactory.createStaticEntity(wallModel,-20,10,0);
-        entity.getComponent(ModelComponent.class).color.set(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
-        engine.addEntity(entity);*/
+        entity.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
+        engine.addEntity(entity);
+        world.add(entity.getComponent(BulletComponent.class));
         final Model groundModel = modelBuilder.createRect(
                 20f, 0f, -20f,
                 -20f, 0f, -20f,
@@ -379,7 +367,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public BulletEntity shoot(final float x, final float y) {
-        return shoot(x, y, 30f);
+        return shoot(x,y, 30f);
     }
 
     public BulletEntity shoot(final float x, final float y, final float impulse) {

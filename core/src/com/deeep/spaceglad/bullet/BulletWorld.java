@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
+import com.deeep.spaceglad.components.BulletComponent;
 
 /**
  * Created by scanevaro on 22/09/2015.
@@ -68,6 +69,15 @@ public class BulletWorld {
                 collisionWorld.addCollisionObject(entity.body);
             // Store the index of the entity in the collision object.
             entity.body.setUserValue(entities.size - 1);
+        }
+    }
+
+    public void add(BulletComponent bulletComponent){
+        if(bulletComponent.body != null){
+            if (bulletComponent.body instanceof btRigidBody)
+                ((btDiscreteDynamicsWorld) collisionWorld).addRigidBody((btRigidBody) bulletComponent.body);
+            else
+                collisionWorld.addCollisionObject(bulletComponent.body);
         }
     }
 
