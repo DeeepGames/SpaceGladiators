@@ -51,22 +51,21 @@ public class GameWorld implements GestureDetector.GestureListener {
     public BulletWorld bulletWorld;
     public ModelBuilder modelBuilder = new ModelBuilder();
     public Array<Disposable> disposables = new Array<Disposable>();
-    BulletEntity ground;
-    BulletEntity wall;
-    BulletEntity character;
-    Matrix4 characterTransform;
-    btPairCachingGhostObject ghostObject;
-    btConvexShape ghostShape;
-    btKinematicCharacterController characterController;
-    btGhostPairCallback ghostPairCallback;
+    private BulletEntity ground;
+    private BulletEntity character;
+    private Matrix4 characterTransform;
+    private btPairCachingGhostObject ghostObject;
+    private btConvexShape ghostShape;
+    private btKinematicCharacterController characterController;
+    private btGhostPairCallback ghostPairCallback;
     final int BOXCOUNT_X = 5;
     final int BOXCOUNT_Y = 5;
     final int BOXCOUNT_Z = 1;
     final float BOXOFFSET_X = -2.5f;
     final float BOXOFFSET_Y = 0.5f;
     final float BOXOFFSET_Z = 0f;
-    Vector3 characterDirection = new Vector3();
-    Vector3 walkDirection = new Vector3();
+    private Vector3 characterDirection = new Vector3();
+    private Vector3 walkDirection = new Vector3();
     private Model boxModel;
 
     public GameWorld(GameUI gameUI) {
