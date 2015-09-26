@@ -61,7 +61,13 @@ public class GameWorld implements GestureDetector.GestureListener {
     public Array<Disposable> disposables = new Array<Disposable>();
     Entity ground;
     Entity wall;
+
+    //TODO comment this
     BulletEntity character;
+
+    //TODO uncomment this
+    //Entity character;
+
     Matrix4 characterTransform;
     btPairCachingGhostObject ghostObject;
     btConvexShape ghostShape;
@@ -145,7 +151,11 @@ public class GameWorld implements GestureDetector.GestureListener {
         /***/
         /** Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually) */
         addCapsule();
+
+        //TODO comment this
         characterTransform = character.transform; /** Set by reference */
+        //TODO uncomment this
+        //characterTransform = character.getComponent(BulletComponent.class).transform;
 
         /** Create the physics representation of the character */
         ghostObject = new btPairCachingGhostObject();
@@ -177,7 +187,7 @@ public class GameWorld implements GestureDetector.GestureListener {
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
         Entity box = EntityFactory.createDynamicEntity(boxModel, 0.05f, x, y, z);
-        world.add(box.getComponent(BulletComponent.class));
+        //world.add(box);
         engine.addEntity(box);
         return box;
     }
@@ -189,8 +199,13 @@ public class GameWorld implements GestureDetector.GestureListener {
         final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
         final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
         disposables.add(capsule);
-        character = EntityFactory.createDynamic(capsule, -1, 5, 3, 5);
-        //character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
+
+        //TODO uncomment this
+        //character = EntityFactory.createEmpty(capsule, 5, 3, 5);
+        //engine.addEntity(character);
+
+        //TODO comment this
+        character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
         world.add(character);
     }
 
@@ -206,7 +221,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         wall = EntityFactory.createStaticEntity(wallModel, -20, 10, 0);
         wall.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
         engine.addEntity(wall);
-        world.add(wall.getComponent(BulletComponent.class));
+        //world.add(wall);
 
         final Model groundModel = modelBuilder.createRect(
                 20f, 0f, -20f,
@@ -220,7 +235,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         ground = EntityFactory.createStaticEntity(groundModel, 0, 0, 0);
         ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
         engine.addEntity(ground);
-        world.add(ground.getComponent(BulletComponent.class));
+        //world.add(ground));
 
 
     }
@@ -231,6 +246,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 //        engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
 //        engine.addSystem(movementSystem = new MovementSystem());
         engine.addSystem(new RenderSystem(modelBatch, environment));
+        engine.addSystem(world);
 //        engine.addSystem(new AISystem());
     }
 
@@ -284,6 +300,10 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void update() {
+        {
+
+           // System.out.println(characterTransform);
+        }
         /** If the left or right key is pressed, rotate the character and update its physics update accordingly. */
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             characterTransform.rotate(0, 1, 0, 5f);
@@ -318,7 +338,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         /** And update the character controller */
         characterController.setWalkDirection(walkDirection);
         /** Now we can update the world as normally */
-        world.update();
+        world.update(Gdx.graphics.getDeltaTime());
         /** And fetch the new transformation of the character (this will make the model be rendered correctly) */
         ghostObject.getWorldTransform(characterTransform);
     }
@@ -373,7 +393,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         Ray ray = perspectiveCamera.getPickRay(x, y);
         float mass = 1f;
         Entity bullet = EntityFactory.createDynamicEntity(boxModel, mass, ray.origin.x, ray.origin.y, ray.origin.z);
-        world.add(bullet.getComponent(BulletComponent.class));
+        //world.add(bullet);
         bullet.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
                 1f));
         ((btRigidBody) bullet.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(impulse));

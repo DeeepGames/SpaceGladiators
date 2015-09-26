@@ -150,6 +150,13 @@ public class EntityFactory {
         return entity;
     }
 
+    public static Entity createBulletPlayerComponent(){
+        Entity entity = new Entity();
+        BulletPlayerComponent bulletPlayerComponent = new BulletPlayerComponent();
+        entity.add(bulletPlayerComponent);
+        return entity;
+    }
+
     public static BulletEntity createStatic(Model model,float x, float y, float z){
 
         final BoundingBox boundingBox = new BoundingBox();
@@ -204,5 +211,17 @@ public class EntityFactory {
         // For now just pass null as the motionstate, we'll add that to the body in the entity itself
         btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
         return new BulletEntity(model, bodyInfo, x, y, z);
+    }
+
+    public static Entity createEmpty(Model model, float x, float y, float z){
+        Entity entity = new Entity();
+
+        ModelComponent modelComponent = new ModelComponent(model);
+        modelComponent.transform = new Matrix4().setToTranslation(x,y,z);
+        modelComponent.instance = new ModelInstance(model,modelComponent.transform.cpy());
+        entity.add(modelComponent);
+
+        return entity;
+        //return new BulletEntity(model, (btRigidBody.btRigidBodyConstructionInfo) null, x, y, z);
     }
 }
