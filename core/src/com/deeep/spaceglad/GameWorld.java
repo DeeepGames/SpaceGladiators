@@ -35,6 +35,7 @@ import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 
 /**
@@ -202,6 +203,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 //        engine.addSystem(movementSystem = new MovementSystem());
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
+        engine.addSystem(new PlayerSystem());
 //        engine.addSystem(new AISystem());
     }
 
@@ -255,24 +257,6 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void update() {
-        /** If the left or right key is pressed, rotate the character and update its physics update accordingly. */
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
-            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
-
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
-            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
-        }
-        /** Fetch which direction the character is facing now */
-        character.getComponent(CharacterComponent.class).characterDirection.set(-1, 0, 0).rot(character.getComponent(ModelComponent.class).transform).nor();
-        /** Set the walking direction accordingly (either forward or backward) */
-        character.getComponent(CharacterComponent.class).walkDirection.set(0, 0, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            character.getComponent(CharacterComponent.class).walkDirection.add(character.getComponent(CharacterComponent.class).characterDirection);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            character.getComponent(CharacterComponent.class).walkDirection.add(-character.getComponent(CharacterComponent.class).characterDirection.x, -character.getComponent(CharacterComponent.class).characterDirection.y, -character.getComponent(CharacterComponent.class).characterDirection.z);
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             firstPersonCameraController.forward();
         }
@@ -285,19 +269,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             firstPersonCameraController.right();
         }
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            character.getComponent(CharacterComponent.class).characterController.setJumpSpeed(15);
-            character.getComponent(CharacterComponent.class).characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
-        }
-
-        character.getComponent(CharacterComponent.class).walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
-        /** And update the character controller */
-        character.getComponent(CharacterComponent.class).characterController.setWalkDirection(character.getComponent(CharacterComponent.class).walkDirection);
-        /** Now we can update the world as normally */
-        world.update(Gdx.graphics.getDeltaTime());
-        /** And fetch the new transformation of the character (this will make the model be rendered correctly) */
-        character.getComponent(CharacterComponent.class).ghostObject.getWorldTransform(character.getComponent(ModelComponent.class).transform);
-        character.getComponent(ModelComponent.class).instance.transform = character.getComponent(ModelComponent.class).transform;
+       world.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override
