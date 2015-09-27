@@ -55,6 +55,7 @@ public class EntityFactory {
         return entity;
     }
 
+    /*
     public static Entity createEnemy(float x, float y, float z) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
@@ -72,7 +73,7 @@ public class EntityFactory {
         collisionComponent.body.setUserValue(4);
         entity.add(collisionComponent);
         return entity;
-    }
+    }*/
 
     public static Entity createBullet(Vector3 position, Vector3 velocity) {
         Entity entity = new Entity();
@@ -94,17 +95,18 @@ public class EntityFactory {
         return entity;
     }
 
+    /*
     public static Entity createPlayer(float x, float y, float z) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
         entity.add(new VelocityComponent());
         entity.add(new RotationComponent(0, 0, 0));
         entity.add(new StatusComponent());
-        entity.add(new RenderableComponent());/*
+        entity.add(new RenderableComponent());
         entity.add(new ModelComponent(
                 new ModelBuilder().createCapsule(1, 4, 16,
                         new Material(ColorAttribute.createDiffuse(Color.GRAY)),
-                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));*/
+                        VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal)));
         entity.add(new PlayerComponent());
         CollisionComponent collisionComponent = new CollisionComponent(new btCapsuleShape(1, 2),1, true);
         //collisionComponent.rigidBody.userData = entity;
@@ -114,6 +116,7 @@ public class EntityFactory {
         entity.add(collisionComponent);
         return entity;
     }
+    */
 
     public static Entity createGround() {
         Entity ground = new Entity();
@@ -229,6 +232,38 @@ public class EntityFactory {
         return new BulletEntity(model, bodyInfo, x, y, z);
     }
 
+    private static Entity createCharacter(float x, float y, float z){
+        Entity entity = new Entity();
+
+        ModelComponent modelComponent = new ModelComponent(playerModel);
+        modelComponent.transform = new Matrix4().setToTranslation(x,y,z);
+        modelComponent.instance = new ModelInstance(playerModel,modelComponent.transform.cpy());
+        entity.add(modelComponent);
+
+        CharacterComponent characterComponent = new CharacterComponent();
+        characterComponent.ghostObject = new btPairCachingGhostObject();
+        characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
+        characterComponent.ghostShape = new btCapsuleShape(2f, 2f);
+        characterComponent.ghostObject.setCollisionShape(characterComponent.ghostShape);
+        characterComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        characterComponent.characterController = new btKinematicCharacterController(characterComponent.ghostObject, characterComponent.ghostShape, .35f);
+        entity.add(characterComponent);
+
+        return entity;
+    }
+
+    public static Entity createPlayer(float x, float y, float z){
+        Entity entity = createCharacter(x,y,z);
+        entity.add(new PlayerComponent());
+        return entity;
+    }
+
+    public static Entity createEnemy(float x, float y, float z){
+        Entity entity = createCharacter(x,y,z);
+        //TODO andreas
+        return entity;
+    }
+
     public static Entity createEmpty(Model model, float x, float y, float z){
         Entity entity = new Entity();
 
@@ -247,5 +282,10 @@ public class EntityFactory {
         entity.add(characterComponent);
 
         return entity;
+    }
+
+    public static void dispose() {
+        playerModel.dispose();
+        playerTexture.dispose();
     }
 }

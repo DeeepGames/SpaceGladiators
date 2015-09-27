@@ -57,8 +57,8 @@ public class GameWorld implements GestureDetector.GestureListener {
     Entity character;
 
     final int BOXCOUNT_X = 5;
-    final int BOXCOUNT_Y = 5;
-    final int BOXCOUNT_Z = 1;
+    final int BOXCOUNT_Y = 3;
+    final int BOXCOUNT_Z = 5;
     final float BOXOFFSET_X = -2.5f;
     final float BOXOFFSET_Y = 0.5f;
     final float BOXOFFSET_Z = 0f;
@@ -160,13 +160,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void createPlayer(float x, float y, float z) {
-        final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-        final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
-        final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
-        final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
-        disposables.add(capsule);
-        disposables.add(texture);
-        character = EntityFactory.createEmpty(capsule, x, y, z);
+        character = EntityFactory.createPlayer(x, y, z);
         engine.addEntity(character);
     }
 
@@ -403,7 +397,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();
-        //ghostPairCallback.dispose();
+        EntityFactory.dispose();
         ground = null;
     }
 }
