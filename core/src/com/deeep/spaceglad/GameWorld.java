@@ -32,7 +32,7 @@ import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.components.BulletComponent;
-import com.deeep.spaceglad.components.BulletPlayerComponent;
+import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.RenderSystem;
@@ -134,10 +134,10 @@ public class GameWorld implements GestureDetector.GestureListener {
         /** Create the physics representation of the character */
 
         /** And add it to the physics world */
-        world.collisionWorld.addCollisionObject(character.getComponent(BulletPlayerComponent.class).ghostObject,
+        world.collisionWorld.addCollisionObject(character.getComponent(CharacterComponent.class).ghostObject,
                 (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                 (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(BulletPlayerComponent.class).characterController);
+        ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(CharacterComponent.class).characterController);
 
         /** Create some boxes to play with */
         for (int x = 0; x < BOXCOUNT_X; x++) {
@@ -263,22 +263,22 @@ public class GameWorld implements GestureDetector.GestureListener {
     public void update() {
         /** If the left or right key is pressed, rotate the character and update its physics update accordingly. */
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
-            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
+            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
+            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
 
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
-            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
+            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
+            character.getComponent(CharacterComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
         }
         /** Fetch which direction the character is facing now */
-        character.getComponent(BulletPlayerComponent.class).characterDirection.set(-1, 0, 0).rot(character.getComponent(ModelComponent.class).transform).nor();
+        character.getComponent(CharacterComponent.class).characterDirection.set(-1, 0, 0).rot(character.getComponent(ModelComponent.class).transform).nor();
         /** Set the walking direction accordingly (either forward or backward) */
-        character.getComponent(BulletPlayerComponent.class).walkDirection.set(0, 0, 0);
+        character.getComponent(CharacterComponent.class).walkDirection.set(0, 0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            character.getComponent(BulletPlayerComponent.class).walkDirection.add(character.getComponent(BulletPlayerComponent.class).characterDirection);
+            character.getComponent(CharacterComponent.class).walkDirection.add(character.getComponent(CharacterComponent.class).characterDirection);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            character.getComponent(BulletPlayerComponent.class).walkDirection.add(-character.getComponent(BulletPlayerComponent.class).characterDirection.x, -character.getComponent(BulletPlayerComponent.class).characterDirection.y, -character.getComponent(BulletPlayerComponent.class).characterDirection.z);
+            character.getComponent(CharacterComponent.class).walkDirection.add(-character.getComponent(CharacterComponent.class).characterDirection.x, -character.getComponent(CharacterComponent.class).characterDirection.y, -character.getComponent(CharacterComponent.class).characterDirection.z);
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             firstPersonCameraController.forward();
         }
@@ -292,17 +292,17 @@ public class GameWorld implements GestureDetector.GestureListener {
             firstPersonCameraController.right();
         }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            character.getComponent(BulletPlayerComponent.class).characterController.setJumpSpeed(15);
-            character.getComponent(BulletPlayerComponent.class).characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
+            character.getComponent(CharacterComponent.class).characterController.setJumpSpeed(15);
+            character.getComponent(CharacterComponent.class).characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
         }
 
-        character.getComponent(BulletPlayerComponent.class).walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
+        character.getComponent(CharacterComponent.class).walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         /** And update the character controller */
-        character.getComponent(BulletPlayerComponent.class).characterController.setWalkDirection(character.getComponent(BulletPlayerComponent.class).walkDirection);
+        character.getComponent(CharacterComponent.class).characterController.setWalkDirection(character.getComponent(CharacterComponent.class).walkDirection);
         /** Now we can update the world as normally */
         world.update(Gdx.graphics.getDeltaTime());
         /** And fetch the new transformation of the character (this will make the model be rendered correctly) */
-        character.getComponent(BulletPlayerComponent.class).ghostObject.getWorldTransform(character.getComponent(ModelComponent.class).transform);
+        character.getComponent(CharacterComponent.class).ghostObject.getWorldTransform(character.getComponent(ModelComponent.class).transform);
         character.getComponent(ModelComponent.class).instance.transform = character.getComponent(ModelComponent.class).transform;
     }
 
@@ -382,8 +382,8 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void dispose() {
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(BulletPlayerComponent.class).characterController);
-        world.collisionWorld.removeCollisionObject(character.getComponent(BulletPlayerComponent.class).ghostObject);
+        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(CharacterComponent.class).characterController);
+        world.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
         /***/
         world.dispose();
         world = null;
@@ -400,9 +400,9 @@ public class GameWorld implements GestureDetector.GestureListener {
         light.dispose();
         light = null;
         /***/
-        character.getComponent(BulletPlayerComponent.class).characterController.dispose();
-        character.getComponent(BulletPlayerComponent.class).ghostObject.dispose();
-        character.getComponent(BulletPlayerComponent.class).ghostShape.dispose();
+        character.getComponent(CharacterComponent.class).characterController.dispose();
+        character.getComponent(CharacterComponent.class).ghostObject.dispose();
+        character.getComponent(CharacterComponent.class).ghostShape.dispose();
         //ghostPairCallback.dispose();
         ground = null;
     }

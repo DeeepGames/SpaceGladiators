@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 /**
  * Created by Elamre on 9/26/2015.
  */
-public class BulletPlayerComponent extends Component {
+public class CharacterComponent extends Component {
     public btPairCachingGhostObject ghostObject;
     public btConvexShape ghostShape;
     public btKinematicCharacterController characterController;

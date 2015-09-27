@@ -1,12 +1,16 @@
 package com.deeep.spaceglad.managers;
 
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -22,6 +26,17 @@ import com.deeep.spaceglad.components.*;
  * Created by Elmar on 7-8-2015.
  */
 public class EntityFactory {
+    private static Model playerModel;
+    private static Texture playerTexture;
+    private static ModelBuilder modelBuilder;
+
+    static {
+        modelBuilder = new ModelBuilder();
+        playerTexture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
+        Material material = new Material(TextureAttribute.createDiffuse(playerTexture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
+        playerModel = modelBuilder.createCapsule(2f, 6f, 16, material,  VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
+    }
+
     public static Entity createWall(float x, float y, float z, float sizeX, float sizeY, float sizeZ, Vector3 orientation) {
         Entity entity = new Entity();
         entity.add(new PositionComponent(x, y, z));
@@ -153,8 +168,8 @@ public class EntityFactory {
 
     public static Entity createBulletPlayerComponent(){
         Entity entity = new Entity();
-        BulletPlayerComponent bulletPlayerComponent = new BulletPlayerComponent();
-        entity.add(bulletPlayerComponent);
+        CharacterComponent characterComponent = new CharacterComponent();
+        entity.add(characterComponent);
         return entity;
     }
 
@@ -222,14 +237,14 @@ public class EntityFactory {
         modelComponent.instance = new ModelInstance(model,modelComponent.transform.cpy());
         entity.add(modelComponent);
 
-        BulletPlayerComponent bulletPlayerComponent = new BulletPlayerComponent();
-        bulletPlayerComponent.ghostObject = new btPairCachingGhostObject();
-        bulletPlayerComponent.ghostObject.setWorldTransform(modelComponent.transform);
-        bulletPlayerComponent.ghostShape = new btCapsuleShape(2f, 2f);
-        bulletPlayerComponent.ghostObject.setCollisionShape(bulletPlayerComponent.ghostShape);
-        bulletPlayerComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
-        bulletPlayerComponent.characterController = new btKinematicCharacterController(bulletPlayerComponent.ghostObject, bulletPlayerComponent.ghostShape, .35f);
-        entity.add(bulletPlayerComponent);
+        CharacterComponent characterComponent = new CharacterComponent();
+        characterComponent.ghostObject = new btPairCachingGhostObject();
+        characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
+        characterComponent.ghostShape = new btCapsuleShape(2f, 2f);
+        characterComponent.ghostObject.setCollisionShape(characterComponent.ghostShape);
+        characterComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        characterComponent.characterController = new btKinematicCharacterController(characterComponent.ghostObject, characterComponent.ghostShape, .35f);
+        entity.add(characterComponent);
 
         return entity;
     }

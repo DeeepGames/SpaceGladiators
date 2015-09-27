@@ -2,21 +2,17 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
-import com.deeep.spaceglad.managers.EntityFactory;
 
 /**
  * Created by Elmar on 8-8-2015.
  */
 public class PlayerSystem extends EntitySystem implements EntityListener {
     private Entity player;
-    private BulletPlayerComponent playerComponent;
+    private CharacterComponent playerComponent;
     private CollisionComponent playerCollision;
     private GameUI gameUI;
     private final Camera camera;
@@ -108,7 +104,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     @Override
     public void entityAdded(Entity entity) {
         //player = entity;
-        //playerComponent = entity.getComponent(BulletPlayerComponent.class);
+        //playerComponent = entity.getComponent(CharacterComponent.class);
         //playerCollision = entity.getComponent(CollisionComponent.class);
         //gameUI.healthWidget.setValue(playerComponent.health);
     }
