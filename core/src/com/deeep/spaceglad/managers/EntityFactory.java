@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.MotionState;
@@ -221,7 +222,15 @@ public class EntityFactory {
         modelComponent.instance = new ModelInstance(model,modelComponent.transform.cpy());
         entity.add(modelComponent);
 
+        BulletPlayerComponent bulletPlayerComponent = new BulletPlayerComponent();
+        bulletPlayerComponent.ghostObject = new btPairCachingGhostObject();
+        bulletPlayerComponent.ghostObject.setWorldTransform(modelComponent.transform);
+        bulletPlayerComponent.ghostShape = new btCapsuleShape(2f, 2f);
+        bulletPlayerComponent.ghostObject.setCollisionShape(bulletPlayerComponent.ghostShape);
+        bulletPlayerComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        bulletPlayerComponent.characterController = new btKinematicCharacterController(bulletPlayerComponent.ghostObject, bulletPlayerComponent.ghostShape, .35f);
+        entity.add(bulletPlayerComponent);
+
         return entity;
-        //return new BulletEntity(model, (btRigidBody.btRigidBodyConstructionInfo) null, x, y, z);
     }
 }

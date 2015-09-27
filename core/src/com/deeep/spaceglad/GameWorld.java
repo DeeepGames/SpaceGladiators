@@ -16,27 +16,23 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
-import com.badlogic.gdx.physics.bullet.collision.*;
+import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
-import com.deeep.spaceglad.bullet.BulletEntity;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
 import com.deeep.spaceglad.components.BulletComponent;
+import com.deeep.spaceglad.components.BulletPlayerComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.RenderSystem;
@@ -50,10 +46,6 @@ public class GameWorld implements GestureDetector.GestureListener {
     private Environment environment;
     private Engine engine;
     private ModelBatch modelBatch;
-    //    private MovementSystem movementSystem;
-//    private PlayerSystem playerSystem;
-//    private CollisionSystem collisionSystem;
-    //    private EnemySpawner enemySpawner;
     public DirectionalShadowLight light;
     public ModelBatch shadowBatch;
     public BulletWorld world;
@@ -62,16 +54,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     Entity ground;
     Entity wall;
 
-    //TODO comment this
-    BulletEntity character;
-
-    //TODO uncomment this
-    //Entity character;
-
-    Matrix4 characterTransform;
-    btPairCachingGhostObject ghostObject;
-    btConvexShape ghostShape;
-    btKinematicCharacterController characterController;
+    Entity character;
 
     final int BOXCOUNT_X = 5;
     final int BOXCOUNT_Y = 5;
@@ -79,8 +62,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     final float BOXOFFSET_X = -2.5f;
     final float BOXOFFSET_Y = 0.5f;
     final float BOXOFFSET_Z = 0f;
-    Vector3 characterDirection = new Vector3();
-    Vector3 walkDirection = new Vector3();
+
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
     public static DebugDrawer debugDrawer;
     private Model boxModel;
@@ -120,11 +102,8 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void initPersCamera() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
-//        perspectiveCamera.position.set(20f, 0f, 20f);
         perspectiveCamera.position.set(10f, 10f, 10f);
         perspectiveCamera.lookAt(0f, 0f, 0f);
-//        perspectiveCamera.near = 1f;
-//        perspectiveCamera.far = 300f;
         perspectiveCamera.update();
         firstPersonCameraController = new FirstPersonCameraController(perspectiveCamera);
         Gdx.input.setInputProcessor(firstPersonCameraController);
@@ -150,26 +129,15 @@ public class GameWorld implements GestureDetector.GestureListener {
 
         /***/
         /** Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually) */
-        addCapsule();
-
-        //TODO comment this
-        characterTransform = character.transform; /** Set by reference */
-        //TODO uncomment this
-        //characterTransform = character.getComponent(BulletComponent.class).transform;
+        createPlayer(5, 3, 5);
 
         /** Create the physics representation of the character */
-        ghostObject = new btPairCachingGhostObject();
-        ghostObject.setWorldTransform(characterTransform);
-        ghostShape = new btCapsuleShape(2f, 2f);
-        ghostObject.setCollisionShape(ghostShape);
-        ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
-        characterController = new btKinematicCharacterController(ghostObject, ghostShape, .35f);
 
         /** And add it to the physics world */
-        world.collisionWorld.addCollisionObject(ghostObject,
+        world.collisionWorld.addCollisionObject(character.getComponent(BulletPlayerComponent.class).ghostObject,
                 (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                 (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(characterController);
+        ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(BulletPlayerComponent.class).characterController);
 
         /** Create some boxes to play with */
         for (int x = 0; x < BOXCOUNT_X; x++) {
@@ -187,26 +155,19 @@ public class GameWorld implements GestureDetector.GestureListener {
                 ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(boxModel);
         Entity box = EntityFactory.createDynamicEntity(boxModel, 0.05f, x, y, z);
-        //world.add(box);
         engine.addEntity(box);
         return box;
     }
 
-    private void addCapsule() {
+    private void createPlayer(float x, float y, float z) {
         final Texture texture = new Texture(Gdx.files.internal("data/badlogic.jpg"));
-        disposables.add(texture);
         final Material material = new Material(TextureAttribute.createDiffuse(texture), ColorAttribute.createSpecular(1, 1, 1, 1), FloatAttribute.createShininess(8f));
         final long attributes = VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates;
         final Model capsule = modelBuilder.createCapsule(2f, 6f, 16, material, attributes);
         disposables.add(capsule);
-
-        //TODO uncomment this
-        //character = EntityFactory.createEmpty(capsule, 5, 3, 5);
-        //engine.addEntity(character);
-
-        //TODO comment this
-        character = new BulletEntity(capsule, (btRigidBody.btRigidBodyConstructionInfo) null, 5f, 3f, 5f);
-        world.add(character);
+        disposables.add(texture);
+        character = EntityFactory.createEmpty(capsule, x, y, z);
+        engine.addEntity(character);
     }
 
     private void createGround() {
@@ -300,27 +261,24 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void update() {
-        {
-
-           // System.out.println(characterTransform);
-        }
         /** If the left or right key is pressed, rotate the character and update its physics update accordingly. */
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            characterTransform.rotate(0, 1, 0, 5f);
-            ghostObject.setWorldTransform(characterTransform);
+            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
+            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
+
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            characterTransform.rotate(0, 1, 0, -5f);
-            ghostObject.setWorldTransform(characterTransform);
+            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
+            character.getComponent(BulletPlayerComponent.class).ghostObject.setWorldTransform(character.getComponent(ModelComponent.class).transform);
         }
         /** Fetch which direction the character is facing now */
-        characterDirection.set(-1, 0, 0).rot(characterTransform).nor();
+        character.getComponent(BulletPlayerComponent.class).characterDirection.set(-1, 0, 0).rot(character.getComponent(ModelComponent.class).transform).nor();
         /** Set the walking direction accordingly (either forward or backward) */
-        walkDirection.set(0, 0, 0);
+        character.getComponent(BulletPlayerComponent.class).walkDirection.set(0, 0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            walkDirection.add(characterDirection);
+            character.getComponent(BulletPlayerComponent.class).walkDirection.add(character.getComponent(BulletPlayerComponent.class).characterDirection);
         if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            walkDirection.add(-characterDirection.x, -characterDirection.y, -characterDirection.z);
+            character.getComponent(BulletPlayerComponent.class).walkDirection.add(-character.getComponent(BulletPlayerComponent.class).characterDirection.x, -character.getComponent(BulletPlayerComponent.class).characterDirection.y, -character.getComponent(BulletPlayerComponent.class).characterDirection.z);
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             firstPersonCameraController.forward();
         }
@@ -333,14 +291,19 @@ public class GameWorld implements GestureDetector.GestureListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             firstPersonCameraController.right();
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            character.getComponent(BulletPlayerComponent.class).characterController.setJumpSpeed(15);
+            character.getComponent(BulletPlayerComponent.class).characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
+        }
 
-        walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
+        character.getComponent(BulletPlayerComponent.class).walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         /** And update the character controller */
-        characterController.setWalkDirection(walkDirection);
+        character.getComponent(BulletPlayerComponent.class).characterController.setWalkDirection(character.getComponent(BulletPlayerComponent.class).walkDirection);
         /** Now we can update the world as normally */
         world.update(Gdx.graphics.getDeltaTime());
         /** And fetch the new transformation of the character (this will make the model be rendered correctly) */
-        ghostObject.getWorldTransform(characterTransform);
+        character.getComponent(BulletPlayerComponent.class).ghostObject.getWorldTransform(character.getComponent(ModelComponent.class).transform);
+        character.getComponent(ModelComponent.class).instance.transform = character.getComponent(ModelComponent.class).transform;
     }
 
     @Override
@@ -419,8 +382,8 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void dispose() {
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(characterController);
-        world.collisionWorld.removeCollisionObject(ghostObject);
+        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(BulletPlayerComponent.class).characterController);
+        world.collisionWorld.removeCollisionObject(character.getComponent(BulletPlayerComponent.class).ghostObject);
         /***/
         world.dispose();
         world = null;
@@ -437,9 +400,9 @@ public class GameWorld implements GestureDetector.GestureListener {
         light.dispose();
         light = null;
         /***/
-        characterController.dispose();
-        ghostObject.dispose();
-        ghostShape.dispose();
+        character.getComponent(BulletPlayerComponent.class).characterController.dispose();
+        character.getComponent(BulletPlayerComponent.class).ghostObject.dispose();
+        character.getComponent(BulletPlayerComponent.class).ghostShape.dispose();
         //ghostPairCallback.dispose();
         ground = null;
     }
