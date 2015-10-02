@@ -43,19 +43,6 @@ import com.deeep.spaceglad.systems.RenderSystem;
  */
 public class GameWorld implements GestureDetector.GestureListener {
     private static final float FOV = 67F;
-    private PerspectiveCamera perspectiveCamera;
-    private Environment environment;
-    private Engine engine;
-    private ModelBatch modelBatch;
-    public DirectionalShadowLight light;
-    public ModelBatch shadowBatch;
-    public BulletWorld world;
-    public ModelBuilder modelBuilder = new ModelBuilder();
-    public Array<Disposable> disposables = new Array<Disposable>();
-    Entity ground;
-    Entity wall;
-
-    Entity character;
 
     final int BOXCOUNT_X = 5;
     final int BOXCOUNT_Y = 3;
@@ -65,17 +52,27 @@ public class GameWorld implements GestureDetector.GestureListener {
     final float BOXOFFSET_Z = 0f;
 
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
-    public static DebugDrawer debugDrawer;
+    private PerspectiveCamera perspectiveCamera;
+    private Environment environment;
+    private Engine engine;
+    private ModelBatch modelBatch;
     private Model boxModel;
 
-    FirstPersonCameraController firstPersonCameraController;
+    // TODO These are temporary and should be removed when obsolete
+    private Entity ground;
+    private Entity wall;
+    private Entity character;
+    private FirstPersonCameraController firstPersonCameraController;
+
+    public static DebugDrawer debugDrawer;
+    public DirectionalShadowLight light;
+    public ModelBatch shadowBatch;
+    public BulletWorld world;
+    public ModelBuilder modelBuilder = new ModelBuilder();
+    public Array<Disposable> disposables = new Array<Disposable>();
 
     public GameWorld(GameUI gameUI) {
-
-//        addEntities();
-//        createLevel();
-//        enemySpawner = new EnemySpawner(engine);
-        initBullet();
+        Bullet.init();
         initEnvironment();
         initModelBatch();
         initWorld();
@@ -85,14 +82,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         SoundManager.setCamera(perspectiveCamera);
     }
 
-    private void initBullet() {
-        Bullet.init();
-    }
-
     private void initEnvironment() {
-//        environment = new Environment();
-//        environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-//        environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
         light = new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f);
@@ -116,7 +106,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void initWorld() {
-        /** We create the world using an axis sweep broadphase for this test */
+        // We create the world using an axis sweep broadphase for this test
 
         world = new BulletWorld();
         //TODO remove this
@@ -128,19 +118,16 @@ public class GameWorld implements GestureDetector.GestureListener {
     private void addEntities() {
         createGround();
 
-        /***/
-        /** Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually) */
+        // Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually)
         createPlayer(5, 3, 5);
 
-        /** Create the physics representation of the character */
-
-        /** And add it to the physics world */
+        // Create the physics representation of the character, and add it to the physics world
         world.collisionWorld.addCollisionObject(character.getComponent(CharacterComponent.class).ghostObject,
                 (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                 (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
         ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(CharacterComponent.class).characterController);
 
-        /** Create some boxes to play with */
+        // Create some boxes to play with
         for (int x = 0; x < BOXCOUNT_X; x++) {
             for (int y = 0; y < BOXCOUNT_Y; y++) {
                 for (int z = 0; z < BOXCOUNT_Z; z++) {
@@ -197,43 +184,16 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void addSystems(GameUI gameUI) {
+        // TODO Add the remaining systems
         engine = new Engine();
-//        engine.addSystem(collisionSystem = new CollisionSystem());
-//        engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
-//        engine.addSystem(movementSystem = new MovementSystem());
+        // engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
         engine.addSystem(new PlayerSystem());
-//        engine.addSystem(new AISystem());
+        // engine.addSystem(new AISystem());
     }
 
-//    private void addEntities() {
-//        engine.addEntity(EntityFactory.createEnemy(12, 0, 10));
-//        engine.addEntity(EntityFactory.createEnemy(14, 0, 10));
-//        engine.addEntity(EntityFactory.createEnemy(-12, 0, 10));
-//        engine.addEntity(EntityFactory.createPlayer(1f, 1.5f, 2));
-//    }
-
-//    private void createLevel() {
-//        engine.addEntity(EntityFactory.createGround());
-//        engine.addEntity(EntityFactory.createWall(50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));
-//        engine.addEntity(EntityFactory.createWall(0, 10, 50.50f, 100, 25, 0.5f, new Vector3(0, 0, 0)));
-//        engine.addEntity(EntityFactory.createWall(-50.50f, 10, 0, 100, 25, 0.5f, new Vector3(90, 0, 0)));
-//        engine.addEntity(EntityFactory.createWall(0, 10, -50.50f, 100, 25, 0.5f, new Vector3(0, 0, 0)));
-//    }
-
     public void render(float delta) {
-//        enemySpawner.update(delta);
-//        modelBatch.begin(perspectiveCamera);
-
-//        modelBatch.end();
-//        if (CollisionSystem.collisionWorld != null) {
-//            CollisionSystem.debugDrawer.begin(perspectiveCamera);
-//            CollisionSystem.collisionWorld.debugDrawWorld();
-//            CollisionSystem.debugDrawer.end();
-//        }
-//        checkPause();
-        //perspectiveCamera.update();
         renderWorld();
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         if (debugMode != btIDebugDraw.DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode);
@@ -278,9 +238,56 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public boolean tap(float x, float y, int count, int button) {
-        //shoot(Core.VIRTUAL_WIDTH / 2 /*x*/, Core.VIRTUAL_HEIGHT / 2 /*y*/);
         shoot(x, y);
         return true;
+    }
+
+    public Entity shoot(final float x, final float y) {
+        return shoot(x, y, 30f);
+    }
+
+    public Entity shoot(final float x, final float y, final float impulse) {
+        /** Shoot a box */
+        Ray ray = perspectiveCamera.getPickRay(x, y);
+        float mass = 1f;
+        Entity bullet = EntityFactory.createDynamicEntity(boxModel, mass, ray.origin.x, ray.origin.y, ray.origin.z);
+        //world.add(bullet);
+        bullet.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
+                1f));
+        ((btRigidBody) bullet.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(impulse));
+        engine.addEntity(bullet);
+        return bullet;
+    }
+
+    public void resize(int width, int height) {
+        perspectiveCamera.viewportHeight = height;
+        perspectiveCamera.viewportWidth = width;
+    }
+
+    public void dispose() {
+        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(CharacterComponent.class).characterController);
+        world.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
+
+        world.dispose();
+        world = null;
+
+        for (Disposable disposable : disposables) disposable.dispose();
+        disposables.clear();
+
+        modelBatch.dispose();
+        modelBatch = null;
+
+        shadowBatch.dispose();
+        shadowBatch = null;
+
+        light.dispose();
+        light = null;
+
+        character.getComponent(CharacterComponent.class).characterController.dispose();
+        character.getComponent(CharacterComponent.class).ghostObject.dispose();
+        character.getComponent(CharacterComponent.class).ghostShape.dispose();
+        EntityFactory.dispose();
+        ground = null;
     }
 
     @Override
@@ -311,65 +318,5 @@ public class GameWorld implements GestureDetector.GestureListener {
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
-    }
-
-    public Entity shoot(final float x, final float y) {
-        return shoot(x, y, 30f);
-    }
-
-    public Entity shoot(final float x, final float y, final float impulse) {
-        /** Shoot a box */
-        Ray ray = perspectiveCamera.getPickRay(x, y);
-        float mass = 1f;
-        Entity bullet = EntityFactory.createDynamicEntity(boxModel, mass, ray.origin.x, ray.origin.y, ray.origin.z);
-        //world.add(bullet);
-        bullet.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
-                1f));
-        ((btRigidBody) bullet.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(impulse));
-        engine.addEntity(bullet);
-        return bullet;
-    }
-
-    private void checkPause() {
-//        if (Settings.Paused) {
-//            movementSystem.setProcessing(false);
-//            playerSystem.setProcessing(false);
-//            collisionSystem.setProcessing(false);
-//        } else {
-//            movementSystem.setProcessing(true);
-//            playerSystem.setProcessing(true);
-//            collisionSystem.setProcessing(true);
-//        }
-    }
-
-    public void resize(int width, int height) {
-        perspectiveCamera.viewportHeight = height;
-        perspectiveCamera.viewportWidth = width;
-    }
-
-    public void dispose() {
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(CharacterComponent.class).characterController);
-        world.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
-        /***/
-        world.dispose();
-        world = null;
-
-        for (Disposable disposable : disposables) disposable.dispose();
-        disposables.clear();
-
-        modelBatch.dispose();
-        modelBatch = null;
-
-        shadowBatch.dispose();
-        shadowBatch = null;
-
-        light.dispose();
-        light = null;
-        /***/
-        character.getComponent(CharacterComponent.class).characterController.dispose();
-        character.getComponent(CharacterComponent.class).ghostObject.dispose();
-        character.getComponent(CharacterComponent.class).ghostShape.dispose();
-        EntityFactory.dispose();
-        ground = null;
     }
 }
