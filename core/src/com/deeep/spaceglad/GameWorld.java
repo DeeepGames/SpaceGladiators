@@ -46,13 +46,6 @@ import com.deeep.spaceglad.systems.RenderSystem;
 public class GameWorld implements GestureDetector.GestureListener {
     private static final float FOV = 67F;
 
-    final int BOXCOUNT_X = 5;
-    final int BOXCOUNT_Y = 3;
-    final int BOXCOUNT_Z = 5;
-    final float BOXOFFSET_X = -2.5f;
-    final float BOXOFFSET_Y = 0.5f;
-    final float BOXOFFSET_Z = 0f;
-
     private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
     private PerspectiveCamera perspectiveCamera;
     private Environment environment;
@@ -128,16 +121,6 @@ public class GameWorld implements GestureDetector.GestureListener {
                 (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                 (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
         ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(CharacterComponent.class).characterController);
-
-        // Create some boxes to play with
-        for (int x = 0; x < BOXCOUNT_X; x++) {
-            for (int y = 0; y < BOXCOUNT_Y; y++) {
-                for (int z = 0; z < BOXCOUNT_Z; z++) {
-                    //addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).setColor(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f);
-                    addBox(BOXOFFSET_X + x, BOXOFFSET_Y + y, BOXOFFSET_Z + z).getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 1f));
-                }
-            }
-        }
     }
 
     private Entity addBox(float x, float y, float z) {

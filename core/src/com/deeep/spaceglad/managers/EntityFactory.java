@@ -150,7 +150,6 @@ public class EntityFactory {
         model.calculateBoundingBox(boundingBox);
         Vector3 tmpV = new Vector3();
         btCollisionShape col = new btBoxShape(tmpV.set(boundingBox.getWidth() * 0.5f, boundingBox.getHeight() * 0.5f, boundingBox.getDepth() * 0.5f));
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, col, Vector3.Zero);
 
         Entity entity = new Entity();
 
@@ -160,7 +159,8 @@ public class EntityFactory {
         entity.add(modelComponent);
 
         BulletComponent bulletComponent = new BulletComponent();
-        bulletComponent.body = new btRigidBody(bodyInfo);
+        bulletComponent.bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, col, Vector3.Zero);
+        bulletComponent.body = new btRigidBody(bulletComponent.bodyInfo);
         bulletComponent.body.userData = entity;
         bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
         ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
@@ -196,9 +196,6 @@ public class EntityFactory {
         col.calculateLocalInertia(mass, tmpV);
         localInertia = tmpV;
 
-        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
-        btRigidBody.btRigidBodyConstructionInfo bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
-
         Entity entity = new Entity();
 
         ModelComponent modelComponent = new ModelComponent(model);
@@ -207,7 +204,9 @@ public class EntityFactory {
         entity.add(modelComponent);
 
         BulletComponent bulletComponent = new BulletComponent();
-        bulletComponent.body = new btRigidBody(bodyInfo);
+        // For now just pass null as the motionstate, we'll add that to the body in the entity itself
+        bulletComponent.bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, col, localInertia);
+        bulletComponent.body = new btRigidBody(bulletComponent.bodyInfo);
         bulletComponent.body.userData = entity;
         bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
         ((btRigidBody)bulletComponent.body).setMotionState(bulletComponent.motionState);
