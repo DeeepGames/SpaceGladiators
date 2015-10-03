@@ -102,7 +102,9 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void initWorld() {
         // We create the world using an axis sweep broadphase for this test
-
+        boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
+                ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        disposables.add(boxModel);
         world = new BulletWorld();
         //TODO remove this
         debugDrawer = new DebugDrawer();
