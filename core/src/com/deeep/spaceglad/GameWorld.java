@@ -4,14 +4,16 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -153,33 +155,34 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void createGround() {
-        final Model wallModel = modelBuilder.createRect(
-                0f, -10f, -20f,
-                0f, 10f, -20f,
-                0f, 10f, 20f,
-                0f, -10f, 20f,
-                0, 1, 0,
+        Model wallHorizontal = modelBuilder.createBox(40, 20, 1,
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        wall = EntityFactory.createStaticEntity(wallModel, -20, 10, 0);
-        wall.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
-        engine.addEntity(wall);
-        //world.add(wall);
-
-        final Model groundModel = modelBuilder.createRect(
-                20f, 0f, -20f,
-                -20f, 0f, -20f,
-                -20f, 0f, 20f,
-                20f, 0f, 20f,
-                0, 1, 0,
+        Model wallVertical = modelBuilder.createBox(1, 20, 40,
                 new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        Model groundModel = modelBuilder.createBox(40, 1, 40,
+                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        disposables.add(wallHorizontal);
+        disposables.add(wallVertical);
         disposables.add(groundModel);
+
+
         ground = EntityFactory.createStaticEntity(groundModel, 0, 0, 0);
         ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
         engine.addEntity(ground);
-        //world.add(ground));
 
+        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, -20));
+        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, 20));
+        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, 20, 10, 0));
+        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20, 10, 0));
+
+        // test.getComponent(ModelComponent.class).setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
+
+    }
+
+    public void createLevel(){
 
     }
 
@@ -229,7 +232,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             firstPersonCameraController.right();
         }
-       world.update(Gdx.graphics.getDeltaTime());
+        world.update(Gdx.graphics.getDeltaTime());
     }
 
     @Override

@@ -58,12 +58,12 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
-            characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
+            //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
 
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
             characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
-            characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
+            //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
         }
         /** Fetch which direction the character is facing now */
         characterComponent.characterDirection.set(-1, 0, 0).rot(player.getComponent(ModelComponent.class).transform).nor();
