@@ -30,7 +30,7 @@ public class EnemySpawner {
         timer += delta;
         if (timer >= spawnTimer && !Settings.Paused) {
             timer = 0;
-            //spawn();
+            spawn();
         }
     }
 

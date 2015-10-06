@@ -37,6 +37,7 @@ import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
+import com.deeep.spaceglad.systems.AISystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 
@@ -117,6 +118,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 
         // Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually)
         createPlayer(5, 3, 5);
+        engine.addEntity(EntityFactory.createEnemy(6, 3, 5));
 
         // Create the physics representation of the character, and add it to the physics world
         world.collisionWorld.addCollisionObject(character.getComponent(CharacterComponent.class).ghostObject,
@@ -178,7 +180,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
         engine.addSystem(new PlayerSystem());
-        // engine.addSystem(new AISystem());
+        engine.addSystem(new AISystem());
     }
 
     public void render(float delta) {

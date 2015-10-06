@@ -259,6 +259,7 @@ public class EntityFactory {
 
     public static Entity createEnemy(float x, float y, float z){
         Entity entity = createCharacter(x,y,z);
+        entity.add(new AIComponent(AIComponent.STATE.HUNTING));
         //TODO andreas
         return entity;
     }
