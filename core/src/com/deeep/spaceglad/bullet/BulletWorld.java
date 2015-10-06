@@ -1,7 +1,6 @@
 package com.deeep.spaceglad.bullet;
 
 import com.badlogic.ashley.core.*;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Vector3;
@@ -52,7 +51,6 @@ public class BulletWorld extends EntitySystem implements EntityListener{
     }
 
 
-
     public void add(final BulletEntity entity) {
         entities.add(entity);
         if (entity.body != null) {
@@ -69,10 +67,8 @@ public class BulletWorld extends EntitySystem implements EntityListener{
             ((btDynamicsWorld) collisionWorld).stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
     }
 
-    public void render (final ModelBatch batch, final Environment lights) {
-        for (final BulletEntity e : entities) {
-            batch.render(e.modelInstance, lights);
-        }
+    public void render(final ModelBatch batch, final Environment lights) {
+        for (int i = 0; i < entities.size; i++) batch.render(entities.get(i).modelInstance, lights);
     }
 
     public void render(ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
@@ -103,7 +99,6 @@ public class BulletWorld extends EntitySystem implements EntityListener{
         for (int i = 0; i < entities.size; i++)
             entities.get(i).dispose();
         entities.clear();
-
 
 
         //models.clear();
