@@ -22,8 +22,8 @@ public class EnemySpawner {
     }
 
     public void addEnemy(float x, float y, float z) {
-        Entity entity = EntityFactory.createEnemy(x, y, z);
-        engine.addEntity(entity);
+        //Entity entity = EntityFactory.createEnemy(x, y, z);
+        //engine.addEntity(entity);
     }
 
     public void update(float delta) {

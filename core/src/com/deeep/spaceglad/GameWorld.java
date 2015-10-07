@@ -118,13 +118,10 @@ public class GameWorld implements GestureDetector.GestureListener {
 
         // Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually)
         createPlayer(5, 3, 5);
-        engine.addEntity(EntityFactory.createEnemy(6, 3, 5));
+        engine.addEntity(EntityFactory.createEnemy(world, 5, 3, 5));
 
         // Create the physics representation of the character, and add it to the physics world
-        world.collisionWorld.addCollisionObject(character.getComponent(CharacterComponent.class).ghostObject,
-                (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
-                (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).addAction(character.getComponent(CharacterComponent.class).characterController);
+
     }
 
     private Entity addBox(float x, float y, float z) {
@@ -137,7 +134,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void createPlayer(float x, float y, float z) {
-        character = EntityFactory.createPlayer(x, y, z);
+        character = EntityFactory.createPlayer(world, x, y, z);
         engine.addEntity(character);
     }
 

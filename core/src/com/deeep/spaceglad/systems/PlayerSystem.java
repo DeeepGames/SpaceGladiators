@@ -4,9 +4,13 @@ import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
+
+import java.util.Vector;
 
 /**
  * Created by Elmar on 8-8-2015.
@@ -25,6 +29,9 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     //private ComponentMapper<CollisionComponent> collisionComponentComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
     Vector3 characterDirection = new Vector3();
     Vector3 walkDirection = new Vector3();
+
+    private Quaternion quat = new Quaternion();
+    float rotation;
 
     public PlayerSystem(){}
 
@@ -57,21 +64,15 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.direction.rotate(tempVector, deltaY);
         */
 
-
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            modelComponent.transform.rotate(0, 1, 0, 5f);
-            characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
-            //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
-
+            rotation+=5f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            modelComponent.transform.rotate(0, 1, 0, -5f);
-            characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
-            //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
+            rotation-=5f;
         }
-        /** Fetch which direction the character is facing now */
-        characterComponent.characterDirection.set(-1, 0, 0).rot(player.getComponent(ModelComponent.class).transform).nor();
-        /** Set the walking direction accordingly (either forward or backward) */
+        Quaternion rot = quat.setFromAxis(0, 1, 0, rotation);
+
+        characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.UP))
             characterComponent.walkDirection.add(characterComponent.characterDirection);
@@ -82,13 +83,17 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             characterComponent.characterController.setJumpSpeed(15);
             characterComponent.characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
         }
+        characterComponent.walkDirection.scl(4f * delta);
 
-        characterComponent.walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
+        Matrix4 ghost = new Matrix4();
+        Vector3 translation = new Vector3();
+        characterComponent.ghostObject.getWorldTransform(ghost);   //TODO export this
+        ghost.getTranslation(translation);
 
-        characterComponent.ghostObject.getWorldTransform(player.getComponent(ModelComponent.class).transform);   //TODO export this
+        modelComponent.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);
+        modelComponent.instance.transform = modelComponent.transform;
 
-        player.getComponent(ModelComponent.class).instance.transform = player.getComponent(ModelComponent.class).transform;
 
        // camera.update(true);
     }
