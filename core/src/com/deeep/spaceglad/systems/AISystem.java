@@ -19,36 +19,17 @@ public class AISystem extends EntitySystem  implements EntityListener{
 
     @Override
     public void addedToEngine(Engine e){
-        entities = e.getEntitiesFor(Family.all(ModelComponent.class, RotationComponent.class, PositionComponent.class, VelocityComponent.class, AIComponent.class, StatusComponent.class, CharacterComponent.class).get());
+        entities = e.getEntitiesFor(Family.all(AIComponent.class, CharacterComponent.class).get());
         e.addEntityListener(Family.one(PlayerComponent.class).get(),this);
     }
 
     public void update(float delta){
         for(Entity e: entities){
-            StatusComponent sta =  e.getComponent(StatusComponent.class);
-            //if(!sta.enabled) continue;
-            RotationComponent rot =  e.getComponent(RotationComponent.class);
             ModelComponent mod =  e.getComponent(ModelComponent.class);
-            AIComponent aic =  e.getComponent(AIComponent.class);
-            CharacterComponent cha = e.getComponent(CharacterComponent.class);
-
-            /*
-            PositionComponent playerPositionComponent = player.getComponent(PositionComponent.class);
-
-            float dX = playerPositionComponent.position.x - pm.get(e).position.x;
-            float dZ = playerPositionComponent.position.z - pm.get(e).position.z;
-
-            rot.yaw = (float) (Math.atan2(dX, dZ));
-
-            //mod.instance.transform.setFromEulerAngles((float) Math.toDegrees(rot.yaw), rot.pitch, rot.roll);
-
-
-            */
-
             ModelComponent playerModelInformation = player.getComponent(ModelComponent.class);
 
-            Vector3 playerPosition = new Vector3();
-            Vector3 enemyPosition = new Vector3();
+            Vector3 playerPosition;
+            Vector3 enemyPosition;
             Quaternion enemyRotation = new Quaternion();
 
             playerPosition = playerModelInformation.transform.getTranslation(playerPosition);
