@@ -48,9 +48,13 @@ public class AISystem extends EntitySystem  implements EntityListener{
              * This function operates with degrees and the Quaternion object enemyRotation seems to already operate in degrees,
              * however our theta value is in radians as it comes form the Math library and should thus be converted to degrees.
              */
+            mod.transform.setToRotation(0,1,0,(float) Math.toDegrees(theta));
+            cm.get(e).ghostObject.setWorldTransform(mod.transform);
+            cm.get(e).characterDirection.set(-1, 0, 0).rot(mod.transform).nor();
 
-            mod.transform.setFromEulerAngles((float) Math.toDegrees(theta), enemyRotation.getPitch(), enemyRotation.getRoll());
+            cm.get(e).ghostObject.getWorldTransform(mod.transform);   //TODO export this
 
+           mod.instance.transform = mod.transform;
 
             /**if(aic.state != AIComponent.STATE.IDLE && !sta.frozen){
                 float speedX =vel.velocity.x +  (float) Math.sin(rot.yaw) * 0.5f;

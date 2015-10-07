@@ -15,6 +15,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private Entity player;
     private PlayerComponent playerComponent;
     private CharacterComponent characterComponent;
+    private ModelComponent modelComponent;
     private GameUI gameUI;
    // private final Camera camera;
    // private final Vector3 tempVector = new Vector3();
@@ -56,13 +57,16 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.direction.rotate(tempVector, deltaY);
         */
 
+
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, 5f));
+            modelComponent.transform.rotate(0, 1, 0, 5f);
+            characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
             //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
 
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform.rotate(0, 1, 0, -5f));
+            modelComponent.transform.rotate(0, 1, 0, -5f);
+            characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
             //characterComponent.ghostObject.setWorldTransform(player.getComponent(ModelComponent.class).transform);
         }
         /** Fetch which direction the character is facing now */
@@ -81,7 +85,9 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
         characterComponent.walkDirection.scl(4f * Gdx.graphics.getDeltaTime());
         characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
+
         characterComponent.ghostObject.getWorldTransform(player.getComponent(ModelComponent.class).transform);   //TODO export this
+
         player.getComponent(ModelComponent.class).instance.transform = player.getComponent(ModelComponent.class).transform;
 
        // camera.update(true);
@@ -115,6 +121,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         player = entity;
         playerComponent = entity.getComponent(PlayerComponent.class);
         characterComponent = entity.getComponent(CharacterComponent.class);
+        modelComponent = entity.getComponent(ModelComponent.class);
         //gameUI.healthWidget.setValue(playerComponent.health);
     }
 
