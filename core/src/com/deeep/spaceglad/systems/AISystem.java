@@ -14,6 +14,7 @@ public class AISystem extends EntitySystem  implements EntityListener{
     private ImmutableArray<Entity> entities;
     private Entity player;
 
+
     ComponentMapper<PositionComponent> pm = ComponentMapper.getFor(PositionComponent.class);
     ComponentMapper<CharacterComponent> cm = ComponentMapper.getFor(CharacterComponent.class);
 
@@ -28,12 +29,12 @@ public class AISystem extends EntitySystem  implements EntityListener{
             ModelComponent mod =  e.getComponent(ModelComponent.class);
             ModelComponent playerModelInformation = player.getComponent(ModelComponent.class);
 
-            Vector3 playerPosition;
-            Vector3 enemyPosition;
+            Vector3 playerPosition =  new Vector3();
+            Vector3 enemyPosition =  new Vector3();
             Quaternion enemyRotation = new Quaternion();
 
             playerPosition = playerModelInformation.transform.getTranslation(playerPosition);
-            enemyPosition = mod.transform.getTranslation(playerPosition);
+            enemyPosition = mod.transform.getTranslation(enemyPosition);
             enemyRotation = mod.transform.getRotation(enemyRotation);
 
             float dX = playerPosition.x - enemyPosition.x;
