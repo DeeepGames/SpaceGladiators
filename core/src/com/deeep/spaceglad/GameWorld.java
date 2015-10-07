@@ -183,7 +183,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         engine.addSystem(new AISystem());
     }
 
-    public void render(float delta) {
+    public void render() {
         renderWorld();
         Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
         if (debugMode != btIDebugDraw.DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode);
@@ -206,7 +206,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         modelBatch.end();
     }
 
-    public void update() {
+    public void update(float delta) {
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             firstPersonCameraController.forward();
         }
@@ -219,7 +219,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             firstPersonCameraController.right();
         }
-        world.update(Gdx.graphics.getDeltaTime());
+        world.update(delta);
     }
 
     @Override
