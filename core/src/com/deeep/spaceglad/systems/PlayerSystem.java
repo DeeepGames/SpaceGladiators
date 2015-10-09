@@ -21,23 +21,19 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private CharacterComponent characterComponent;
     private ModelComponent modelComponent;
     private GameUI gameUI;
-   // private final Camera camera;
-   // private final Vector3 tempVector = new Vector3();
-    private Engine engine;
-    //private ComponentMapper<PositionComponent> positionComponentMapper = ComponentMapper.getFor(PositionComponent.class);
-    //private ComponentMapper<VelocityComponent> velocityComponentMapper = ComponentMapper.getFor(VelocityComponent.class);
-    //private ComponentMapper<CollisionComponent> collisionComponentComponentMapper = ComponentMapper.getFor(CollisionComponent.class);
-    Vector3 characterDirection = new Vector3();
-    Vector3 walkDirection = new Vector3();
+
+    private final Camera camera;
+    private final Vector3 tempVector = new Vector3();
 
     private Quaternion quat = new Quaternion();
-    float rotation;
+    float rotation = 0;
 
-    public PlayerSystem(){}
+    public PlayerSystem(Camera camera){
+        this.camera = camera;
+    }
 
     public PlayerSystem(Camera camera, GameUI gameUI, Engine engine) {
-        //this.camera = camera;
-        this.engine = engine;
+        this.camera = camera;
         this.gameUI = gameUI;
     }
 
@@ -56,21 +52,22 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void updateMovement(float delta) {
-        /*
+
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
         camera.direction.rotate(camera.up, deltaX);
         tempVector.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tempVector, deltaY);
-        */
-
+        rotation = camera.direction.x;
         if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            rotation+=5f;
+           // rotation+=5f;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            rotation-=5f;
+           // rotation-=5f;
         }
-        Quaternion rot = quat.setFromAxis(0, 1, 0, rotation);
+
+        Quaternion rot = quat.setFromAxis(0, 1, 0, 270+(float)Math.toDegrees(camera.direction.x));
+        System.out.println(camera.direction.x);
 
         characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
@@ -94,8 +91,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         modelComponent.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);
         modelComponent.instance.transform = modelComponent.transform;
 
-
-       // camera.update(true);
+        camera.position.set(translation.x,translation.y,translation.z);
+        camera.update(true);
     }
 
     private void updateStatus() {

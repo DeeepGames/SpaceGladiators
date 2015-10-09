@@ -58,7 +58,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     private Entity ground;
     private Entity wall;
     private Entity character;
-    private FirstPersonCameraController firstPersonCameraController;
+    //private FirstPersonCameraController firstPersonCameraController;
 
     public static DebugDrawer debugDrawer;
     public DirectionalShadowLight light;
@@ -89,11 +89,11 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void initPersCamera() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
-        perspectiveCamera.position.set(10f, 10f, 10f);
-        perspectiveCamera.lookAt(0f, 0f, 0f);
-        perspectiveCamera.update();
-        firstPersonCameraController = new FirstPersonCameraController(perspectiveCamera);
-        Gdx.input.setInputProcessor(firstPersonCameraController);
+        //perspectiveCamera.position.set(10f, 10f, 10f);
+       // perspectiveCamera.lookAt(0f, 0f, 0f);
+       // perspectiveCamera.update();
+        //firstPersonCameraController = new FirstPersonCameraController(perspectiveCamera);
+        //Gdx.input.setInputProcessor(firstPersonCameraController);
     }
 
     private void initModelBatch() {
@@ -176,7 +176,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         // engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
-        engine.addSystem(new PlayerSystem());
+        engine.addSystem(new PlayerSystem(perspectiveCamera));
         engine.addSystem(new AISystem());
     }
 
@@ -203,7 +203,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         modelBatch.end();
     }
 
-    public void update(float delta) {
+    public void update(float delta) {/*
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             firstPersonCameraController.forward();
         }
@@ -215,7 +215,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             firstPersonCameraController.right();
-        }
+        }*/
         world.update(delta);
     }
 

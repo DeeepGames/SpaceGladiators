@@ -49,7 +49,7 @@ public class AISystem extends EntitySystem implements EntityListener {
             cm.get(e).characterDirection.set(-1, 0, 0).rot(mod.transform).nor();
             cm.get(e).walkDirection.set(0, 0, 0);
             cm.get(e).walkDirection.add(cm.get(e).characterDirection);
-            cm.get(e).walkDirection.scl(1f * Gdx.graphics.getDeltaTime());
+            cm.get(e).walkDirection.scl(1f * delta);
 
             cm.get(e).characterController.setWalkDirection(cm.get(e).walkDirection);
             Matrix4 ghost = new Matrix4();

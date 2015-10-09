@@ -2,6 +2,7 @@ package com.deeep.spaceglad.components;
 
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btConvexShape;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
