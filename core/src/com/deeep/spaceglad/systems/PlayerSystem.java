@@ -40,7 +40,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     @Override
     public void addedToEngine(Engine engine) {
         engine.addEntityListener(Family.all(PlayerComponent.class).get(), this);
-    }
+    }   
 
     @Override
     public void update(float delta) {
@@ -67,7 +67,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         }
 
         Quaternion rot = quat.setFromAxis(0, 1, 0, 270+(float)Math.toDegrees(camera.direction.x));
-        System.out.println(camera.direction.x);
+        //System.out.println(camera.direction.x);
 
         characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);

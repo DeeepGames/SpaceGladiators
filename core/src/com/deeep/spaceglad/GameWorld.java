@@ -3,7 +3,6 @@ package com.deeep.spaceglad;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -23,23 +22,20 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
-import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
-import com.deeep.spaceglad.chapter.two.FirstPersonCameraController;
-import com.deeep.spaceglad.components.BulletComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.AISystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
+import com.deeep.spaceglad.systems.StatusSystem;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -47,12 +43,10 @@ import com.deeep.spaceglad.systems.RenderSystem;
 public class GameWorld implements GestureDetector.GestureListener {
     private static final float FOV = 67F;
 
-    private int debugMode = btIDebugDraw.DebugDrawModes.DBG_NoDebug;
     private PerspectiveCamera perspectiveCamera;
     private Environment environment;
     private Engine engine;
     private ModelBatch modelBatch;
-    private Model boxModel;
 
     // TODO These are temporary and should be removed when obsolete
     private Entity ground;
@@ -60,7 +54,6 @@ public class GameWorld implements GestureDetector.GestureListener {
     private Entity character;
     //private FirstPersonCameraController firstPersonCameraController;
 
-    public static DebugDrawer debugDrawer;
     public DirectionalShadowLight light;
     public ModelBatch shadowBatch;
     public BulletWorld world;
@@ -89,11 +82,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void initPersCamera() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
-        //perspectiveCamera.position.set(10f, 10f, 10f);
-       // perspectiveCamera.lookAt(0f, 0f, 0f);
-       // perspectiveCamera.update();
-        //firstPersonCameraController = new FirstPersonCameraController(perspectiveCamera);
-        //Gdx.input.setInputProcessor(firstPersonCameraController);
+
     }
 
     private void initModelBatch() {
@@ -102,35 +91,13 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     private void initWorld() {
-        // We create the world using an axis sweep broadphase for this test
-        boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
-                ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        disposables.add(boxModel);
         world = new BulletWorld();
-        //TODO remove this
-        debugDrawer = new DebugDrawer();
-        debugDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
-        world.collisionWorld.setDebugDrawer(debugDrawer);
     }
 
     private void addEntities() {
         createGround();
-
-        // Create a visual representation of the character (note that we don't use the physics part of BulletEntity, we'll do that manually)
         createPlayer(5, 3, 5);
         engine.addEntity(EntityFactory.createEnemy(world, 5, 3, 5));
-
-        // Create the physics representation of the character, and add it to the physics world
-
-    }
-
-    private Entity addBox(float x, float y, float z) {
-        boxModel = modelBuilder.createBox(1f, 1f, 1f, new Material(ColorAttribute.createDiffuse(Color.WHITE),
-                ColorAttribute.createSpecular(Color.WHITE), FloatAttribute.createShininess(64f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        disposables.add(boxModel);
-        Entity box = EntityFactory.createDynamicEntity(boxModel, 0.05f, x, y, z);
-        engine.addEntity(box);
-        return box;
     }
 
     private void createPlayer(float x, float y, float z) {
@@ -166,7 +133,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     }
 
-    public void createLevel(){
+    public void createLevel() {
 
     }
 
@@ -178,44 +145,25 @@ public class GameWorld implements GestureDetector.GestureListener {
         engine.addSystem(world);
         engine.addSystem(new PlayerSystem(perspectiveCamera));
         engine.addSystem(new AISystem());
+        engine.addSystem(new StatusSystem(this));
     }
 
     public void render() {
         renderWorld();
-        Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-        if (debugMode != btIDebugDraw.DebugDrawModes.DBG_NoDebug) world.setDebugMode(debugMode);
-        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
-
     }
 
     protected void renderWorld() {
         light.begin(Vector3.Zero, perspectiveCamera.direction);
         shadowBatch.begin(light.getCamera());
-        world.render(shadowBatch, null);
         shadowBatch.end();
         light.end();
         modelBatch.begin(perspectiveCamera);
-        world.render(modelBatch, environment);
-        debugDrawer.begin(perspectiveCamera);
         engine.update(Gdx.graphics.getDeltaTime());
         world.collisionWorld.debugDrawWorld();
-        debugDrawer.end();
         modelBatch.end();
     }
 
-    public void update(float delta) {/*
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            firstPersonCameraController.forward();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            firstPersonCameraController.backward();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            firstPersonCameraController.left();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            firstPersonCameraController.right();
-        }*/
+    public void update(float delta) {
         world.update(delta);
     }
 
@@ -225,7 +173,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public boolean tap(float x, float y, int count, int button) {
-        shoot(x, y);
+        shoot(x + (perspectiveCamera.viewportWidth / 2), (perspectiveCamera.viewportHeight / 2));
         return true;
     }
 
@@ -236,14 +184,9 @@ public class GameWorld implements GestureDetector.GestureListener {
     public Entity shoot(final float x, final float y, final float impulse) {
         /** Shoot a box */
         Ray ray = perspectiveCamera.getPickRay(x, y);
-        float mass = 1f;
-        Entity bullet = EntityFactory.createDynamicEntity(boxModel, mass, ray.origin.x, ray.origin.y, ray.origin.z);
-        //world.add(bullet);
-        bullet.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
-                1f));
-        ((btRigidBody) bullet.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(impulse));
-        engine.addEntity(bullet);
-        return bullet;
+        Entity ent = EntityFactory.createBullet(ray, ray.origin.x, ray.origin.y, ray.origin.z);
+        engine.addEntity(ent);
+        return ent;
     }
 
     public void resize(int width, int height) {
@@ -305,5 +248,10 @@ public class GameWorld implements GestureDetector.GestureListener {
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
+    }
+
+    public void remove(Entity entity) {
+        engine.removeEntity(entity);
+        world.removeBody(entity);
     }
 }

@@ -60,17 +60,6 @@ public class AISystem extends EntitySystem implements EntityListener {
             mod.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);
             mod.instance.transform = mod.transform;
 
-            /**if(aic.state != AIComponent.STATE.IDLE && !sta.frozen){
-             float speedX =vel.velocity.x +  (float) Math.sin(rot.yaw) * 0.5f;
-             speedX = (speedX < -10)? -10 : speedX;
-             speedX = (speedX > 10)? 10 : speedX;
-             float speedZ =vel.velocity.z +  (float) Math.cos(rot.yaw) * 0.5f;
-             speedZ = (speedZ < -10)? -10 : speedZ;
-             speedZ = (speedZ > 10)? 10 : speedZ;
-             vel.velocity.x = speedX;
-             vel.velocity.z = speedZ;
-             }*/
-            //TODO: Redo this
 
         }
     }

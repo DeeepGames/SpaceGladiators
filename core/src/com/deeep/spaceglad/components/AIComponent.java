@@ -19,5 +19,5 @@ public class AIComponent extends Component {
         this.state = state;
     }
 
-
+    public boolean alive = true;
 }
