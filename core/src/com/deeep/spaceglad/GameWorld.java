@@ -153,13 +153,12 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     protected void renderWorld() {
-        light.begin(Vector3.Zero, perspectiveCamera.direction);
+       // light.begin(Vector3.Zero, perspectiveCamera.direction);
         shadowBatch.begin(light.getCamera());
         shadowBatch.end();
-        light.end();
+        //light.end();
         modelBatch.begin(perspectiveCamera);
         engine.update(Gdx.graphics.getDeltaTime());
-        world.collisionWorld.debugDrawWorld();
         modelBatch.end();
     }
 
