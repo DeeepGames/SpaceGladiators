@@ -54,8 +54,7 @@ public class EntityFactory {
         Entity entity = new Entity();
 
         ModelComponent modelComponent = new ModelComponent(model);
-        modelComponent.transform = new Matrix4().setToTranslation(x, y, z);
-        modelComponent.instance = new ModelInstance(model, modelComponent.transform.cpy());
+        modelComponent.instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
         entity.add(modelComponent);
 
         BulletComponent bulletComponent = new BulletComponent();
@@ -82,8 +81,7 @@ public class EntityFactory {
         Entity entity = new Entity();
 
         ModelComponent modelComponent = new ModelComponent(model);
-        modelComponent.transform = new Matrix4().setToTranslation(x, y, z);
-        modelComponent.instance = new ModelInstance(model, modelComponent.transform.cpy());
+        modelComponent.instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
         entity.add(modelComponent);
 
         BulletComponent bulletComponent = new BulletComponent();
@@ -103,14 +101,12 @@ public class EntityFactory {
         Entity entity = new Entity();
 
         ModelComponent modelComponent = new ModelComponent(playerModel);
-        modelComponent.transform = new Matrix4().setToTranslation(x, y, z);
-        modelComponent.instance = new ModelInstance(playerModel, modelComponent.transform.cpy());
-        //modelComponent.instance.transform = modelComponent.transform;
+        modelComponent.instance = new ModelInstance(playerModel, new Matrix4().setToTranslation(x, y, z));
         entity.add(modelComponent);
 
         CharacterComponent characterComponent = new CharacterComponent();
         characterComponent.ghostObject = new btPairCachingGhostObject();
-        characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
+        characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
         characterComponent.ghostShape = new btCapsuleShape(2f, 2f);
         characterComponent.ghostObject.setCollisionShape(characterComponent.ghostShape);
         characterComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
@@ -143,19 +139,30 @@ public class EntityFactory {
         Entity entity = new Entity();
 
         ModelComponent modelComponent = new ModelComponent(model);
-        modelComponent.transform = new Matrix4().setToTranslation(x, y, z);
-        modelComponent.instance = new ModelInstance(model, modelComponent.transform.cpy());
+        modelComponent.instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
         entity.add(modelComponent);
 
         CharacterComponent characterComponent = new CharacterComponent();
         characterComponent.ghostObject = new btPairCachingGhostObject();
-        characterComponent.ghostObject.setWorldTransform(modelComponent.transform);
+        characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
         characterComponent.ghostShape = new btCapsuleShape(2f, 2f);
         characterComponent.ghostObject.setCollisionShape(characterComponent.ghostShape);
         characterComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
         characterComponent.characterController = new btKinematicCharacterController(characterComponent.ghostObject, characterComponent.ghostShape, .35f);
         entity.add(characterComponent);
 
+        return entity;
+    }
+
+    public static Entity createBullet(Vector3 start, Vector3 direction) {
+        Entity entity = createDynamicEntity(boxModel, 1f, start.x, start.y, start.z);
+        Ray ray = new Ray(start,direction);
+        entity.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
+                1f));
+        ((btRigidBody) entity.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(30));
+
+        entity.add(new ProjectileComponent());
+        entity.add(new StatusComponent());
         return entity;
     }
 

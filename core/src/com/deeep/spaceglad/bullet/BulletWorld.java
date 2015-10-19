@@ -12,14 +12,11 @@ import com.deeep.spaceglad.components.*;
  * Created by scanevaro on 22/09/2015.
  */
 public class BulletWorld extends EntitySystem implements EntityListener {
-    public DebugDrawer debugDrawer = null;
-    public boolean renderMeshes = true;
     public final btCollisionConfiguration collisionConfiguration;
     public final MyCollisionDispatcher dispatcher;
     public final btBroadphaseInterface broadphase;
     public final btConstraintSolver solver;
-    public final btCollisionWorld collisionWorld;
-    public final Vector3 gravity;
+    public final btDiscreteDynamicsWorld collisionWorld;
     private btGhostPairCallback ghostPairCallback;
     public int maxSubSteps = 5;
     public float fixedTimeStep = 1f / 60f;
@@ -37,11 +34,15 @@ public class BulletWorld extends EntitySystem implements EntityListener {
                         ((Entity) body1.userData).getComponent(StatusComponent.class).alive = false;
                         ((Entity) body0.userData).getComponent(StatusComponent.class).alive = false;
                         return false;
+                    } else if(((Entity) body1.userData).getComponent(CharacterComponent.class)!= null){
+                        return false;
                     }
                 } else if (((Entity) body1.userData).getComponent(ProjectileComponent.class) != null) {
                     if (((Entity) body0.userData).getComponent(AIComponent.class) != null) {
                         ((Entity) body0.userData).getComponent(StatusComponent.class).alive = false;
                         ((Entity) body1.userData).getComponent(StatusComponent.class).alive = false;
+                        return false;
+                    }else if(((Entity) body0.userData).getComponent(CharacterComponent.class)!= null){
                         return false;
                     }
                 }
@@ -69,14 +70,13 @@ public class BulletWorld extends EntitySystem implements EntityListener {
         collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
         ghostPairCallback = new btGhostPairCallback();
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
-        this.gravity = new Vector3(0, -10, 0);
-        ((btDynamicsWorld) this.collisionWorld).setGravity(gravity);
+        this.collisionWorld.setGravity(new Vector3(0, -10, 0));
 
     }
 
     @Override
     public void update(float deltaTime) {
-        ((btDynamicsWorld) collisionWorld).stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
+        collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
     }
 
 
@@ -89,22 +89,13 @@ public class BulletWorld extends EntitySystem implements EntityListener {
         ghostPairCallback.dispose();
     }
 
-    public void setDebugMode(final int mode) {
-        if (mode == btIDebugDraw.DebugDrawModes.DBG_NoDebug && debugDrawer == null) return;
-        if (debugDrawer == null) collisionWorld.setDebugDrawer(debugDrawer = new DebugDrawer());
-        debugDrawer.setDebugMode(mode);
-    }
-
-    public int getDebugMode() {
-        return (debugDrawer == null) ? 0 : debugDrawer.getDebugMode();
-    }
 
     @Override
     public void entityAdded(Entity entity) {
         BulletComponent bulletComponent = entity.getComponent(BulletComponent.class);
         if (bulletComponent.body != null) {
             if (bulletComponent.body instanceof btRigidBody)
-                ((btDiscreteDynamicsWorld) collisionWorld).addRigidBody((btRigidBody) bulletComponent.body);
+                collisionWorld.addRigidBody((btRigidBody) bulletComponent.body);
             else
                 collisionWorld.addCollisionObject(bulletComponent.body);
         }
@@ -116,7 +107,7 @@ public class BulletWorld extends EntitySystem implements EntityListener {
             collisionWorld.removeCollisionObject(comp.body);
         CharacterComponent character = entity.getComponent(CharacterComponent.class);
         if(character != null){
-            ((btDiscreteDynamicsWorld)(collisionWorld)).removeAction(character.characterController);
+            collisionWorld.removeAction(character.characterController);
             collisionWorld.removeCollisionObject(character.ghostObject);
         }
     }

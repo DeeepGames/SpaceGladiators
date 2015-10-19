@@ -37,10 +37,6 @@ public class StatusSystem extends EntitySystem {
             Entity entity = (Entity) iterator.next();
             if(!entity.getComponent(StatusComponent.class).alive){
                 gameWorld.remove(entity);
-                if(entity.getComponent(AIComponent.class)!=null) {
-                    engine.addEntity(EntityFactory.createEnemy(gameWorld.world, 2, 3, 5));
-                    //TODO spawnSystem
-                }
             }
         }
     }

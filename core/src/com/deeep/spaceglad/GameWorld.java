@@ -4,7 +4,6 @@ import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -16,26 +15,32 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.bullet.BulletWorld;
 import com.deeep.spaceglad.chapter.seven.SoundManager;
+import com.deeep.spaceglad.components.AIComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.components.StatusComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
-import com.deeep.spaceglad.systems.AISystem;
+import com.deeep.spaceglad.systems.EnemySystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 import com.deeep.spaceglad.systems.StatusSystem;
+
+import java.util.ArrayList;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -50,7 +55,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     // TODO These are temporary and should be removed when obsolete
     private Entity ground;
-    private Entity wall;
+
     private Entity character;
     //private FirstPersonCameraController firstPersonCameraController;
 
@@ -59,6 +64,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     public BulletWorld world;
     public ModelBuilder modelBuilder = new ModelBuilder();
     public Array<Disposable> disposables = new Array<Disposable>();
+
 
     public GameWorld(GameUI gameUI) {
         Bullet.init();
@@ -107,30 +113,26 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     private void createGround() {
         Model wallHorizontal = modelBuilder.createBox(40, 20, 1,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         Model wallVertical = modelBuilder.createBox(1, 20, 40,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                new Material(ColorAttribute.createDiffuse(Color.GREEN), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         Model groundModel = modelBuilder.createBox(40, 1, 40,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                new Material(ColorAttribute.createDiffuse(Color.YELLOW), ColorAttribute.createSpecular(Color.BLUE), FloatAttribute
                         .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         disposables.add(wallHorizontal);
         disposables.add(wallVertical);
         disposables.add(groundModel);
 
 
-        ground = EntityFactory.createStaticEntity(groundModel, 0, 0, 0);
-        ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
-        engine.addEntity(ground);
+        //ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
+        engine.addEntity(EntityFactory.createStaticEntity(groundModel, 0, 0, 0));
 
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, -20));
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, 20));
         engine.addEntity(EntityFactory.createStaticEntity(wallVertical, 20, 10, 0));
         engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20, 10, 0));
-
-        // test.getComponent(ModelComponent.class).setColor(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f);
-
     }
 
     public void createLevel() {
@@ -143,20 +145,23 @@ public class GameWorld implements GestureDetector.GestureListener {
         // engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
-        engine.addSystem(new PlayerSystem(perspectiveCamera));
-        engine.addSystem(new AISystem());
+        engine.addSystem(new PlayerSystem(this, perspectiveCamera));
+        engine.addSystem(new EnemySystem(this));
         engine.addSystem(new StatusSystem(this));
+
     }
+
+
 
     public void render() {
         renderWorld();
     }
 
     protected void renderWorld() {
-       // light.begin(Vector3.Zero, perspectiveCamera.direction);
+        light.begin(Vector3.Zero, perspectiveCamera.direction);
         shadowBatch.begin(light.getCamera());
         shadowBatch.end();
-        //light.end();
+        light.end();
         modelBatch.begin(perspectiveCamera);
         engine.update(Gdx.graphics.getDeltaTime());
         modelBatch.end();
@@ -171,21 +176,20 @@ public class GameWorld implements GestureDetector.GestureListener {
         return false;
     }
 
+
+
     public boolean tap(float x, float y, int count, int button) {
-        shoot(x + (perspectiveCamera.viewportWidth / 2), (perspectiveCamera.viewportHeight / 2));
+        shoot(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         return true;
     }
 
-    public Entity shoot(final float x, final float y) {
-        return shoot(x, y, 30f);
+    public void shoot(final float x, final float y) {
+        shoot(x, y, 30f);
     }
 
-    public Entity shoot(final float x, final float y, final float impulse) {
-        /** Shoot a box */
-        Ray ray = perspectiveCamera.getPickRay(x, y);
-        Entity ent = EntityFactory.createBullet(ray, ray.origin.x, ray.origin.y, ray.origin.z);
-        engine.addEntity(ent);
-        return ent;
+
+    public void shoot(final float x, final float y, final float impulse) {
+
     }
 
     public void resize(int width, int height) {
@@ -194,7 +198,7 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void dispose() {
-        ((btDiscreteDynamicsWorld) (world.collisionWorld)).removeAction(character.getComponent(CharacterComponent.class).characterController);
+        world.collisionWorld.removeAction(character.getComponent(CharacterComponent.class).characterController);
         world.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
 
         world.dispose();

@@ -14,7 +14,6 @@ import com.badlogic.gdx.math.Matrix4;
 public class ModelComponent extends Component {
     public Model model;
     public ModelInstance instance;
-    public Matrix4 transform;
     private Color color = new Color(1f, 1f, 1f, 1f);
 
     public ModelComponent(Model model) {

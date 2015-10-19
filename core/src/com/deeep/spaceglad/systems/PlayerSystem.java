@@ -7,10 +7,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.deeep.spaceglad.GameWorld;
 import com.deeep.spaceglad.UI.GameUI;
-import com.deeep.spaceglad.components.CharacterComponent;
-import com.deeep.spaceglad.components.ModelComponent;
-import com.deeep.spaceglad.components.PlayerComponent;
+import com.deeep.spaceglad.components.*;
 
 /**
  * Created by Elmar on 8-8-2015.
@@ -24,12 +26,16 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private final Vector3 tmp = new Vector3();
     private final Camera camera;
     private final Vector3 tempVector = new Vector3();
+    private GameWorld gameWorld;
+    Vector3 rayFrom = new Vector3();
+    Vector3 rayTo = new Vector3();
+    ClosestRayResultCallback rayTestCB;
 
-    private Quaternion quat = new Quaternion();
-    float rotation = 0;
 
-    public PlayerSystem(Camera camera) {
+    public PlayerSystem(GameWorld gameWorld, Camera camera) {
         this.camera = camera;
+        this.gameWorld = gameWorld;
+        rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
     }
 
     public PlayerSystem(Camera camera, GameUI gameUI, Engine engine) {
@@ -54,37 +60,53 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private void updateMovement(float delta) {
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
-        camera.direction.rotate(camera.up, deltaX);
-        tmp.set(camera.direction).crs(camera.up).nor();
-        camera.direction.rotate(tmp, deltaY);
 
-//        rotation += deltaX;
-//        rotation %= 360;
-//        if (rotation < 0) {
-//            rotation = 360;
-//        }
+        camera.rotate(camera.up,deltaX);
+        camera.rotate(new Vector3(0, 1, 0),deltaY);
+        //camera.direction.rotate(camera.up, rotation);
+        //tmp.set(camera.direction).crs(camera.up).nor();
+        //camera.direction.rotate(tmp, deltaY);
 
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            // rotation+=5f;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            // rotation-=5f;
-        }
 
-        Quaternion rot = quat.setFromAxis(0, 1, 0, 270 + (float) Math.toDegrees(camera.direction.x * Math.PI));
-        // System.out.println(camera.direction.x + " - " + camera.direction.y + " - " + camera.direction.z);
-        System.out.println(Math.toDegrees(camera.direction.x * Math.PI));
 
-        characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.transform).nor();
+        characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.instance.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.UP))
-            characterComponent.walkDirection.add(characterComponent.characterDirection);
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-            characterComponent.walkDirection.add(-characterComponent.characterDirection.x, -characterComponent.characterDirection.y, -characterComponent.characterDirection.z);
+        if (Gdx.input.isKeyPressed(Input.Keys.W))
+            characterComponent.walkDirection.add(camera.direction);
+        if (Gdx.input.isKeyPressed(Input.Keys.S))
+            characterComponent.walkDirection.sub(camera.direction);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            //tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
+            //modelComponent.transform.translate(camera.direction.crs(camera.up).nor().scl(4 * delta));
+        }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             characterComponent.characterController.setJumpSpeed(15);
-            characterComponent.characterController.jump();  //.body).applyCentralImpulse(new Vector3(0,5,0));
+            characterComponent.characterController.jump();
+        }
+        if(Gdx.input.isTouched()){
+            Ray ray = camera.getPickRay(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+            rayFrom.set(ray.origin);
+            rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
+
+            // Because we reuse the ClosestRayResultCallback, we need reset it's values
+            rayTestCB.setCollisionObject(null);
+            rayTestCB.setClosestHitFraction(1f);
+            rayTestCB.setRayFromWorld(rayFrom);
+            rayTestCB.setRayToWorld(rayTo);
+
+
+            gameWorld.world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+
+            if (rayTestCB.hasHit()) {
+                final btCollisionObject obj = rayTestCB.getCollisionObject();
+                if (((Entity) obj.userData).getComponent(AIComponent.class) != null) {
+                    ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
+                }
+            }
         }
         characterComponent.walkDirection.scl(4f * delta);
 
@@ -94,8 +116,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         characterComponent.ghostObject.getWorldTransform(ghost);   //TODO export this
         ghost.getTranslation(translation);
 
-        modelComponent.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);
-        modelComponent.instance.transform = modelComponent.transform;
+        modelComponent.instance.transform.set(translation.x, translation.y, translation.z, camera.direction.x, camera.direction.y, camera.direction.z, 0);
 
         camera.position.set(translation.x, translation.y, translation.z);
         camera.update(true);
