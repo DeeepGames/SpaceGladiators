@@ -13,46 +13,39 @@ import com.deeep.spaceglad.components.*;
  */
 public class BulletWorld extends EntitySystem implements EntityListener {
     public final btCollisionConfiguration collisionConfiguration;
-    public final MyCollisionDispatcher dispatcher;
+    public final btCollisionDispatcher dispatcher;
     public final btBroadphaseInterface broadphase;
     public final btConstraintSolver solver;
     public final btDiscreteDynamicsWorld collisionWorld;
     private btGhostPairCallback ghostPairCallback;
     public int maxSubSteps = 5;
     public float fixedTimeStep = 1f / 60f;
+    private MyContactListener myContactListener;
 
-    public static class MyCollisionDispatcher extends CustomCollisionDispatcher {
-        public MyCollisionDispatcher(btCollisionConfiguration collisionConfiguration) {
-            super(collisionConfiguration);
-        }
-
+    public class MyContactListener extends ContactListener {
         @Override
-        public boolean needsCollision(btCollisionObject body0, btCollisionObject body1) {
-            if (body0.userData instanceof Entity || body1.userData instanceof Entity) {
-                if (((Entity) body0.userData).getComponent(ProjectileComponent.class) != null) {
-                    if (((Entity) body1.userData).getComponent(AIComponent.class) != null) {
-                        ((Entity) body1.userData).getComponent(StatusComponent.class).alive = false;
-                        ((Entity) body0.userData).getComponent(StatusComponent.class).alive = false;
-                        return false;
-                    } else if(((Entity) body1.userData).getComponent(CharacterComponent.class)!= null){
-                        return false;
-                    }
-                } else if (((Entity) body1.userData).getComponent(ProjectileComponent.class) != null) {
-                    if (((Entity) body0.userData).getComponent(AIComponent.class) != null) {
-                        ((Entity) body0.userData).getComponent(StatusComponent.class).alive = false;
-                        ((Entity) body1.userData).getComponent(StatusComponent.class).alive = false;
-                        return false;
-                    }else if(((Entity) body0.userData).getComponent(CharacterComponent.class)!= null){
-                        return false;
+        public void onContactStarted(btCollisionObject colObj0, btCollisionObject colObj1) {
+            if (colObj0.userData instanceof Entity && colObj0.userData instanceof Entity) {
+                Entity entity0 = (Entity) colObj0.userData;
+                Entity entity1 = (Entity) colObj1.userData;
+                if (entity0.getComponent(CharacterComponent.class) != null && entity1.getComponent(CharacterComponent.class) != null) {
+                    if (entity0.getComponent(AIComponent.class) != null) {
+                        if (entity0.getComponent(StatusComponent.class).alive)
+                            entity1.getComponent(PlayerComponent.class).health -= 10;
+                        entity0.getComponent(StatusComponent.class).alive = false;
+                    } else {
+                        if (entity1.getComponent(StatusComponent.class).alive)
+                            entity0.getComponent(PlayerComponent.class).health -= 10;
+                        entity1.getComponent(StatusComponent.class).alive = false;
                     }
                 }
             }
-            return super.needsCollision(body0, body1);
+            // implementation
         }
 
         @Override
-        public boolean needsResponse(btCollisionObject body0, btCollisionObject body1) {
-            return super.needsCollision(body0, body1);
+        public void onContactProcessed(int userValue0, int userValue1) {
+            // implementation
         }
     }
 
@@ -63,14 +56,16 @@ public class BulletWorld extends EntitySystem implements EntityListener {
 
 
     public BulletWorld() {
+        MyContactListener myContactListener = new MyContactListener();
+        myContactListener.enable();
         collisionConfiguration = new btDefaultCollisionConfiguration();
-        dispatcher = new MyCollisionDispatcher(collisionConfiguration);
+        dispatcher = new btCollisionDispatcher(collisionConfiguration);
         broadphase = new btAxisSweep3(new Vector3(-1000, -1000, -1000), new Vector3(1000, 1000, 1000));
         solver = new btSequentialImpulseConstraintSolver();
         collisionWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
         ghostPairCallback = new btGhostPairCallback();
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
-        this.collisionWorld.setGravity(new Vector3(0, -10, 0));
+        this.collisionWorld.setGravity(new Vector3(0, -0.5f, 0));
 
     }
 
@@ -106,7 +101,7 @@ public class BulletWorld extends EntitySystem implements EntityListener {
         if (comp != null)
             collisionWorld.removeCollisionObject(comp.body);
         CharacterComponent character = entity.getComponent(CharacterComponent.class);
-        if(character != null){
+        if (character != null) {
             collisionWorld.removeAction(character.characterController);
             collisionWorld.removeCollisionObject(character.ghostObject);
         }

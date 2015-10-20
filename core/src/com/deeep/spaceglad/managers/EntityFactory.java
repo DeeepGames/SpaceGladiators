@@ -115,9 +115,9 @@ public class EntityFactory {
         entity.add(characterComponent);
 
         bulletWorld.collisionWorld.addCollisionObject(entity.getComponent(CharacterComponent.class).ghostObject,
-                (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
-                (short) (btBroadphaseProxy.CollisionFilterGroups.StaticFilter | btBroadphaseProxy.CollisionFilterGroups.DefaultFilter));
-        ((btDiscreteDynamicsWorld) (bulletWorld.collisionWorld)).addAction(entity.getComponent(CharacterComponent.class).characterController);
+                (short) btBroadphaseProxy.CollisionFilterGroups.AllFilter,
+                (short) (btBroadphaseProxy.CollisionFilterGroups.AllFilter));//TODO better values for explaning
+        bulletWorld.collisionWorld.addAction(entity.getComponent(CharacterComponent.class).characterController);
         return entity;
     }
 
@@ -156,7 +156,7 @@ public class EntityFactory {
 
     public static Entity createBullet(Vector3 start, Vector3 direction) {
         Entity entity = createDynamicEntity(boxModel, 1f, start.x, start.y, start.z);
-        Ray ray = new Ray(start,direction);
+        Ray ray = new Ray(start, direction);
         entity.getComponent(ModelComponent.class).setColor(new Color(0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(), 0.5f + 0.5f * (float) Math.random(),
                 1f));
         ((btRigidBody) entity.getComponent(BulletComponent.class).body).applyCentralImpulse(ray.direction.scl(30));

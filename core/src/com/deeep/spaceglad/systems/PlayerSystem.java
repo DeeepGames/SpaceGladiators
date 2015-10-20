@@ -60,12 +60,13 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private void updateMovement(float delta) {
         float deltaX = -Gdx.input.getDeltaX() * 0.5f;
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
-
+        tmp.set(0,0,0);
         camera.rotate(camera.up,deltaX);
-        camera.rotate(new Vector3(0, 1, 0),deltaY);
+        //camera.rotate(new Vector3(0, 1, 0),deltaY);
         //camera.direction.rotate(camera.up, rotation);
+        tmp.set(camera.direction).crs(camera.up).nor();
         //tmp.set(camera.direction).crs(camera.up).nor();
-        //camera.direction.rotate(tmp, deltaY);
+        camera.direction.rotate(tmp, deltaY);
 
 
 
@@ -75,15 +76,9 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             characterComponent.walkDirection.add(camera.direction);
         if (Gdx.input.isKeyPressed(Input.Keys.S))
             characterComponent.walkDirection.sub(camera.direction);
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
 
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            //tmp.set(camera.direction).crs(camera.up).nor().scl(deltaTime * velocity);
-            //modelComponent.transform.translate(camera.direction.crs(camera.up).nor().scl(4 * delta));
-        }
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            characterComponent.characterController.setJumpSpeed(15);
+            characterComponent.characterController.setJumpSpeed(25);
             characterComponent.characterController.jump();
         }
         if(Gdx.input.isTouched()){
@@ -108,7 +103,15 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
                 }
             }
         }
-        characterComponent.walkDirection.scl(4f * delta);
+        tmp.set(0,0,0);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            tmp.set(camera.direction).crs(camera.up).nor().scl(-1);
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            tmp.set(camera.direction).crs(camera.up).nor().scl(1);
+        }
+        characterComponent.walkDirection.add(tmp);
+        characterComponent.walkDirection.scl(8f * delta);
 
         characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
         Matrix4 ghost = new Matrix4();
@@ -120,6 +123,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
         camera.position.set(translation.x, translation.y, translation.z);
         camera.update(true);
+        System.out.println(playerComponent.health);
     }
 
     private void updateStatus() {
