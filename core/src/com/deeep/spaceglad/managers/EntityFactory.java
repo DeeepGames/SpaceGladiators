@@ -7,20 +7,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.*;
-import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.deeep.spaceglad.bullet.BulletWorld;
+import com.deeep.spaceglad.bullet.BulletSystem;
 import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.*;
 
@@ -53,8 +49,7 @@ public class EntityFactory {
 
         Entity entity = new Entity();
 
-        ModelComponent modelComponent = new ModelComponent(model);
-        modelComponent.instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
+        ModelComponent modelComponent = new ModelComponent(model, x, y, z);
         entity.add(modelComponent);
 
         BulletComponent bulletComponent = new BulletComponent();
@@ -68,11 +63,10 @@ public class EntityFactory {
         return entity;
     }
 
-    private static Entity createCharacter(BulletWorld bulletWorld, float x, float y, float z) {
+    private static Entity createCharacter(BulletSystem bulletSystem, float x, float y, float z) {
         Entity entity = new Entity();
 
-        ModelComponent modelComponent = new ModelComponent(playerModel);
-        modelComponent.instance = new ModelInstance(playerModel, new Matrix4().setToTranslation(x, y, z));
+        ModelComponent modelComponent = new ModelComponent(playerModel, x, y, z);
         entity.add(modelComponent);
 
         CharacterComponent characterComponent = new CharacterComponent();
@@ -85,22 +79,22 @@ public class EntityFactory {
         characterComponent.ghostObject.userData = entity;
         entity.add(characterComponent);
 
-        bulletWorld.collisionWorld.addCollisionObject(entity.getComponent(CharacterComponent.class).ghostObject,
+        bulletSystem.collisionWorld.addCollisionObject(entity.getComponent(CharacterComponent.class).ghostObject,
                 (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
                 (short) (btBroadphaseProxy.CollisionFilterGroups.AllFilter));
-        bulletWorld.collisionWorld.addAction(entity.getComponent(CharacterComponent.class).characterController);
+        bulletSystem.collisionWorld.addAction(entity.getComponent(CharacterComponent.class).characterController);
         return entity;
     }
 
-    public static Entity createPlayer(BulletWorld bulletWorld, float x, float y, float z) {
-        Entity entity = createCharacter(bulletWorld, x, y, z);
+    public static Entity createPlayer(BulletSystem bulletSystem, float x, float y, float z) {
+        Entity entity = createCharacter(bulletSystem, x, y, z);
         entity.add(new PlayerComponent());
         return entity;
     }
 
-    public static Entity createEnemy(BulletWorld bulletWorld, float x, float y, float z) {
-        Entity entity = createCharacter(bulletWorld, x, y, z);
-        entity.add(new AIComponent(AIComponent.STATE.HUNTING));
+    public static Entity createEnemy(BulletSystem bulletSystem, float x, float y, float z) {
+        Entity entity = createCharacter(bulletSystem, x, y, z);
+        entity.add(new EnemyComponent(EnemyComponent.STATE.HUNTING));
         entity.add(new StatusComponent());
         //TODO andreas
         return entity;

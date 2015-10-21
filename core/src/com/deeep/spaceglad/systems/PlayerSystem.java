@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
@@ -97,7 +96,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
         camera.position.set(translation.x, translation.y, translation.z);
         camera.update(true);
-        System.out.println(playerComponent.health);
     }
 
     private void updateStatus() {
@@ -118,11 +116,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         rayTestCB.setRayToWorld(rayTo);
 
 
-        gameWorld.world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+        gameWorld.bulletSystem.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
 
         if (rayTestCB.hasHit()) {
             final btCollisionObject obj = rayTestCB.getCollisionObject();
-            if (((Entity) obj.userData).getComponent(AIComponent.class) != null) {
+            if (((Entity) obj.userData).getComponent(EnemyComponent.class) != null) {
                 ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
             }
         }

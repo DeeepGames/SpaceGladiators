@@ -5,10 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -18,37 +15,24 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.input.GestureDetector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
-import com.deeep.spaceglad.bullet.BulletWorld;
-//import com.deeep.spaceglad.chapter.seven.SoundManager;
-import com.deeep.spaceglad.components.AIComponent;
+import com.deeep.spaceglad.bullet.BulletSystem;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
-import com.deeep.spaceglad.components.StatusComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.EnemySystem;
 import com.deeep.spaceglad.systems.PlayerSystem;
 import com.deeep.spaceglad.systems.RenderSystem;
 import com.deeep.spaceglad.systems.StatusSystem;
 
-import java.util.ArrayList;
-
 /**
  * Created by scanevaro on 31/07/2015.
  */
-public class GameWorld implements GestureDetector.GestureListener {
+public class GameWorld {
     private static final float FOV = 67F;
 
     private PerspectiveCamera perspectiveCamera;
@@ -61,7 +45,7 @@ public class GameWorld implements GestureDetector.GestureListener {
 
     public DirectionalShadowLight light;
     public ModelBatch shadowBatch;
-    public BulletWorld world;
+    public BulletSystem bulletSystem;
     public ModelBuilder modelBuilder = new ModelBuilder();
     public Array<Disposable> disposables = new Array<Disposable>();
 
@@ -70,8 +54,19 @@ public class GameWorld implements GestureDetector.GestureListener {
         Bullet.init();
         initEnvironment();
         initModelBatch();
-        initWorld();
+        bulletSystem =  new BulletSystem();
         initPersCamera();
+
+        engine = new Engine();
+        engine.addSystem(new RenderSystem(modelBatch, environment));
+        //First we create a model
+        ModelBuilder modelBuilder = new ModelBuilder();
+        Material boxMaterial = new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute.createShininess(16f));
+        Model box = modelBuilder.createBox(5, 5, 5, boxMaterial, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        //Now the entity
+        Entity entity = new Entity();
+        entity.add(new ModelComponent(box,10,10,10));
+        engine.addEntity(entity);
         addSystems(gameUI);
         addEntities();
         //SoundManager.setCamera(perspectiveCamera);
@@ -96,18 +91,15 @@ public class GameWorld implements GestureDetector.GestureListener {
         shadowBatch = new ModelBatch(new DepthShaderProvider());
     }
 
-    private void initWorld() {
-        world = new BulletWorld();
-    }
 
     private void addEntities() {
         createGround();
         createPlayer(5, 3, 5);
-        engine.addEntity(EntityFactory.createEnemy(world, 5, 3, 5));
+        engine.addEntity(EntityFactory.createEnemy(bulletSystem, 5, 3, 5));
     }
 
     private void createPlayer(float x, float y, float z) {
-        character = EntityFactory.createPlayer(world, x, y, z);
+        character = EntityFactory.createPlayer(bulletSystem, x, y, z);
         engine.addEntity(character);
     }
 
@@ -132,23 +124,20 @@ public class GameWorld implements GestureDetector.GestureListener {
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, 20));
         engine.addEntity(EntityFactory.createStaticEntity(wallVertical, 20, 10, 0));
         engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20, 10, 0));
-    }
 
-    public void createLevel() {
+
 
     }
 
     private void addSystems(GameUI gameUI) {
         // TODO Add the remaining systems
-        engine = new Engine();
-        engine.addSystem(new RenderSystem(modelBatch, environment));
-        engine.addSystem(world);
+
+        engine.addSystem(bulletSystem);
         engine.addSystem(new PlayerSystem(this, gameUI, perspectiveCamera));
         engine.addSystem(new EnemySystem(this));
         engine.addSystem(new StatusSystem(this));
 
     }
-
 
 
     public void render() {
@@ -166,29 +155,9 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void update(float delta) {
-        world.update(delta);
+        //bulletSystem.update(delta);
     }
 
-    @Override
-    public boolean touchDown(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-
-
-    public boolean tap(float x, float y, int count, int button) {
-        shoot(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        return true;
-    }
-
-    public void shoot(final float x, final float y) {
-        shoot(x, y, 30f);
-    }
-
-
-    public void shoot(final float x, final float y, final float impulse) {
-
-    }
 
     public void resize(int width, int height) {
         perspectiveCamera.viewportHeight = height;
@@ -196,11 +165,11 @@ public class GameWorld implements GestureDetector.GestureListener {
     }
 
     public void dispose() {
-        world.collisionWorld.removeAction(character.getComponent(CharacterComponent.class).characterController);
-        world.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
+        bulletSystem.collisionWorld.removeAction(character.getComponent(CharacterComponent.class).characterController);
+        bulletSystem.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
 
-        world.dispose();
-        world = null;
+        bulletSystem.dispose();
+        bulletSystem = null;
 
         for (Disposable disposable : disposables) disposable.dispose();
         disposables.clear();
@@ -220,38 +189,9 @@ public class GameWorld implements GestureDetector.GestureListener {
         EntityFactory.dispose();
     }
 
-    @Override
-    public boolean longPress(float x, float y) {
-        return false;
-    }
-
-    @Override
-    public boolean fling(float velocityX, float velocityY, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean pan(float x, float y, float deltaX, float deltaY) {
-        return false;
-    }
-
-    @Override
-    public boolean panStop(float x, float y, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean zoom(float initialDistance, float distance) {
-        return false;
-    }
-
-    @Override
-    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
-        return false;
-    }
 
     public void remove(Entity entity) {
         engine.removeEntity(entity);
-        world.removeBody(entity);
+        bulletSystem.removeBody(entity);
     }
 }

@@ -22,7 +22,7 @@ public class GameScreen implements Screen {
         gameUI = new GameUI(game);
         gameWorld = new GameWorld(gameUI);
         Settings.Paused = false;
-        Gdx.input.setInputProcessor(new InputMultiplexer(gameUI.stage, new GestureDetector(gameWorld)));
+        Gdx.input.setInputProcessor(gameUI.stage);
         Gdx.input.setCursorCatched(true);
     }
 

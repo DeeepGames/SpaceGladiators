@@ -2,12 +2,11 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.GameWorld;
-import com.deeep.spaceglad.components.AIComponent;
+import com.deeep.spaceglad.components.EnemyComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.components.PlayerComponent;
@@ -32,7 +31,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
     @Override
     public void addedToEngine(Engine e) {
-        entities = e.getEntitiesFor(Family.all(AIComponent.class, CharacterComponent.class).get());
+        entities = e.getEntitiesFor(Family.all(EnemyComponent.class, CharacterComponent.class).get());
         e.addEntityListener(Family.one(PlayerComponent.class).get(), this);
         this.engine = e;
     }
@@ -40,7 +39,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
     public void update(float delta) {
         if (entities.size() < 1) {
             Random random = new Random();
-            engine.addEntity(EntityFactory.createEnemy(gameWorld.world, random.nextInt(40) - 20, 10, random.nextInt(40) - 20));
+            engine.addEntity(EntityFactory.createEnemy(gameWorld.bulletSystem, random.nextInt(40) - 20, 10, random.nextInt(40) - 20));
         }
         for (Entity e : entities) {
             ModelComponent mod = e.getComponent(ModelComponent.class);

@@ -5,7 +5,7 @@ import com.badlogic.ashley.core.Component;
 /**
  * Created by Andreas on 8/5/2015.
  */
-public class AIComponent extends Component {
+public class EnemyComponent extends Component {
 
     public enum STATE {
         IDLE,
@@ -15,7 +15,7 @@ public class AIComponent extends Component {
 
     public STATE state = STATE.IDLE;
 
-    public AIComponent(STATE state){
+    public EnemyComponent(STATE state){
         this.state = state;
     }
 }

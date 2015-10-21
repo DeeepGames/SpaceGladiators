@@ -22,8 +22,4 @@ public class PlayerComponent extends Component {
         health = 100;
         score = 0;
     }
-
-    public void hit() {
-        health -= 1;
-    }
 }

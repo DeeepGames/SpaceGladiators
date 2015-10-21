@@ -2,16 +2,14 @@ package com.deeep.spaceglad.bullet;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.*;
-import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.deeep.spaceglad.components.*;
 
 /**
  * Created by scanevaro on 22/09/2015.
  */
-public class BulletWorld extends EntitySystem implements EntityListener {
+public class BulletSystem extends EntitySystem implements EntityListener {
     public final btCollisionConfiguration collisionConfiguration;
     public final btCollisionDispatcher dispatcher;
     public final btBroadphaseInterface broadphase;
@@ -29,7 +27,7 @@ public class BulletWorld extends EntitySystem implements EntityListener {
                 Entity entity0 = (Entity) colObj0.userData;
                 Entity entity1 = (Entity) colObj1.userData;
                 if (entity0.getComponent(CharacterComponent.class) != null && entity1.getComponent(CharacterComponent.class) != null) {
-                    if (entity0.getComponent(AIComponent.class) != null) {
+                    if (entity0.getComponent(EnemyComponent.class) != null) {
                         if (entity0.getComponent(StatusComponent.class).alive)
                             entity1.getComponent(PlayerComponent.class).health -= 10;
                         entity0.getComponent(StatusComponent.class).alive = false;
@@ -55,7 +53,7 @@ public class BulletWorld extends EntitySystem implements EntityListener {
     }
 
 
-    public BulletWorld() {
+    public BulletSystem() {
         MyContactListener myContactListener = new MyContactListener();
         myContactListener.enable();
         collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -100,11 +98,6 @@ public class BulletWorld extends EntitySystem implements EntityListener {
         BulletComponent comp = entity.getComponent(BulletComponent.class);
         if (comp != null)
             collisionWorld.removeCollisionObject(comp.body);
-        CharacterComponent character = entity.getComponent(CharacterComponent.class);
-        if (character != null) {
-            collisionWorld.removeAction(character.characterController);
-            collisionWorld.removeCollisionObject(character.ghostObject);
-        }
     }
 
     @Override

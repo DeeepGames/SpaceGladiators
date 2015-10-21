@@ -6,9 +6,7 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.deeep.spaceglad.GameWorld;
-import com.deeep.spaceglad.components.AIComponent;
 import com.deeep.spaceglad.components.StatusComponent;
-import com.deeep.spaceglad.managers.EntityFactory;
 
 import java.util.Iterator;
 
