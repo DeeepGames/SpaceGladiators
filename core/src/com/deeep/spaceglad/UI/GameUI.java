@@ -14,10 +14,11 @@ public class GameUI {
     private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-    //  public OxygenWidget oxygenWidget;
+//  public OxygenWidget oxygenWidget;
 //  public EnergyWidget energyWidget;
     private ScoreWidget scoreWidget;
     private PauseWidget pauseWidget;
+    private CrosshairWidget crosshairWidget;
     public GameOverWidget gameOverWidget;
     private Label fpsLabel;
 
@@ -35,6 +36,7 @@ public class GameUI {
         scoreWidget = new ScoreWidget();
         pauseWidget = new PauseWidget(game, stage);
         gameOverWidget = new GameOverWidget(game, stage);
+        crosshairWidget = new CrosshairWidget();
         fpsLabel = new Label("", Assets.skin);
     }
 
@@ -51,12 +53,16 @@ public class GameUI {
         pauseWidget.setPosition(Core.VIRTUAL_WIDTH - pauseWidget.getWidth(), Core.VIRTUAL_HEIGHT - pauseWidget.getHeight());
         gameOverWidget.setSize(280, 100);
         gameOverWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - 280 / 2, Core.VIRTUAL_HEIGHT / 2);
+        crosshairWidget.setPosition(Core.VIRTUAL_WIDTH / 2 - 16, Core.VIRTUAL_HEIGHT / 2 - 16);
+        crosshairWidget.setSize(32, 32);
+
         fpsLabel.setPosition(0, 10);
 
         stage.addActor(healthWidget);
 //      stage.addActor(oxygenWidget);
 //      stage.addActor(energyWidget);
         stage.addActor(scoreWidget);
+        stage.addActor(crosshairWidget);
         stage.setKeyboardFocus(pauseWidget);
         stage.addActor(fpsLabel);
     }

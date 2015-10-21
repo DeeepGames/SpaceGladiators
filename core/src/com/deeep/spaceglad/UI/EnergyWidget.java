@@ -30,8 +30,6 @@ public class EnergyWidget extends Actor {
     @Override
     public void act(float delta) {
         if (Settings.Paused) return;
-        energyBar.act(delta);
-        label.act(delta);
     }
 
     @Override
