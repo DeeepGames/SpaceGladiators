@@ -18,6 +18,4 @@ public class AIComponent extends Component {
     public AIComponent(STATE state){
         this.state = state;
     }
-
-    public boolean alive = true;
 }

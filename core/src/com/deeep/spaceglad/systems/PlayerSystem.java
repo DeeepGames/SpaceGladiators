@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.deeep.spaceglad.GameWorld;
+import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
 
@@ -32,15 +33,11 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     ClosestRayResultCallback rayTestCB;
 
 
-    public PlayerSystem(GameWorld gameWorld, Camera camera) {
+    public PlayerSystem(GameWorld gameWorld,GameUI gameUI, Camera camera) {
         this.camera = camera;
         this.gameWorld = gameWorld;
-        rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
-    }
-
-    public PlayerSystem(Camera camera, GameUI gameUI, Engine engine) {
-        this.camera = camera;
         this.gameUI = gameUI;
+        rayTestCB = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
     }
 
     @Override
@@ -52,9 +49,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     public void update(float delta) {
         if (player == null) return;
         updateMovement(delta);
-        //if (Gdx.input.justTouched()) fire();
-        //updateStatus();
-        //checkGameOver();
+        updateStatus();
+        checkGameOver();
     }
 
     private void updateMovement(float delta) {
@@ -62,10 +58,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         float deltaY = -Gdx.input.getDeltaY() * 0.5f;
         tmp.set(0,0,0);
         camera.rotate(camera.up,deltaX);
-        //camera.rotate(new Vector3(0, 1, 0),deltaY);
-        //camera.direction.rotate(camera.up, rotation);
         tmp.set(camera.direction).crs(camera.up).nor();
-        //tmp.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tmp, deltaY);
 
 
@@ -81,27 +74,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             characterComponent.characterController.setJumpSpeed(25);
             characterComponent.characterController.jump();
         }
-        if(Gdx.input.isTouched()){
-            Ray ray = camera.getPickRay(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
-
-            rayFrom.set(ray.origin);
-            rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
-
-            // Because we reuse the ClosestRayResultCallback, we need reset it's values
-            rayTestCB.setCollisionObject(null);
-            rayTestCB.setClosestHitFraction(1f);
-            rayTestCB.setRayFromWorld(rayFrom);
-            rayTestCB.setRayToWorld(rayTo);
-
-
-            gameWorld.world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
-
-            if (rayTestCB.hasHit()) {
-                final btCollisionObject obj = rayTestCB.getCollisionObject();
-                if (((Entity) obj.userData).getComponent(AIComponent.class) != null) {
-                    ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
-                }
-            }
+        if(Gdx.input.justTouched()){
+            fire();
         }
         tmp.set(0,0,0);
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -111,7 +85,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             tmp.set(camera.direction).crs(camera.up).nor().scl(1);
         }
         characterComponent.walkDirection.add(tmp);
-        characterComponent.walkDirection.scl(8f * delta);
+        characterComponent.walkDirection.scl(10f * delta);
 
         characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
         Matrix4 ghost = new Matrix4();
@@ -132,21 +106,33 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
 
     private void fire() {
-        /*
-        engine.addEntity(
-                EntityFactory.createBullet(
-                        positionComponentMapper.get(player).position.cpy(),
-                        camera.direction.cpy().scl(150)
-                )
-        );*/
+        Ray ray = camera.getPickRay(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2);
+
+        rayFrom.set(ray.origin);
+        rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
+
+        // Because we reuse the ClosestRayResultCallback, we need reset it's values
+        rayTestCB.setCollisionObject(null);
+        rayTestCB.setClosestHitFraction(1f);
+        rayTestCB.setRayFromWorld(rayFrom);
+        rayTestCB.setRayToWorld(rayTo);
+
+
+        gameWorld.world.collisionWorld.rayTest(rayFrom, rayTo, rayTestCB);
+
+        if (rayTestCB.hasHit()) {
+            final btCollisionObject obj = rayTestCB.getCollisionObject();
+            if (((Entity) obj.userData).getComponent(AIComponent.class) != null) {
+                ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
+            }
+        }
     }
 
     private void checkGameOver() {
-        /*
         if (playerComponent.health <= 0 && !Settings.Paused) {
             Settings.Paused = true;
             gameUI.gameOverWidget.gameOver();
-        }*/
+        }
     }
 
     @Override
@@ -155,7 +141,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         playerComponent = entity.getComponent(PlayerComponent.class);
         characterComponent = entity.getComponent(CharacterComponent.class);
         modelComponent = entity.getComponent(ModelComponent.class);
-        //gameUI.healthWidget.setValue(playerComponent.health);
+        //
     }
 
     @Override

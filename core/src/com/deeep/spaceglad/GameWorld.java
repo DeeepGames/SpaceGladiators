@@ -32,7 +32,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.bullet.BulletWorld;
-import com.deeep.spaceglad.chapter.seven.SoundManager;
+//import com.deeep.spaceglad.chapter.seven.SoundManager;
 import com.deeep.spaceglad.components.AIComponent;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
@@ -56,10 +56,8 @@ public class GameWorld implements GestureDetector.GestureListener {
     private Engine engine;
     private ModelBatch modelBatch;
     // TODO These are temporary and should be removed when obsolete
-    private Entity ground;
 
     private Entity character;
-    //private FirstPersonCameraController firstPersonCameraController;
 
     public DirectionalShadowLight light;
     public ModelBatch shadowBatch;
@@ -76,7 +74,7 @@ public class GameWorld implements GestureDetector.GestureListener {
         initPersCamera();
         addSystems(gameUI);
         addEntities();
-        SoundManager.setCamera(perspectiveCamera);
+        //SoundManager.setCamera(perspectiveCamera);
     }
 
     private void initEnvironment() {
@@ -128,7 +126,6 @@ public class GameWorld implements GestureDetector.GestureListener {
         disposables.add(groundModel);
 
 
-        //ground.getComponent(ModelComponent.class).setColor(new Color(0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 0.25f + 0.5f * (float) Math.random(), 1f));
         engine.addEntity(EntityFactory.createStaticEntity(groundModel, 0, 0, 0));
 
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, -20));
@@ -144,10 +141,9 @@ public class GameWorld implements GestureDetector.GestureListener {
     private void addSystems(GameUI gameUI) {
         // TODO Add the remaining systems
         engine = new Engine();
-        // engine.addSystem(playerSystem = new PlayerSystem(perspectiveCamera, gameUI, engine));
         engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(world);
-        engine.addSystem(new PlayerSystem(this, perspectiveCamera));
+        engine.addSystem(new PlayerSystem(this, gameUI, perspectiveCamera));
         engine.addSystem(new EnemySystem(this));
         engine.addSystem(new StatusSystem(this));
 
@@ -222,7 +218,6 @@ public class GameWorld implements GestureDetector.GestureListener {
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();
         EntityFactory.dispose();
-        ground = null;
     }
 
     @Override
