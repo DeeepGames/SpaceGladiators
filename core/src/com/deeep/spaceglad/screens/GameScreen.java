@@ -1,9 +1,7 @@
 package com.deeep.spaceglad.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.input.GestureDetector;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.GameWorld;
 import com.deeep.spaceglad.Settings;
@@ -33,7 +31,6 @@ public class GameScreen implements Screen {
     @Override
     public void render(float delta) {
         /** Updates */
-        gameWorld.update(delta);
         gameUI.update(delta);
         /** Draw */
         gameWorld.render();

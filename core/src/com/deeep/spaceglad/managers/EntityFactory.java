@@ -100,9 +100,9 @@ public class EntityFactory {
         return entity;
     }
 
-    public static void dispose() {
-        playerModel.dispose();
-        playerTexture.dispose();
-        boxModel.dispose();
-    }
+//    public static void dispose() {
+//        playerModel.dispose();
+//        playerTexture.dispose();
+//        boxModel.dispose();
+//    }
 }

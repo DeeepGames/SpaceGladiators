@@ -21,7 +21,6 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.CharacterComponent;
-import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
 import com.deeep.spaceglad.systems.*;
 
@@ -50,19 +49,17 @@ public class GameWorld {
         Bullet.init();
         initEnvironment();
         initModelBatch();
-        bulletSystem =  new BulletSystem();
         initPersCamera();
-
         engine = new Engine();
         engine.addSystem(new RenderSystem(modelBatch, environment));
         //First we create a model
-        ModelBuilder modelBuilder = new ModelBuilder();
-        Material boxMaterial = new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute.createShininess(16f));
-        Model box = modelBuilder.createBox(5, 5, 5, boxMaterial, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        //Now the entity
-        Entity entity = new Entity();
-        entity.add(new ModelComponent(box,10,10,10));
-        engine.addEntity(entity);
+//        ModelBuilder modelBuilder = new ModelBuilder();
+//        Material boxMaterial = new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute.createShininess(16f));
+//        Model box = modelBuilder.createBox(5, 5, 5, boxMaterial, VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+//        //Now the entity
+//        Entity entity = new Entity();
+//        entity.add(new ModelComponent(box, 10, 10, 10));
+//        engine.addEntity(entity);
         addSystems(gameUI);
         addEntities();
         //SoundManager.setCamera(perspectiveCamera);
@@ -122,13 +119,12 @@ public class GameWorld {
         engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20, 10, 0));
 
 
-
     }
 
     private void addSystems(GameUI gameUI) {
         // TODO Add the remaining systems
 
-        engine.addSystem(bulletSystem);
+        engine.addSystem(bulletSystem = new BulletSystem());
         engine.addSystem(new PlayerSystem(this, gameUI, perspectiveCamera));
         engine.addSystem(new EnemySystem(this));
         engine.addSystem(new StatusSystem(this));
@@ -137,12 +133,12 @@ public class GameWorld {
 
 
     public void render() {
-        if(Settings.Paused){
+        if (Settings.Paused) {
             engine.getSystem(PlayerSystem.class).setProcessing(false);
             engine.getSystem(EnemySystem.class).setProcessing(false);
             engine.getSystem(StatusSystem.class).setProcessing(false);
             engine.getSystem(BulletSystem.class).setProcessing(false);
-        }else{
+        } else {
             engine.getSystem(PlayerSystem.class).setProcessing(true);
             engine.getSystem(EnemySystem.class).setProcessing(true);
             engine.getSystem(StatusSystem.class).setProcessing(true);
@@ -160,11 +156,6 @@ public class GameWorld {
         engine.update(Gdx.graphics.getDeltaTime());
         modelBatch.end();
     }
-
-    public void update(float delta) {
-        //bulletSystem.update(delta);
-    }
-
 
     public void resize(int width, int height) {
         perspectiveCamera.viewportHeight = height;
@@ -193,7 +184,7 @@ public class GameWorld {
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();
-        EntityFactory.dispose();
+//        EntityFactory.dispose();
     }
 
 
