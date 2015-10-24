@@ -20,14 +20,10 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
-import com.deeep.spaceglad.bullet.BulletSystem;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.components.ModelComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
-import com.deeep.spaceglad.systems.EnemySystem;
-import com.deeep.spaceglad.systems.PlayerSystem;
-import com.deeep.spaceglad.systems.RenderSystem;
-import com.deeep.spaceglad.systems.StatusSystem;
+import com.deeep.spaceglad.systems.*;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -141,6 +137,17 @@ public class GameWorld {
 
 
     public void render() {
+        if(Settings.Paused){
+            engine.getSystem(PlayerSystem.class).setProcessing(false);
+            engine.getSystem(EnemySystem.class).setProcessing(false);
+            engine.getSystem(StatusSystem.class).setProcessing(false);
+            engine.getSystem(BulletSystem.class).setProcessing(false);
+        }else{
+            engine.getSystem(PlayerSystem.class).setProcessing(true);
+            engine.getSystem(EnemySystem.class).setProcessing(true);
+            engine.getSystem(StatusSystem.class).setProcessing(true);
+            engine.getSystem(BulletSystem.class).setProcessing(true);
+        }
         renderWorld();
     }
 

@@ -16,9 +16,9 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.deeep.spaceglad.bullet.BulletSystem;
 import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.*;
+import com.deeep.spaceglad.systems.BulletSystem;
 
 /**
  * Created by Elmar on 7-8-2015.
