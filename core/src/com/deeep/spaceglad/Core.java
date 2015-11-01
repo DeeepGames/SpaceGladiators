@@ -41,7 +41,7 @@ public class Core extends ApplicationAdapter {
             Logger.log(Logger.ANDREAS, Logger.INFO, "Instantiated new GameScreen");
             this.screen.show();
             this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        }else{
+        } else {
             Logger.log(Logger.ANDREAS, Logger.CRITICAL, "Failed to instantiate new GameScreen");
         }
     }
@@ -49,5 +49,6 @@ public class Core extends ApplicationAdapter {
     @Override
     public void dispose() {
         Settings.save();
+        Assets.dispose();
     }
 }

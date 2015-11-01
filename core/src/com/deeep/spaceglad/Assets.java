@@ -20,4 +20,8 @@ public class Assets {
         }
         skin.load(fileHandle);
     }
+
+    public static void dispose() {
+        skin.dispose();
+    }
 }
