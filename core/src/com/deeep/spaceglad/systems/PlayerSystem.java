@@ -100,6 +100,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
             final btCollisionObject obj = rayTestCB.getCollisionObject();
             if (((Entity) obj.userData).getComponent(EnemyComponent.class) != null) {
                 ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
+                PlayerComponent.score += 100;
             }
         }
     }

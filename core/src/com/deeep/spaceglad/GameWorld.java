@@ -108,6 +108,11 @@ public class GameWorld {
     }
 
     public void render() {
+        renderWorld();
+        checkPause();
+    }
+
+    private void checkPause() {
         if (Settings.Paused) {
             engine.getSystem(PlayerSystem.class).setProcessing(false);
             engine.getSystem(EnemySystem.class).setProcessing(false);
@@ -119,7 +124,6 @@ public class GameWorld {
             engine.getSystem(StatusSystem.class).setProcessing(true);
             engine.getSystem(BulletSystem.class).setProcessing(true);
         }
-        renderWorld();
     }
 
     protected void renderWorld() {

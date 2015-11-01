@@ -75,7 +75,6 @@ public class EnemySystem extends EntitySystem implements EntityListener {
         }
     }
 
-
     @Override
     public void entityAdded(Entity entity) {
         player = entity;
@@ -83,6 +82,5 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
-
     }
 }
