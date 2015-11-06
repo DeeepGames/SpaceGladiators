@@ -29,24 +29,30 @@ import com.deeep.spaceglad.systems.*;
  */
 public class GameWorld {
     private static final float FOV = 67F;
-    private PerspectiveCamera perspectiveCamera;
-    private Environment environment;
-    private Engine engine;
     private ModelBatch modelBatch;
+    private Environment environment;
+    private PerspectiveCamera perspectiveCamera;
+
+    private Engine engine;
     private Entity character;
-    public DirectionalShadowLight light;
-    public ModelBatch shadowBatch;
     public BulletSystem bulletSystem;
     public ModelBuilder modelBuilder = new ModelBuilder();
-    public Array<Disposable> disposables = new Array<Disposable>();
+
+    Model wallHorizontal = modelBuilder.createBox(40, 20, 1,
+            new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute
+                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+    Model wallVertical = modelBuilder.createBox(1, 20, 40,
+            new Material(ColorAttribute.createDiffuse(Color.GREEN), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
+                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+    Model groundModel = modelBuilder.createBox(40, 1, 40,
+            new Material(ColorAttribute.createDiffuse(Color.YELLOW), ColorAttribute.createSpecular(Color.BLUE), FloatAttribute
+                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
     public GameWorld(GameUI gameUI) {
         Bullet.init();
         initEnvironment();
         initModelBatch();
         initPersCamera();
-        engine = new Engine();
-        engine.addSystem(new RenderSystem(modelBatch, environment));
         addSystems(gameUI);
         addEntities();
     }
@@ -54,10 +60,6 @@ public class GameWorld {
     private void initEnvironment() {
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
-        light = new DirectionalShadowLight(1024, 1024, 20f, 20f, 1f, 300f);
-        light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
-        environment.add(light);
-        environment.shadowMap = light;
     }
 
     private void initPersCamera() {
@@ -66,7 +68,6 @@ public class GameWorld {
 
     private void initModelBatch() {
         modelBatch = new ModelBatch();
-        shadowBatch = new ModelBatch(new DepthShaderProvider());
     }
 
     private void addEntities() {
@@ -81,18 +82,6 @@ public class GameWorld {
     }
 
     private void createGround() {
-        Model wallHorizontal = modelBuilder.createBox(40, 20, 1,
-                new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute
-                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        Model wallVertical = modelBuilder.createBox(1, 20, 40,
-                new Material(ColorAttribute.createDiffuse(Color.GREEN), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        Model groundModel = modelBuilder.createBox(40, 1, 40,
-                new Material(ColorAttribute.createDiffuse(Color.YELLOW), ColorAttribute.createSpecular(Color.BLUE), FloatAttribute
-                        .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-        disposables.add(wallHorizontal);
-        disposables.add(wallVertical);
-        disposables.add(groundModel);
         engine.addEntity(EntityFactory.createStaticEntity(groundModel, 0, 0, 0));
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, -20));
         engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, 20));
@@ -101,6 +90,8 @@ public class GameWorld {
     }
 
     private void addSystems(GameUI gameUI) {
+        engine = new Engine();
+        engine.addSystem(new RenderSystem(modelBatch, environment));
         engine.addSystem(bulletSystem = new BulletSystem());
         engine.addSystem(new PlayerSystem(this, gameUI, perspectiveCamera));
         engine.addSystem(new EnemySystem(this));
@@ -127,10 +118,6 @@ public class GameWorld {
     }
 
     protected void renderWorld() {
-        light.begin(Vector3.Zero, perspectiveCamera.direction);
-        shadowBatch.begin(light.getCamera());
-        shadowBatch.end();
-        light.end();
         modelBatch.begin(perspectiveCamera);
         engine.update(Gdx.graphics.getDeltaTime());
         modelBatch.end();
@@ -145,15 +132,15 @@ public class GameWorld {
         bulletSystem.collisionWorld.removeAction(character.getComponent(CharacterComponent.class).characterController);
         bulletSystem.collisionWorld.removeCollisionObject(character.getComponent(CharacterComponent.class).ghostObject);
         bulletSystem.dispose();
+
         bulletSystem = null;
-        for (Disposable disposable : disposables) disposable.dispose();
-        disposables.clear();
+
+        wallHorizontal.dispose();
+        wallVertical.dispose();
+        groundModel.dispose();
         modelBatch.dispose();
+
         modelBatch = null;
-        shadowBatch.dispose();
-        shadowBatch = null;
-        light.dispose();
-        light = null;
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();

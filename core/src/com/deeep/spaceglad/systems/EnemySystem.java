@@ -60,15 +60,15 @@ public class EnemySystem extends EntitySystem implements EntityListener {
             //Calculate the transforms
             Quaternion rot = quat.setFromAxis(0, 1, 0, (float) Math.toDegrees(theta) + 90);
 
-            cm.get(e).characterDirection.set(-1, 0, 0).rot(mod.instance.transform).nor();
+            cm.get(e).characterDirection.set(-1, 0, 0).rot(mod.instance.transform);
             cm.get(e).walkDirection.set(0, 0, 0);
             cm.get(e).walkDirection.add(cm.get(e).characterDirection);
-            cm.get(e).walkDirection.scl(1f * delta);
-
+            cm.get(e).walkDirection.scl(3f * delta);
             cm.get(e).characterController.setWalkDirection(cm.get(e).walkDirection);
+
             Matrix4 ghost = new Matrix4();
             Vector3 translation = new Vector3();
-            cm.get(e).ghostObject.getWorldTransform(ghost);   //TODO export this
+            cm.get(e).ghostObject.getWorldTransform(ghost);
             ghost.getTranslation(translation);
 
             mod.instance.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);

@@ -87,7 +87,6 @@ public class EntityFactory {
         Entity entity = createCharacter(bulletSystem, x, y, z);
         entity.add(new EnemyComponent(EnemyComponent.STATE.HUNTING));
         entity.add(new StatusComponent());
-        //TODO andreas
         return entity;
     }
 

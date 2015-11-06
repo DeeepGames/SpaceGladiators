@@ -41,10 +41,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                 }
             }
         }
-
-        @Override
-        public void onContactProcessed(int userValue0, int userValue1) {
-        }
     }
 
     @Override
@@ -67,7 +63,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float deltaTime) {
-        collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
+        collisionWorld.stepSimulation(deltaTime);
     }
 
     public void dispose() {
@@ -83,9 +79,7 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     public void entityAdded(Entity entity) {
         BulletComponent bulletComponent = entity.getComponent(BulletComponent.class);
         if (bulletComponent.body != null) {
-            if (bulletComponent.body instanceof btRigidBody)
-                collisionWorld.addRigidBody((btRigidBody) bulletComponent.body);
-            else collisionWorld.addCollisionObject(bulletComponent.body);
+            collisionWorld.addRigidBody((btRigidBody) bulletComponent.body);
         }
     }
 

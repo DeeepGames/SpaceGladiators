@@ -11,7 +11,7 @@ import com.deeep.spaceglad.bullet.MotionState;
  * Created by Andreas on 8/12/2015.
  */
 public class BulletComponent extends Component{
-    public MotionState motionState;
+    public btMotionState motionState;
     public btCollisionObject body;
     public btRigidBody.btRigidBodyConstructionInfo bodyInfo;
 }

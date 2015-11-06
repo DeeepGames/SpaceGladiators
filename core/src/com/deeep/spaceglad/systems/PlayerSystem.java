@@ -58,18 +58,13 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         camera.rotate(camera.up, deltaX);
         tmp.set(camera.direction).crs(camera.up).nor();
         camera.direction.rotate(tmp, deltaY);
+        tmp.set(0, 0, 0);
         characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.instance.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
         if (Gdx.input.isKeyPressed(Input.Keys.W)) characterComponent.walkDirection.add(camera.direction);
         if (Gdx.input.isKeyPressed(Input.Keys.S)) characterComponent.walkDirection.sub(camera.direction);
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            characterComponent.characterController.setJumpSpeed(25);
-            characterComponent.characterController.jump();
-        }
-        if (Gdx.input.justTouched()) fire();
-        tmp.set(0, 0, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) tmp.set(camera.direction).crs(camera.up).nor().scl(-1);
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) tmp.set(camera.direction).crs(camera.up).nor().scl(1);
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) tmp.set(camera.direction).crs(camera.up).scl(-1);
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) tmp.set(camera.direction).crs(camera.up);
         characterComponent.walkDirection.add(tmp);
         characterComponent.walkDirection.scl(10f * delta);
         characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
@@ -80,6 +75,12 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         modelComponent.instance.transform.set(translation.x, translation.y, translation.z, camera.direction.x, camera.direction.y, camera.direction.z, 0);
         camera.position.set(translation.x, translation.y, translation.z);
         camera.update(true);
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            characterComponent.characterController.setJumpSpeed(25);
+            characterComponent.characterController.jump();
+        }
+        if (Gdx.input.justTouched()) fire();
     }
 
     private void updateStatus() {
@@ -89,8 +90,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private void fire() {
         Ray ray = camera.getPickRay(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         rayFrom.set(ray.origin);
-        rayTo.set(ray.direction).scl(50f).add(rayFrom); // 50 meters max from the origin
-        // Because we reuse the ClosestRayResultCallback, we need reset it's values
+        rayTo.set(ray.direction).scl(50f).add(rayFrom);
         rayTestCB.setCollisionObject(null);
         rayTestCB.setClosestHitFraction(1f);
         rayTestCB.setRayFromWorld(rayFrom);
