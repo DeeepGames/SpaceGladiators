@@ -67,7 +67,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
         ghostPairCallback = new btGhostPairCallback();
         broadphase.getOverlappingPairCache().setInternalGhostPairCallback(ghostPairCallback);
         this.collisionWorld.setGravity(new Vector3(0, -0.5f, 0));
-
     }
 
     @Override

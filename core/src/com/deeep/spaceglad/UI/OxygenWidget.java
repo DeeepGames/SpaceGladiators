@@ -12,7 +12,8 @@ import com.deeep.spaceglad.Settings;
 /**
  * Created by scanevaro on 04/08/2015.
  */
-public class OxygenWidget extends Actor {
+public class
+        OxygenWidget extends Actor {
     private ProgressBar oxigenBar;
     private ProgressBar.ProgressBarStyle progressBarStyle;
     private Label label;

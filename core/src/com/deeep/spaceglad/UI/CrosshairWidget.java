@@ -14,15 +14,15 @@ import com.deeep.spaceglad.Settings;
 
 public class CrosshairWidget extends Actor {
 
-    private Image crosshairDot, crosshairOuterRing, crosshairInnerRing;
-    private float outerRotationSpeed, innerRotationSpeed;
+    private Image crosshairDot, /*crosshairOuterRing,*/ crosshairInnerRing;
+    //private float outerRotationSpeed, innerRotationSpeed;
 
     public CrosshairWidget() {
         crosshairDot = new Image(new Texture(Gdx.files.internal("crosshair/crossHairPoint.png")));
         crosshairInnerRing = new Image(new Texture(Gdx.files.internal("crosshair/crossHairInnerRing.png")));
-        crosshairOuterRing = new Image(new Texture(Gdx.files.internal("crosshair/crossHairOuterRing.png")));
-        outerRotationSpeed = 1F;
-        innerRotationSpeed = -1F;
+        //crosshairOuterRing = new Image(new Texture(Gdx.files.internal("crosshair/crossHairOuterRing.png")));
+        //outerRotationSpeed = 1F;
+        //innerRotationSpeed = -1F;
     }
 
     @Override
@@ -47,9 +47,9 @@ public class CrosshairWidget extends Actor {
         super.setPosition(x, y);
         crosshairDot.setPosition(x - 16, y - 16);
         crosshairInnerRing.setPosition(x - 16, y - 16);
-        crosshairOuterRing.setPosition(x - 16, y - 16);
+        //crosshairOuterRing.setPosition(x - 16, y - 16);
         crosshairInnerRing.setOrigin(crosshairInnerRing.getWidth() / 2, crosshairInnerRing.getHeight() / 2);
-        crosshairOuterRing.setOrigin(crosshairOuterRing.getWidth() / 4, crosshairOuterRing.getHeight() / 4);
+        //crosshairOuterRing.setOrigin(crosshairOuterRing.getWidth() / 4, crosshairOuterRing.getHeight() / 4);
         Logger.log(Logger.ANDREAS, Logger.INFO, "Setting origin to " + x + ", " + y);
     }
 
@@ -58,7 +58,7 @@ public class CrosshairWidget extends Actor {
         super.setSize(width, height);
         crosshairDot.setSize(width * 2, height * 2);
         crosshairInnerRing.setSize(width * 2, height * 2);
-        crosshairOuterRing.setSize(width * 2, height * 2);
+        //crosshairOuterRing.setSize(width * 2, height * 2);
     }
 
 }
