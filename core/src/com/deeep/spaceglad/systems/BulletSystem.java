@@ -21,7 +21,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     private btGhostPairCallback ghostPairCallback;
     public int maxSubSteps = 5;
     public float fixedTimeStep = 1f / 60f;
-    private MyContactListener myContactListener;
 
     public class MyContactListener extends ContactListener {
         @Override
@@ -41,12 +40,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
                     }
                 }
             }
-            // implementation
-        }
-
-        @Override
-        public void onContactProcessed(int userValue0, int userValue1) {
-            // implementation
         }
     }
 
@@ -54,7 +47,6 @@ public class BulletSystem extends EntitySystem implements EntityListener {
     public void addedToEngine(Engine engine) {
         engine.addEntityListener(Family.all(BulletComponent.class).get(), this);
     }
-
 
     public BulletSystem() {
         MyContactListener myContactListener = new MyContactListener();
@@ -71,9 +63,8 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void update(float deltaTime) {
-        collisionWorld.stepSimulation(deltaTime, maxSubSteps, fixedTimeStep);
+        collisionWorld.stepSimulation(deltaTime);
     }
-
 
     public void dispose() {
         collisionWorld.dispose();
@@ -84,15 +75,11 @@ public class BulletSystem extends EntitySystem implements EntityListener {
         ghostPairCallback.dispose();
     }
 
-
     @Override
     public void entityAdded(Entity entity) {
         BulletComponent bulletComponent = entity.getComponent(BulletComponent.class);
         if (bulletComponent.body != null) {
-            if (bulletComponent.body instanceof btRigidBody)
-                collisionWorld.addRigidBody((btRigidBody) bulletComponent.body);
-            else
-                collisionWorld.addCollisionObject(bulletComponent.body);
+            collisionWorld.addRigidBody((btRigidBody) bulletComponent.body);
         }
     }
 
@@ -109,6 +96,5 @@ public class BulletSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
-
     }
 }

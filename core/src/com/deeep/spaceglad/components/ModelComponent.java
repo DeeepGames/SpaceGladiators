@@ -1,11 +1,8 @@
 package com.deeep.spaceglad.components;
 
 import com.badlogic.ashley.core.Component;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Matrix4;
 
 /**
@@ -14,11 +11,6 @@ import com.badlogic.gdx.math.Matrix4;
 public class ModelComponent extends Component {
     public Model model;
     public ModelInstance instance;
-
-    public ModelComponent(Model model) {
-        this.model = model;
-        this.instance = new ModelInstance(model);
-    }
 
     public ModelComponent(Model model, float x, float y, float z) {
         this.model = model;

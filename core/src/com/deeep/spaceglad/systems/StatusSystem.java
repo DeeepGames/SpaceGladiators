@@ -16,7 +16,6 @@ import java.util.Iterator;
 public class StatusSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private GameWorld gameWorld;
-    private Engine engine;
 
     public StatusSystem(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -25,7 +24,6 @@ public class StatusSystem extends EntitySystem {
     @Override
     public void addedToEngine(Engine engine) {
         entities = engine.getEntitiesFor(Family.all(StatusComponent.class).get());
-        this.engine = engine;
     }
 
     @Override
