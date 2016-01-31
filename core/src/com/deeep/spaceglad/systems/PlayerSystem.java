@@ -30,6 +30,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     Vector3 rayFrom = new Vector3();
     Vector3 rayTo = new Vector3();
     ClosestRayResultCallback rayTestCB;
+    public Entity gun;
 
     public PlayerSystem(GameWorld gameWorld, GameUI gameUI, Camera camera) {
         this.camera = camera;
@@ -103,6 +104,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
                 PlayerComponent.score += 100;
             }
         }
+        gun.getComponent(AnimationComponent.class).animate("Armature|shoot", 1, 3);
     }
 
     private void checkGameOver() {

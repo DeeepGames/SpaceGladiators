@@ -103,6 +103,7 @@ public class EntityFactory {
         modelComponent.instance.transform.rotate(0, 1, 0, 180);
         Entity gunEntity = new Entity();
         gunEntity.add(modelComponent);
+        gunEntity.add(new GunComponent());
         gunEntity.add(new AnimationComponent(modelComponent.instance));
         return gunEntity;
     }

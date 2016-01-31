@@ -129,9 +129,6 @@ public class GameWorld {
         wallHorizontal.dispose();
         wallVertical.dispose();
         groundModel.dispose();
-        modelBatch.dispose();
-
-        modelBatch = null;
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();
