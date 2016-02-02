@@ -30,7 +30,7 @@ import com.deeep.spaceglad.systems.BulletSystem;
  * Created by Elmar on 7-8-2015.
  */
 public class EntityFactory {
-    private static Model playerModel;
+    private static Model playerModel, enemyModel;
     private static Texture playerTexture;
     private static ModelBuilder modelBuilder;
     private static Model boxModel;
@@ -90,9 +90,34 @@ public class EntityFactory {
     }
 
     public static Entity createEnemy(BulletSystem bulletSystem, float x, float y, float z) {
-        Entity entity = createCharacter(bulletSystem, x, y, z);
+        Entity entity = new Entity();
+        ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("data/monster.g3dj"));
+        if (enemyModel == null) {
+            enemyModel = new Model(modelData, new TextureProvider.FileTextureProvider());
+            for (Node node : enemyModel.nodes) node.scale.scl(0.0025f);
+            enemyModel.calculateTransforms();
+        }
+        ModelComponent modelComponent = new ModelComponent(enemyModel, x, y, z);
+        entity.add(modelComponent);
+        CharacterComponent characterComponent = new CharacterComponent();
+        characterComponent.ghostObject = new btPairCachingGhostObject();
+        characterComponent.ghostObject.setWorldTransform(modelComponent.instance.transform);
+        characterComponent.ghostShape = new btCapsuleShape(2f, 2f);
+        characterComponent.ghostObject.setCollisionShape(characterComponent.ghostShape);
+        characterComponent.ghostObject.setCollisionFlags(btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT);
+        characterComponent.characterController = new btKinematicCharacterController(characterComponent.ghostObject, characterComponent.ghostShape, .35f);
+        characterComponent.ghostObject.userData = entity;
+        entity.add(characterComponent);
+        bulletSystem.collisionWorld.addCollisionObject(entity.getComponent(CharacterComponent.class).ghostObject,
+                (short) btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
+                (short) (btBroadphaseProxy.CollisionFilterGroups.AllFilter));
+        bulletSystem.collisionWorld.addAction(entity.getComponent(CharacterComponent.class).characterController);
         entity.add(new EnemyComponent(EnemyComponent.STATE.HUNTING));
-        entity.add(new StatusComponent());
+        AnimationComponent animationComponent = new AnimationComponent(modelComponent.instance);
+        animationComponent.animate(EnemyAnimations.id, EnemyAnimations.offsetRun1, EnemyAnimations.durationRun1, -1, 1);
+        entity.add(animationComponent);
+        entity.add(new StatusComponent(animationComponent));
         return entity;
     }
 
