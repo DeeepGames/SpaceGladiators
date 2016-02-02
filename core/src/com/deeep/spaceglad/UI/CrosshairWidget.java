@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.deeep.spaceglad.Logger;
 import com.deeep.spaceglad.Settings;
 
 /**
@@ -14,7 +13,8 @@ import com.deeep.spaceglad.Settings;
 
 public class CrosshairWidget extends Actor {
 
-    private Image crosshairDot, /*crosshairOuterRing,*/ crosshairInnerRing;
+    private Image crosshairDot, /*crosshairOuterRing,*/
+            crosshairInnerRing;
     //private float outerRotationSpeed, innerRotationSpeed;
 
     public CrosshairWidget() {
@@ -50,7 +50,6 @@ public class CrosshairWidget extends Actor {
         //crosshairOuterRing.setPosition(x - 16, y - 16);
         crosshairInnerRing.setOrigin(crosshairInnerRing.getWidth() / 2, crosshairInnerRing.getHeight() / 2);
         //crosshairOuterRing.setOrigin(crosshairOuterRing.getWidth() / 4, crosshairOuterRing.getHeight() / 4);
-        Logger.log(Logger.ANDREAS, Logger.INFO, "Setting origin to " + x + ", " + y);
     }
 
     @Override

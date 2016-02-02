@@ -26,19 +26,8 @@ public class GameWorld {
     private Engine engine;
     private Entity character, gun;
     public BulletSystem bulletSystem;
-    public ModelBuilder modelBuilder = new ModelBuilder();
     public PlayerSystem playerSystem;
     private RenderSystem renderSystem;
-
-    Model wallHorizontal = modelBuilder.createBox(40, 20, 1,
-            new Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute
-                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-    Model wallVertical = modelBuilder.createBox(1, 20, 40,
-            new Material(ColorAttribute.createDiffuse(Color.GREEN), ColorAttribute.createSpecular(Color.WHITE), FloatAttribute
-                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
-    Model groundModel = modelBuilder.createBox(40, 1, 40,
-            new Material(ColorAttribute.createDiffuse(Color.YELLOW), ColorAttribute.createSpecular(Color.BLUE), FloatAttribute
-                    .createShininess(16f)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
 
     public GameWorld(GameUI gameUI) {
         Bullet.init();
@@ -54,28 +43,6 @@ public class GameWorld {
         }
     }
 
-    private void addEntities() {
-        createGround();
-        createPlayer(5, 3, 5);
-        engine.addEntity(EntityFactory.createEnemy(bulletSystem, 5, 3, 5));
-    }
-
-    private void createPlayer(float x, float y, float z) {
-        character = EntityFactory.createPlayer(bulletSystem, x, y, z);
-        engine.addEntity(character);
-        engine.addEntity(gun = EntityFactory.loadGun(2.5f, -1.9f, -4));
-        playerSystem.gun = gun;
-        renderSystem.gun = gun;
-    }
-
-    private void createGround() {
-        engine.addEntity(EntityFactory.createStaticEntity(groundModel, 0, 0, 0));
-        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, -20));
-        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0, 10, 20));
-        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, 20, 10, 0));
-        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20, 10, 0));
-    }
-
     private void addSystems(GameUI gameUI) {
         engine = new Engine();
         engine.addSystem(renderSystem = new RenderSystem());
@@ -84,6 +51,23 @@ public class GameWorld {
         engine.addSystem(new EnemySystem(this));
         engine.addSystem(new StatusSystem(this));
         if (debug) bulletSystem.collisionWorld.setDebugDrawer(this.debugDrawer);
+    }
+
+    private void addEntities() {
+        loadLevel();
+        createPlayer(0, 6, 0);
+    }
+
+    private void loadLevel() {
+        engine.addEntity(EntityFactory.loadScene(0, 0, 0));
+    }
+
+    private void createPlayer(float x, float y, float z) {
+        character = EntityFactory.createPlayer(bulletSystem, x, y, z);
+        engine.addEntity(character);
+        engine.addEntity(gun = EntityFactory.loadGun(2.5f, -1.9f, -4));
+        playerSystem.gun = gun;
+        renderSystem.gun = gun;
     }
 
     public void render(float delta) {
@@ -126,9 +110,6 @@ public class GameWorld {
         bulletSystem = null;
         renderSystem.dispose();
 
-        wallHorizontal.dispose();
-        wallVertical.dispose();
-        groundModel.dispose();
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();

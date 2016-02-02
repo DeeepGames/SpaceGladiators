@@ -38,11 +38,8 @@ public class Core extends ApplicationAdapter {
         }
         this.screen = screen;
         if (this.screen != null) {
-            Logger.log(Logger.ANDREAS, Logger.INFO, "Instantiated new GameScreen");
             this.screen.show();
             this.screen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        } else {
-            Logger.log(Logger.ANDREAS, Logger.CRITICAL, "Failed to instantiate new GameScreen");
         }
     }
 

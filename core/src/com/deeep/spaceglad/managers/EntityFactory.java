@@ -17,6 +17,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.*;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
@@ -106,6 +107,24 @@ public class EntityFactory {
         gunEntity.add(new GunComponent());
         gunEntity.add(new AnimationComponent(modelComponent.instance));
         return gunEntity;
+    }
+
+    public static Entity loadScene(int x, int y, int z) {
+        Entity entity = new Entity();
+        ModelLoader<?> modelLoader = new G3dModelLoader(new JsonReader());
+        ModelData modelData = modelLoader.loadModelData(Gdx.files.internal("data/arena.g3dj"));
+        Model model = new Model(modelData, new TextureProvider.FileTextureProvider());
+        ModelComponent modelComponent = new ModelComponent(model, x, y, z);
+        entity.add(modelComponent);
+        BulletComponent bulletComponent = new BulletComponent();
+        btCollisionShape shape = Bullet.obtainStaticNodeShape(model.nodes);
+        bulletComponent.bodyInfo = new btRigidBody.btRigidBodyConstructionInfo(0, null, shape, Vector3.Zero);
+        bulletComponent.body = new btRigidBody(bulletComponent.bodyInfo);
+        bulletComponent.body.userData = entity;
+        bulletComponent.motionState = new MotionState(modelComponent.instance.transform);
+        ((btRigidBody) bulletComponent.body).setMotionState(bulletComponent.motionState);
+        entity.add(bulletComponent);
+        return entity;
     }
 
 //    public static void dispose() {
