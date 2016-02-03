@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.components.AnimationComponent;
 import com.deeep.spaceglad.components.GunComponent;
 import com.deeep.spaceglad.components.ModelComponent;
@@ -56,6 +57,8 @@ public class RenderSystem extends EntitySystem {
             if (entities.get(i).getComponent(GunComponent.class) == null) {
                 ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
                 batch.render(mod.instance, environment);
+                if (entities.get(i).getComponent(AnimationComponent.class) != null & Settings.Paused == false)
+                    entities.get(i).getComponent(AnimationComponent.class).update(delta);
             }
         }
         batch.end();
