@@ -2,13 +2,6 @@ package com.deeep.spaceglad;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
@@ -24,7 +17,7 @@ public class GameWorld {
     private static final boolean debug = false;
     private DebugDrawer debugDrawer;
     private Engine engine;
-    private Entity character, gun;
+    private Entity character, gun, dome;
     public BulletSystem bulletSystem;
     public PlayerSystem playerSystem;
     private RenderSystem renderSystem;
@@ -60,6 +53,8 @@ public class GameWorld {
 
     private void loadLevel() {
         engine.addEntity(EntityFactory.loadScene(0, 0, 0));
+        engine.addEntity(dome = EntityFactory.loadDome(0, 0, 0));
+        playerSystem.dome = dome;
     }
 
     private void createPlayer(float x, float y, float z) {

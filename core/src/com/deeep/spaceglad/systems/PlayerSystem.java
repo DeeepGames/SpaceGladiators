@@ -29,7 +29,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     Vector3 rayFrom = new Vector3();
     Vector3 rayTo = new Vector3();
     ClosestRayResultCallback rayTestCB;
-    public Entity gun;
+    public Entity gun, dome;
 
     public PlayerSystem(GameWorld gameWorld, GameUI gameUI, Camera camera) {
         this.camera = camera;
@@ -75,6 +75,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         modelComponent.instance.transform.set(translation.x, translation.y, translation.z, camera.direction.x, camera.direction.y, camera.direction.z, 0);
         camera.position.set(translation.x, translation.y, translation.z);
         camera.update(true);
+
+        dome.getComponent(ModelComponent.class).instance.transform.setToTranslation(translation.x, translation.y, translation.z);
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             characterComponent.characterController.setJumpSpeed(25);
