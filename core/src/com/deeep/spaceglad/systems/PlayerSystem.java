@@ -25,7 +25,6 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     private GameUI gameUI;
     private final Vector3 tmp = new Vector3();
     private final Camera camera;
-    private final Vector3 tempVector = new Vector3();
     private GameWorld gameWorld;
     Vector3 rayFrom = new Vector3();
     Vector3 rayTo = new Vector3();
@@ -100,7 +99,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         if (rayTestCB.hasHit()) {
             final btCollisionObject obj = rayTestCB.getCollisionObject();
             if (((Entity) obj.userData).getComponent(EnemyComponent.class) != null) {
-                ((Entity) obj.userData).getComponent(StatusComponent.class).alive = false;
+                ((Entity) obj.userData).getComponent(StatusComponent.class).setAlive(false);
                 PlayerComponent.score += 100;
             }
         }
