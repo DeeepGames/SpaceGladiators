@@ -24,6 +24,15 @@ public class EnemySystem extends EntitySystem implements EntityListener {
     private Quaternion quat = new Quaternion();
     private Engine engine;
     private GameWorld gameWorld;
+    private Vector3 playerPosition = new Vector3();
+    private Vector3 enemyPosition = new Vector3();
+    private Matrix4 ghost = new Matrix4();
+    private Vector3 translation = new Vector3();
+    private Random random = new Random();
+
+    private float[] xSpawns = {0, 0, 100, -100};
+    private float[] zSpawns = {-100, 100, 0, 0};
+
     ComponentMapper<CharacterComponent> cm = ComponentMapper.getFor(CharacterComponent.class);
 
     public EnemySystem(GameWorld gameWorld) {
@@ -39,18 +48,16 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
     public void update(float delta) {
         if (entities.size() < 1) {
-            Random random = new Random();
-            engine.addEntity(EntityFactory.createEnemy(gameWorld.bulletSystem, random.nextInt(40) - 20, 10, random.nextInt(40) - 20));
+            int index = getRandomSpawnIndex();
+            engine.addEntity(EntityFactory.createEnemy(gameWorld.bulletSystem, xSpawns[index], 33, zSpawns[index]));
         }
-        for (Entity e : entities) {
+        for (int i = 0; i < entities.size(); i++) {
+            Entity e = entities.get(i);
             ModelComponent mod = e.getComponent(ModelComponent.class);
             ModelComponent playerModel = player.getComponent(ModelComponent.class);
 
-            Vector3 playerPosition = new Vector3();
-            Vector3 enemyPosition = new Vector3();
-
-            playerPosition = playerModel.instance.transform.getTranslation(playerPosition);
-            enemyPosition = mod.instance.transform.getTranslation(enemyPosition);
+            playerModel.instance.transform.getTranslation(playerPosition);
+            mod.instance.transform.getTranslation(enemyPosition);
 
             float dX = playerPosition.x - enemyPosition.x;
             float dZ = playerPosition.z - enemyPosition.z;
@@ -66,8 +73,8 @@ public class EnemySystem extends EntitySystem implements EntityListener {
             cm.get(e).walkDirection.scl(3f * delta);
             cm.get(e).characterController.setWalkDirection(cm.get(e).walkDirection);
 
-            Matrix4 ghost = new Matrix4();
-            Vector3 translation = new Vector3();
+            ghost.set(0, 0, 0, 0);
+            translation.set(0, 0, 0);
             cm.get(e).ghostObject.getWorldTransform(ghost);
             ghost.getTranslation(translation);
 
@@ -82,5 +89,9 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
+    }
+
+    public int getRandomSpawnIndex() {
+        return random.nextInt(xSpawns.length);
     }
 }
