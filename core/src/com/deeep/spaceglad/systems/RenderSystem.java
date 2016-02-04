@@ -11,11 +11,11 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.Settings;
-import com.deeep.spaceglad.components.AnimationComponent;
-import com.deeep.spaceglad.components.GunComponent;
-import com.deeep.spaceglad.components.ModelComponent;
+import com.deeep.spaceglad.components.*;
 
 /**
  * Created by Andreas on 8/4/2015.
@@ -25,6 +25,7 @@ public class RenderSystem extends EntitySystem {
     private ImmutableArray<Entity> entities;
     private ModelBatch batch;
     private Environment environment;
+    private DirectionalShadowLight shadowLight;
     public PerspectiveCamera perspectiveCamera, gunCamera;
     public Entity gun;
 
@@ -34,6 +35,10 @@ public class RenderSystem extends EntitySystem {
 
         environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1f));
+        shadowLight = new DirectionalShadowLight(1024 * 5, 1024 * 5, 200f, 200f, 1f, 300f);
+        shadowLight.set(0.8f, 0.8f, 0.8f, 0, -0.1f, 0.1f);
+        environment.add(shadowLight);
+        environment.shadowMap = shadowLight;
 
         batch = new ModelBatch();
 
@@ -48,29 +53,42 @@ public class RenderSystem extends EntitySystem {
     }
 
     public void update(float delta) {
-        drawModels(delta);
+        drawShadows(delta);
+        drawModels();
     }
 
-    private void drawModels(float delta) {
+    private void drawShadows(float delta) {
+        shadowLight.begin(Vector3.Zero, perspectiveCamera.direction);
+        batch.begin(shadowLight.getCamera());
+        for (int x = 0; x < entities.size(); x++) {
+            if (entities.get(x).getComponent(PlayerComponent.class) != null || entities.get(x).getComponent(EnemyComponent.class) != null) {
+                ModelComponent mod = entities.get(x).getComponent(ModelComponent.class);
+                batch.render(mod.instance);
+            }
+            if (entities.get(x).getComponent(AnimationComponent.class) != null & Settings.Paused == false)
+                entities.get(x).getComponent(AnimationComponent.class).update(delta);
+        }
+        batch.end();
+        shadowLight.end();
+    }
+
+    private void drawModels() {
         batch.begin(perspectiveCamera);
         for (int i = 0; i < entities.size(); i++) {
             if (entities.get(i).getComponent(GunComponent.class) == null) {
                 ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
                 batch.render(mod.instance, environment);
-                if (entities.get(i).getComponent(AnimationComponent.class) != null & Settings.Paused == false)
-                    entities.get(i).getComponent(AnimationComponent.class).update(delta);
             }
         }
         batch.end();
 
-        drawGun(delta);
+        drawGun();
     }
 
-    private void drawGun(float delta) {
+    private void drawGun() {
         Gdx.gl.glClear(GL20.GL_DEPTH_BUFFER_BIT);
         batch.begin(gunCamera);
         batch.render(gun.getComponent(ModelComponent.class).instance);
-        gun.getComponent(AnimationComponent.class).update(delta);
         batch.end();
     }
 
