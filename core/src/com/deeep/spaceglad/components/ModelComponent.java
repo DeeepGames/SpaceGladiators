@@ -11,9 +11,11 @@ import com.badlogic.gdx.math.Matrix4;
 public class ModelComponent extends Component {
     public Model model;
     public ModelInstance instance;
+    public Matrix4 matrix4;
 
     public ModelComponent(Model model, float x, float y, float z) {
+        this.matrix4 = new Matrix4();
         this.model = model;
-        this.instance = new ModelInstance(model, new Matrix4().setToTranslation(x, y, z));
+        this.instance = new ModelInstance(model, matrix4.setToTranslation(x, y, z));
     }
 }
