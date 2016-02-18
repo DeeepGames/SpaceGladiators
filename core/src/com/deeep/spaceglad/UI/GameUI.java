@@ -1,11 +1,13 @@
 package com.deeep.spaceglad.UI;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
+import com.deeep.spaceglad.managers.ControllerWidget;
 
 /**
  * Created by scanevaro on 31/07/2015.
@@ -14,13 +16,14 @@ public class GameUI {
     private Core game;
     public Stage stage;
     public HealthWidget healthWidget;
-//  public OxygenWidget oxygenWidget;
+    //  public OxygenWidget oxygenWidget;
 //  public EnergyWidget energyWidget;
     private ScoreWidget scoreWidget;
     private PauseWidget pauseWidget;
     private CrosshairWidget crosshairWidget;
     public GameOverWidget gameOverWidget;
     private Label fpsLabel;
+    private ControllerWidget controllerWidget;
 
     public GameUI(Core game) {
         this.game = game;
@@ -38,6 +41,7 @@ public class GameUI {
         gameOverWidget = new GameOverWidget(game, stage);
         crosshairWidget = new CrosshairWidget();
         fpsLabel = new Label("", Assets.skin);
+        /*if (Gdx.app.getType() == Application.ApplicationType.Android) */controllerWidget = new ControllerWidget();
     }
 
     public void configureWidgets() {
@@ -65,6 +69,7 @@ public class GameUI {
         stage.addActor(crosshairWidget);
         stage.setKeyboardFocus(pauseWidget);
         stage.addActor(fpsLabel);
+        /*if (Gdx.app.getType() == Application.ApplicationType.Android) */controllerWidget.addToStage(stage);
     }
 
     public void update(float delta) {

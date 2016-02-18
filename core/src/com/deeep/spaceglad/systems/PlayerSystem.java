@@ -1,8 +1,10 @@
 package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -17,7 +19,7 @@ import com.deeep.spaceglad.components.*;
 /**
  * Created by Elmar on 8-8-2015.
  */
-public class PlayerSystem extends EntitySystem implements EntityListener {
+public class PlayerSystem extends EntitySystem implements EntityListener, InputProcessor {
     private Entity player;
     private PlayerComponent playerComponent;
     private CharacterComponent characterComponent;
@@ -30,6 +32,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     Vector3 rayTo = new Vector3();
     ClosestRayResultCallback rayTestCB;
     public Entity gun, dome;
+    private float deltaX;
+    private float deltaY;
 
     public PlayerSystem(GameWorld gameWorld, GameUI gameUI, Camera camera) {
         this.camera = camera;
@@ -52,8 +56,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
     }
 
     private void updateMovement(float delta) {
-        float deltaX = -Gdx.input.getDeltaX() * 0.5f;
-        float deltaY = -Gdx.input.getDeltaY() * 0.5f;
+        deltaX = -Gdx.input.getDeltaX() * 0.5f;
+        deltaY = -Gdx.input.getDeltaY() * 0.5f;
         tmp.set(0, 0, 0);
         camera.rotate(camera.up, deltaX);
         tmp.set(camera.direction).crs(camera.up).nor();
@@ -61,13 +65,19 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
         tmp.set(0, 0, 0);
         characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.instance.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) characterComponent.walkDirection.add(camera.direction);
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) characterComponent.walkDirection.sub(camera.direction);
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) tmp.set(camera.direction).crs(camera.up).scl(-1);
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) tmp.set(camera.direction).crs(camera.up);
-        characterComponent.walkDirection.add(tmp);
-        characterComponent.walkDirection.scl(10f * delta);
-        characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+
+        } else {
+            if (Gdx.input.isKeyPressed(Input.Keys.W)) characterComponent.walkDirection.add(camera.direction);
+            if (Gdx.input.isKeyPressed(Input.Keys.S)) characterComponent.walkDirection.sub(camera.direction);
+            if (Gdx.input.isKeyPressed(Input.Keys.A)) tmp.set(camera.direction).crs(camera.up).scl(-1);
+            if (Gdx.input.isKeyPressed(Input.Keys.D)) tmp.set(camera.direction).crs(camera.up);
+            characterComponent.walkDirection.add(tmp);
+            characterComponent.walkDirection.scl(10f * delta);
+            characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
+            System.out.println("Walk Direction = " + characterComponent.walkDirection);
+//            System.out.println("Controller Widget's Movement Vector = " + ControllerWidget.getMovementVector());
+        }
         Matrix4 ghost = new Matrix4();
         Vector3 translation = new Vector3();
         characterComponent.ghostObject.getWorldTransform(ghost);   //TODO export this
@@ -126,5 +136,45 @@ public class PlayerSystem extends EntitySystem implements EntityListener {
 
     @Override
     public void entityRemoved(Entity entity) {
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }
