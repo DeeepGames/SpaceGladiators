@@ -41,7 +41,7 @@ public class GameUI {
         gameOverWidget = new GameOverWidget(game, stage);
         crosshairWidget = new CrosshairWidget();
         fpsLabel = new Label("", Assets.skin);
-        /*if (Gdx.app.getType() == Application.ApplicationType.Android) */controllerWidget = new ControllerWidget();
+        if (Gdx.app.getType() == Application.ApplicationType.Android) controllerWidget = new ControllerWidget();
     }
 
     public void configureWidgets() {
@@ -69,7 +69,7 @@ public class GameUI {
         stage.addActor(crosshairWidget);
         stage.setKeyboardFocus(pauseWidget);
         stage.addActor(fpsLabel);
-        /*if (Gdx.app.getType() == Application.ApplicationType.Android) */controllerWidget.addToStage(stage);
+        if (Gdx.app.getType() == Application.ApplicationType.Android) controllerWidget.addToStage(stage);
     }
 
     public void update(float delta) {

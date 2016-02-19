@@ -15,6 +15,7 @@ import com.deeep.spaceglad.GameWorld;
 import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.*;
+import com.deeep.spaceglad.managers.ControllerWidget;
 
 /**
  * Created by Elmar on 8-8-2015.
@@ -34,6 +35,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
     public Entity gun, dome;
     private float deltaX;
     private float deltaY;
+    private Vector3 translation = new Vector3();
+    private Matrix4 ghost = new Matrix4();
 
     public PlayerSystem(GameWorld gameWorld, GameUI gameUI, Camera camera) {
         this.camera = camera;
@@ -66,7 +69,13 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
         characterComponent.characterDirection.set(-1, 0, 0).rot(modelComponent.instance.transform).nor();
         characterComponent.walkDirection.set(0, 0, 0);
         if (Gdx.app.getType() == Application.ApplicationType.Android) {
-
+            if (ControllerWidget.getMovementVector().y > 0) characterComponent.walkDirection.add(camera.direction);
+            if (ControllerWidget.getMovementVector().y < 0) characterComponent.walkDirection.sub(camera.direction);
+            if (ControllerWidget.getMovementVector().x < 0) tmp.set(camera.direction).crs(camera.up).scl(-1);
+            if (ControllerWidget.getMovementVector().x > 0) tmp.set(camera.direction).crs(camera.up);
+            characterComponent.walkDirection.add(tmp);
+            characterComponent.walkDirection.scl(10f * delta);
+            characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
         } else {
             if (Gdx.input.isKeyPressed(Input.Keys.W)) characterComponent.walkDirection.add(camera.direction);
             if (Gdx.input.isKeyPressed(Input.Keys.S)) characterComponent.walkDirection.sub(camera.direction);
@@ -75,11 +84,10 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
             characterComponent.walkDirection.add(tmp);
             characterComponent.walkDirection.scl(10f * delta);
             characterComponent.characterController.setWalkDirection(characterComponent.walkDirection);
-            System.out.println("Walk Direction = " + characterComponent.walkDirection);
-//            System.out.println("Controller Widget's Movement Vector = " + ControllerWidget.getMovementVector());
         }
-        Matrix4 ghost = new Matrix4();
-        Vector3 translation = new Vector3();
+        ghost.set(0, 0, 0, 0);
+        translation.set(0, 0, 0);
+        translation = new Vector3();
         characterComponent.ghostObject.getWorldTransform(ghost);   //TODO export this
         ghost.getTranslation(translation);
         modelComponent.instance.transform.set(translation.x, translation.y, translation.z, camera.direction.x, camera.direction.y, camera.direction.z, 0);
