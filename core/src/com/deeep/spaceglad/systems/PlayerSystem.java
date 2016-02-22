@@ -59,8 +59,13 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
     }
 
     private void updateMovement(float delta) {
-        deltaX = -Gdx.input.getDeltaX() * 0.5f;
-        deltaY = -Gdx.input.getDeltaY() * 0.5f;
+        if (Gdx.app.getType() == Application.ApplicationType.Android) {
+            deltaX = -ControllerWidget.getWatchVector().x * 1.5f;
+            deltaY = ControllerWidget.getWatchVector().y * 1.5f;
+        } else {
+            deltaX = -Gdx.input.getDeltaX() * 0.5f;
+            deltaY = -Gdx.input.getDeltaY() * 0.5f;
+        }
         tmp.set(0, 0, 0);
         camera.rotate(camera.up, deltaX);
         tmp.set(camera.direction).crs(camera.up).nor();

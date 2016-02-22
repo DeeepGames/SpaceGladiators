@@ -13,9 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  */
 public class ControllerWidget {
     private static Touchpad movementPad;
-    private Touchpad watchPad;
+    private static Touchpad watchPad;
     private static Vector2 movementVector;
-    private Vector2 watchVector;
+    private static Vector2 watchVector;
 
     public ControllerWidget() {
         Touchpad.TouchpadStyle touchpadStyle = new Touchpad.TouchpadStyle();
@@ -48,7 +48,7 @@ public class ControllerWidget {
         return movementVector;
     }
 
-    public Vector2 getWatchVector() {
+    public static Vector2 getWatchVector() {
         watchVector.set(watchPad.getKnobPercentX(), watchPad.getKnobPercentY());
         return watchVector;
     }
