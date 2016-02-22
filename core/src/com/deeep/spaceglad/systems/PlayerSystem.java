@@ -102,7 +102,8 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
         dome.getComponent(ModelComponent.class).instance.transform.setToTranslation(translation.x, translation.y, translation.z);
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            characterComponent.characterController.setJumpSpeed(25);
+            // TODO change this back to 25
+            characterComponent.characterController.setJumpSpeed(75);
             characterComponent.characterController.jump();
         }
         if (Gdx.input.justTouched()) fire();

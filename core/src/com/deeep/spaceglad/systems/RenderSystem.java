@@ -6,13 +6,20 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.math.Vector3;
+import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.components.*;
@@ -29,6 +36,10 @@ public class RenderSystem extends EntitySystem {
     public PerspectiveCamera perspectiveCamera, gunCamera;
     public Entity gun;
 
+    private ParticleEffect currentEffects;
+    private ParticleSystem particleSystem;
+    private AssetManager assets;
+
     public RenderSystem() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
         perspectiveCamera.far = 10000f;
@@ -44,6 +55,26 @@ public class RenderSystem extends EntitySystem {
 
         gunCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
         gunCamera.far = 100f;
+
+
+        //PARTICLES TEMP
+        assets = new AssetManager();
+        particleSystem = ParticleSystem.get();
+        PointSpriteParticleBatch pointSpriteBatch = new PointSpriteParticleBatch();
+        pointSpriteBatch.setCamera(perspectiveCamera);
+
+        particleSystem.add(pointSpriteBatch);
+        ParticleEffectLoader.ParticleEffectLoadParameter loadParameters = new ParticleEffectLoader.ParticleEffectLoadParameter(particleSystem.getBatches());
+        ParticleEffectLoader loader = new ParticleEffectLoader(new InternalFileHandleResolver());
+        assets.setLoader(ParticleEffect.class, loader);
+        assets.load("test_particle.pfx", ParticleEffect.class, loadParameters);
+        assets.finishLoading();
+
+        currentEffects=assets.get("test_particle.pfx", ParticleEffect.class).copy();
+        currentEffects.init();
+        currentEffects.start();
+        particleSystem.add(currentEffects);
+
     }
 
     // Event called when an entity is added to the engine
@@ -74,15 +105,20 @@ public class RenderSystem extends EntitySystem {
 
     private void drawModels() {
         batch.begin(perspectiveCamera);
-        for (int i = 0; i < entities.size(); i++) {
+        /**for (int i = 0; i < entities.size(); i++) {
             if (entities.get(i).getComponent(GunComponent.class) == null) {
                 ModelComponent mod = entities.get(i).getComponent(ModelComponent.class);
                 batch.render(mod.instance, environment);
             }
-        }
+        }*/
+        particleSystem.update();
+        particleSystem.begin();
+        particleSystem.draw();
+        particleSystem.end();
+        batch.render(particleSystem);
         batch.end();
 
-        drawGun();
+        //drawGun();
     }
 
     private void drawGun() {
@@ -102,5 +138,7 @@ public class RenderSystem extends EntitySystem {
     public void dispose() {
         batch.dispose();
         batch = null;
+        if (currentEffects!=null) currentEffects.dispose();
+        assets.dispose();
     }
 }

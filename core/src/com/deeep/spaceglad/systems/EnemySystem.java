@@ -30,8 +30,8 @@ public class EnemySystem extends EntitySystem implements EntityListener {
     private Vector3 translation = new Vector3();
     private Random random = new Random();
 
-    private float[] xSpawns = {0, 0, 100, -100};
-    private float[] zSpawns = {-100, 100, 0, 0};
+    private float[] xSpawns = {12, -12, 112, -112};
+    private float[] zSpawns = {-112, 112, -12, 12};
 
     ComponentMapper<CharacterComponent> cm = ComponentMapper.getFor(CharacterComponent.class);
 
@@ -47,10 +47,8 @@ public class EnemySystem extends EntitySystem implements EntityListener {
     }
 
     public void update(float delta) {
-        if (entities.size() < 1) {
-            int index = getRandomSpawnIndex();
-            engine.addEntity(EntityFactory.createEnemy(gameWorld.bulletSystem, xSpawns[index], 33, zSpawns[index]));
-        }
+        if (entities.size() < 1) spawnEnemy(getRandomSpawnIndex());
+
         for (int i = 0; i < entities.size(); i++) {
             Entity e = entities.get(i);
             ModelComponent mod = e.getComponent(ModelComponent.class);
@@ -80,6 +78,10 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
             mod.instance.transform.set(translation.x, translation.y, translation.z, rot.x, rot.y, rot.z, rot.w);
         }
+    }
+
+    private void spawnEnemy(int randomSpawnIndex) {
+        engine.addEntity(EntityFactory.createEnemy(gameWorld.bulletSystem, xSpawns[randomSpawnIndex], 33, zSpawns[randomSpawnIndex]));
     }
 
     @Override
