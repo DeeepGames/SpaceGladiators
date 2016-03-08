@@ -6,20 +6,15 @@ import com.badlogic.ashley.core.EntitySystem;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.math.Vector3;
-import com.deeep.spaceglad.Assets;
 import com.deeep.spaceglad.Core;
 import com.deeep.spaceglad.Settings;
 import com.deeep.spaceglad.components.*;
@@ -36,10 +31,6 @@ public class RenderSystem extends EntitySystem {
     public PerspectiveCamera perspectiveCamera, gunCamera;
     public Entity gun;
     private Vector3 position;
-
-    private ParticleEffect currentEffects;
-    private ParticleSystem particleSystem;
-    private AssetManager assets;
 
     public RenderSystem() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
@@ -78,19 +69,14 @@ public class RenderSystem extends EntitySystem {
     private void drawShadows(float delta) {
         shadowLight.begin(Vector3.Zero, perspectiveCamera.direction);
         batch.begin(shadowLight.getCamera());
-        int visibleCount = 0;
         for (int x = 0; x < entities.size(); x++) {
             if (entities.get(x).getComponent(PlayerComponent.class) != null || entities.get(x).getComponent(EnemyComponent.class) != null) {
                 ModelComponent mod = entities.get(x).getComponent(ModelComponent.class);
-                if (isVisible(perspectiveCamera, mod.instance)) {
-                    batch.render(mod.instance);
-                    visibleCount++;
-                }
+                if (isVisible(perspectiveCamera, mod.instance)) batch.render(mod.instance);
             }
             if (entities.get(x).getComponent(AnimationComponent.class) != null & Settings.Paused == false)
                 entities.get(x).getComponent(AnimationComponent.class).update(delta);
         }
-        System.out.println(visibleCount);
         batch.end();
         shadowLight.end();
     }
