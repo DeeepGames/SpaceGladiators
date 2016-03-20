@@ -99,7 +99,7 @@ public class EntityFactory {
         bulletSystem.collisionWorld.addAction(entity.getComponent(CharacterComponent.class).characterController);
         entity.add(new EnemyComponent(EnemyComponent.STATE.HUNTING));
         AnimationComponent animationComponent = new AnimationComponent(enemyModelComponent.instance);
-        animationComponent.animate(EnemyAnimations.id, EnemyAnimations.offsetRun1, EnemyAnimations.durationRun1, -1, 1);
+        animationComponent.animate(EnemyAnimations.id, EnemyAnimations.offsetRun1, EnemyAnimations.durationRun1, -1, 1);    //TODO variable animationspeed
         entity.add(animationComponent);
         entity.add(new StatusComponent(animationComponent));
         return entity;

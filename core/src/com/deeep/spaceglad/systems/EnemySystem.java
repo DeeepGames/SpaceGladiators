@@ -66,7 +66,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
             cm.get(e).characterDirection.set(-1, 0, 0).rot(mod.instance.transform);
             cm.get(e).walkDirection.set(0, 0, 0);
             cm.get(e).walkDirection.add(cm.get(e).characterDirection);
-            cm.get(e).walkDirection.scl(3f * delta);
+            cm.get(e).walkDirection.scl(10f * delta);   //TODO make this change on difficulty
             cm.get(e).characterController.setWalkDirection(cm.get(e).walkDirection);
 
             ghost.set(0, 0, 0, 0);
