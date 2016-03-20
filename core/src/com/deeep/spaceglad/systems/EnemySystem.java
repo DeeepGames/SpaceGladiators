@@ -6,10 +6,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.deeep.spaceglad.GameWorld;
-import com.deeep.spaceglad.components.CharacterComponent;
-import com.deeep.spaceglad.components.EnemyComponent;
-import com.deeep.spaceglad.components.ModelComponent;
-import com.deeep.spaceglad.components.PlayerComponent;
+import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.managers.EntityFactory;
 
 import java.util.Random;
@@ -34,6 +31,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
     private float[] zSpawns = {-112, 112, -12, 12};
 
     ComponentMapper<CharacterComponent> cm = ComponentMapper.getFor(CharacterComponent.class);
+    ComponentMapper<StatusComponent> sm = ComponentMapper.getFor(StatusComponent.class);
 
     public EnemySystem(GameWorld gameWorld) {
         this.gameWorld = gameWorld;
@@ -41,7 +39,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
 
     @Override
     public void addedToEngine(Engine e) {
-        entities = e.getEntitiesFor(Family.all(EnemyComponent.class, CharacterComponent.class).get());
+        entities = e.getEntitiesFor(Family.all(EnemyComponent.class, CharacterComponent.class, StatusComponent.class).get());
         e.addEntityListener(Family.one(PlayerComponent.class).get(), this);
         this.engine = e;
     }
@@ -53,7 +51,7 @@ public class EnemySystem extends EntitySystem implements EntityListener {
             Entity e = entities.get(i);
             ModelComponent mod = e.getComponent(ModelComponent.class);
             ModelComponent playerModel = player.getComponent(ModelComponent.class);
-
+            if (!sm.get(e).alive) return;
             playerModel.instance.transform.getTranslation(playerPosition);
             mod.instance.transform.getTranslation(enemyPosition);
 

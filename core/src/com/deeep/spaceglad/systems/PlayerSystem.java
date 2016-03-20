@@ -103,7 +103,7 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
 
         if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
             // TODO change this back to 25
-            characterComponent.characterController.setJumpSpeed(75);
+            characterComponent.characterController.setJumpSpeed(25);
             characterComponent.characterController.jump();
         }
         if (Gdx.input.justTouched()) fire();
@@ -125,8 +125,10 @@ public class PlayerSystem extends EntitySystem implements EntityListener, InputP
         if (rayTestCB.hasHit()) {
             final btCollisionObject obj = rayTestCB.getCollisionObject();
             if (((Entity) obj.userData).getComponent(EnemyComponent.class) != null) {
-                ((Entity) obj.userData).getComponent(StatusComponent.class).setAlive(false);
-                PlayerComponent.score += 100;
+                if(((Entity) obj.userData).getComponent(StatusComponent.class).alive) {
+                    ((Entity) obj.userData).getComponent(StatusComponent.class).setAlive(false);
+                    PlayerComponent.score += 100;
+                }
             }
         }
         gun.getComponent(AnimationComponent.class).animate("Armature|shoot", 1, 3);
