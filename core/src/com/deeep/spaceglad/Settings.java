@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 public class Settings {
     public static boolean Paused;
     public static boolean soundEnabled = true;
-    public static int[] highscores = new int[]{1000, 800, 500, 300, 100};
     public final static String file = ".spaceglad";
     private static final String leaderURL = "http://dreamlo.com/lb/PLfBGtHgG02wU0lSzVNrPAG0uQf3J3-UGzK1i7mXmmxA";
     private static final String request5 = "/pipe/5";
@@ -52,7 +51,6 @@ public class Settings {
             FileHandle filehandle = Gdx.files.external(file);
             String[] strings = filehandle.readString().split("\n");
             soundEnabled = Boolean.parseBoolean(strings[0]);
-            for (int i = 0; i < 5; i++) highscores[i] = Integer.parseInt(strings[i + 1]);
         } catch (Throwable e) {
         }
     }
@@ -61,7 +59,6 @@ public class Settings {
         try {
             FileHandle filehandle = Gdx.files.external(file);
             filehandle.writeString(Boolean.toString(soundEnabled) + "\n", false);
-            for (int i = 0; i < 5; i++) filehandle.writeString(Integer.toString(highscores[i]) + "\n", true);
         } catch (Throwable e) {
         }
     }
@@ -82,14 +79,5 @@ public class Settings {
             public void cancelled() {
             }
         });
-    }
-
-    public static void addScore(int score) {
-        for (int i = 0; i < 5; i++) {
-            if (highscores[i] < score) {
-                for (int j = 4; j > i; j--) highscores[j] = highscores[j - 1];
-                highscores[i] = score;
-            }
-        }
     }
 }

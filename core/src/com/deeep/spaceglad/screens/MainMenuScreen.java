@@ -18,10 +18,10 @@ import com.deeep.spaceglad.Core;
  * Created by scanevaro on 05/08/2015.
  */
 public class MainMenuScreen implements Screen {
-    Core game;
-    Stage stage;
-    Image backgroundImage, titleImage;
-    TextButton playButton, leaderboardsButton, quitButton;
+    private Core game;
+    private Stage stage;
+    private Image backgroundImage, titleImage;
+    private TextButton playButton, leaderboardsButton, quitButton;
 
     public MainMenuScreen(Core game) {
         this.game = game;
