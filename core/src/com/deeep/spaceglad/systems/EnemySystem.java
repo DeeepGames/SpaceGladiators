@@ -2,6 +2,8 @@ package com.deeep.spaceglad.systems;
 
 import com.badlogic.ashley.core.*;
 import com.badlogic.ashley.utils.ImmutableArray;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -51,6 +53,22 @@ public class EnemySystem extends EntitySystem implements EntityListener {
             Entity e = entities.get(i);
             ModelComponent mod = e.getComponent(ModelComponent.class);
             ModelComponent playerModel = player.getComponent(ModelComponent.class);
+
+            if (!e.getComponent(StatusComponent.class).alive)
+                mod.update(delta);
+
+            if (!e.getComponent(StatusComponent.class).alive &&
+                    !e.getComponent(DieParticleComponent.class).used) {
+                e.getComponent(DieParticleComponent.class).used = true;
+                ParticleEffect effect = e.getComponent(DieParticleComponent.class).originalEffect.copy();
+                ((RegularEmitter) effect.getControllers().first().emitter).setEmissionMode(RegularEmitter.EmissionMode.EnabledUntilCycleEnd);
+                effect.setTransform(e.getComponent(ModelComponent.class).instance.transform);
+                effect.scale(3.25f, 1, 1.5f);
+                effect.init();
+                effect.start();
+                RenderSystem.particleSystem.add(effect);
+            }
+
             if (!sm.get(e).alive) return;
             playerModel.instance.transform.getTranslation(playerPosition);
             mod.instance.transform.getTranslation(enemyPosition);

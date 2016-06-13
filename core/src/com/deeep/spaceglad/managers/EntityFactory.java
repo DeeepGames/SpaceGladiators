@@ -4,10 +4,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -26,6 +28,7 @@ import com.badlogic.gdx.utils.UBJsonReader;
 import com.deeep.spaceglad.bullet.MotionState;
 import com.deeep.spaceglad.components.*;
 import com.deeep.spaceglad.systems.BulletSystem;
+import com.deeep.spaceglad.systems.RenderSystem;
 
 /**
  * Created by Elmar on 7-8-2015.
@@ -36,6 +39,7 @@ public class EntityFactory {
     private static ModelBuilder modelBuilder;
     private static ModelData enemyModelData;
     private static ModelComponent enemyModelComponent;
+    public static RenderSystem renderSystem;
 
     static {
         modelBuilder = new ModelBuilder();
@@ -81,7 +85,13 @@ public class EntityFactory {
             for (Node node : enemyModel.nodes) node.scale.scl(0.0025f);
             enemyModel.calculateTransforms();
             enemyModelComponent = new ModelComponent(enemyModel, x, y, z);
+
+            Material material = enemyModelComponent.instance.materials.get(0);
+            BlendingAttribute blendingAttribute;
+            material.set(blendingAttribute = new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA));
+            enemyModelComponent.blendingAttribute = blendingAttribute;
         }
+        ((BlendingAttribute) enemyModelComponent.instance.materials.get(0).get(BlendingAttribute.Type)).opacity = 1;
         enemyModelComponent.instance.transform.set(enemyModelComponent.matrix4.setTranslation(x, y, z));
         entity.add(enemyModelComponent);
         CharacterComponent characterComponent = new CharacterComponent();
@@ -102,6 +112,7 @@ public class EntityFactory {
         animationComponent.animate(EnemyAnimations.id, EnemyAnimations.offsetRun1, EnemyAnimations.durationRun1, -1, 1);    //TODO variable animationspeed
         entity.add(animationComponent);
         entity.add(new StatusComponent(animationComponent));
+        entity.add(new DieParticleComponent(renderSystem.particleSystem));
         return entity;
     }
 
