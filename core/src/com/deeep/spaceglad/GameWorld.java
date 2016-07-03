@@ -2,7 +2,6 @@ package com.deeep.spaceglad;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttributes;
@@ -12,13 +11,8 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.Disposable;
 import com.deeep.spaceglad.UI.GameUI;
 import com.deeep.spaceglad.components.CharacterComponent;
 import com.deeep.spaceglad.managers.EntityFactory;
@@ -64,6 +58,11 @@ public class GameWorld {
 
     private void initPersCamera() {
         perspectiveCamera = new PerspectiveCamera(FOV, Core.VIRTUAL_WIDTH, Core.VIRTUAL_HEIGHT);
+//        perspectiveCamera.position.set(30f, 40f, 30f);
+//        perspectiveCamera.lookAt(0, 0, 0);
+//        perspectiveCamera.near = 1f;
+//        perspectiveCamera.far = 300f;
+//        perspectiveCamera.update();
     }
 
     private void initModelBatch() {
@@ -73,7 +72,6 @@ public class GameWorld {
     private void addEntities() {
         createGround();
         createPlayer(5, 3, 5);
-        engine.addEntity(EntityFactory.createEnemy(bulletSystem, 5, 3, 5));
     }
 
     private void createPlayer(float x, float y, float z) {
@@ -98,8 +96,8 @@ public class GameWorld {
         engine.addSystem(new StatusSystem(this));
     }
 
-    public void render() {
-        renderWorld();
+    public void render(float delta) {
+        renderWorld(delta);
         checkPause();
     }
 
@@ -117,9 +115,9 @@ public class GameWorld {
         }
     }
 
-    protected void renderWorld() {
+    protected void renderWorld(float delta) {
         modelBatch.begin(perspectiveCamera);
-        engine.update(Gdx.graphics.getDeltaTime());
+        engine.update(delta);
         modelBatch.end();
     }
 
@@ -144,7 +142,6 @@ public class GameWorld {
         character.getComponent(CharacterComponent.class).characterController.dispose();
         character.getComponent(CharacterComponent.class).ghostObject.dispose();
         character.getComponent(CharacterComponent.class).ghostShape.dispose();
-//        EntityFactory.dispose();
     }
 
     public void remove(Entity entity) {
